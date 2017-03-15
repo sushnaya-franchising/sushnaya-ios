@@ -8,21 +8,28 @@
 
 /* Begin PBXBuildFile section */
 		2E94CC601E7963E800C51D58 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E94CC5F1E7963E800C51D58 /* AppDelegate.swift */; };
-		2E94CC621E7963E800C51D58 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E94CC611E7963E800C51D58 /* ViewController.swift */; };
+		2E94CC621E7963E800C51D58 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E94CC611E7963E800C51D58 /* MainViewController.swift */; };
 		2E94CC651E7963E800C51D58 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2E94CC631E7963E800C51D58 /* Main.storyboard */; };
 		2E94CC671E7963E800C51D58 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2E94CC661E7963E800C51D58 /* Assets.xcassets */; };
 		2E94CC6A1E7963E800C51D58 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2E94CC681E7963E800C51D58 /* LaunchScreen.storyboard */; };
+		2E94CC721E79CBA700C51D58 /* UserSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E94CC711E79CBA700C51D58 /* UserSession.swift */; };
+		2E94CC761E79D15D00C51D58 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E94CC751E79D15D00C51D58 /* User.swift */; };
+		2E94CC781E79DB7D00C51D58 /* IntroViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E94CC771E79DB7D00C51D58 /* IntroViewController.swift */; };
 		95D281D1D25122E284D8AC09 /* Pods_sushnaya_ios.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 489991CA68AC90F346EF30BE /* Pods_sushnaya_ios.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		2E94CC5C1E7963E800C51D58 /* sushnaya-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "sushnaya-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2E94CC5F1E7963E800C51D58 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		2E94CC611E7963E800C51D58 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		2E94CC611E7963E800C51D58 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		2E94CC641E7963E800C51D58 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		2E94CC661E7963E800C51D58 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2E94CC691E7963E800C51D58 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2E94CC6B1E7963E800C51D58 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2E94CC711E79CBA700C51D58 /* UserSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserSession.swift; sourceTree = "<group>"; };
+		2E94CC741E79D0E100C51D58 /* sushnaya-ios.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = "sushnaya-ios.playground"; sourceTree = "<group>"; };
+		2E94CC751E79D15D00C51D58 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		2E94CC771E79DB7D00C51D58 /* IntroViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntroViewController.swift; sourceTree = "<group>"; };
 		489991CA68AC90F346EF30BE /* Pods_sushnaya_ios.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_sushnaya_ios.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		874AE31D3C8DF2CCC6C39B8E /* Pods-sushnaya-ios.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sushnaya-ios.debug.xcconfig"; path = "Pods/Target Support Files/Pods-sushnaya-ios/Pods-sushnaya-ios.debug.xcconfig"; sourceTree = "<group>"; };
 		9654AE38439284722DBBACD9 /* Pods-sushnaya-ios.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sushnaya-ios.release.xcconfig"; path = "Pods/Target Support Files/Pods-sushnaya-ios/Pods-sushnaya-ios.release.xcconfig"; sourceTree = "<group>"; };
@@ -43,6 +50,7 @@
 		2E94CC531E7963E700C51D58 = {
 			isa = PBXGroup;
 			children = (
+				2E94CC741E79D0E100C51D58 /* sushnaya-ios.playground */,
 				2E94CC5E1E7963E800C51D58 /* sushnaya-ios */,
 				2E94CC5D1E7963E800C51D58 /* Products */,
 				B0F2287120B9E009A9972AA9 /* Pods */,
@@ -62,11 +70,14 @@
 			isa = PBXGroup;
 			children = (
 				2E94CC5F1E7963E800C51D58 /* AppDelegate.swift */,
-				2E94CC611E7963E800C51D58 /* ViewController.swift */,
+				2E94CC611E7963E800C51D58 /* MainViewController.swift */,
 				2E94CC631E7963E800C51D58 /* Main.storyboard */,
 				2E94CC661E7963E800C51D58 /* Assets.xcassets */,
 				2E94CC681E7963E800C51D58 /* LaunchScreen.storyboard */,
 				2E94CC6B1E7963E800C51D58 /* Info.plist */,
+				2E94CC711E79CBA700C51D58 /* UserSession.swift */,
+				2E94CC751E79D15D00C51D58 /* User.swift */,
+				2E94CC771E79DB7D00C51D58 /* IntroViewController.swift */,
 			);
 			path = "sushnaya-ios";
 			sourceTree = "<group>";
@@ -212,8 +223,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2E94CC621E7963E800C51D58 /* ViewController.swift in Sources */,
+				2E94CC781E79DB7D00C51D58 /* IntroViewController.swift in Sources */,
+				2E94CC761E79D15D00C51D58 /* User.swift in Sources */,
+				2E94CC621E7963E800C51D58 /* MainViewController.swift in Sources */,
 				2E94CC601E7963E800C51D58 /* AppDelegate.swift in Sources */,
+				2E94CC721E79CBA700C51D58 /* UserSession.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -377,6 +391,7 @@
 				2E94CC701E7963E800C51D58 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

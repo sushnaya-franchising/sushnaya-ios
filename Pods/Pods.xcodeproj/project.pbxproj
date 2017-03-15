@@ -7,61 +7,180 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		17F78EE9CA5A57B5CEBF6CBBC3272F57 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CBB3DE36805AF21409EC968A9691732F /* Foundation.framework */; };
-		BBE534F02DA40AE00CC5EFB613A237F2 /* Pods-sushnaya-ios-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 8EA87511B547B0470184AA0F97070E7D /* Pods-sushnaya-ios-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		C7B30C4DA3D221C75BA7A01425D9C0A4 /* Pods-sushnaya-ios-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = DA1D3A4464C4D5884BCF7FE2C9027574 /* Pods-sushnaya-ios-dummy.m */; };
+		1510D362F1B85A745EAD08B47090E41B /* Animation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E6FF6A5A0821FA36C213DCA07906FB6 /* Animation.swift */; settings = {COMPILER_FLAGS = "-fmodules"; }; };
+		19354D1E569090FAE0EAE7177A346EB5 /* TranslationAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87E960114260888ADA964E1C0D57F730 /* TranslationAnimation.swift */; settings = {COMPILER_FLAGS = "-fmodules"; }; };
+		19823C5C4C2785DDC4023B099782F8B9 /* LayerStrokeEndAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E5BB5682487CE89B6EAAC205DDFAF25 /* LayerStrokeEndAnimation.swift */; settings = {COMPILER_FLAGS = "-fmodules"; }; };
+		275D4DF416EDC8CF530A0DF6980EF43C /* RazzleDazzle-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = C185574CC645B209ACB1667BEF808758 /* RazzleDazzle-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		3002A4CD3FC25F310A495753C26D5252 /* BackgroundColorAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C93EF7CBCD9FCAE95EB9CF4FC615983 /* BackgroundColorAnimation.swift */; settings = {COMPILER_FLAGS = "-fmodules"; }; };
+		31CE07BDE33BC9EEE8DD4BF996E7C557 /* Pods-sushnaya-ios-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 8EA87511B547B0470184AA0F97070E7D /* Pods-sushnaya-ios-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		43C3F2E76FB5E15CA61590C67432F795 /* AlphaAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437C85948814E17F0D5F535DF725827D /* AlphaAnimation.swift */; settings = {COMPILER_FLAGS = "-fmodules"; }; };
+		4B0287A50272A11929898F9A63236439 /* LabelTextColorAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9164EB3560986DCABB06708A3619748 /* LabelTextColorAnimation.swift */; settings = {COMPILER_FLAGS = "-fmodules"; }; };
+		651FA910A3299390BEC40DD8F5A50746 /* ScrollViewPageConstraintAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0ADD3E9408E1C782C31E57127A4620 /* ScrollViewPageConstraintAnimation.swift */; settings = {COMPILER_FLAGS = "-fmodules"; }; };
+		669A08D618CA61BCCED231E37D55DEAD /* LayerFillColorAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1590167B0CDF02945EC0F68CBE8C221 /* LayerFillColorAnimation.swift */; settings = {COMPILER_FLAGS = "-fmodules"; }; };
+		69CEDAE57C414B4A6B5CD85FCB80D4D7 /* ConstraintMultiplierAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 670E63541A777BF5CAD55974A88EF380 /* ConstraintMultiplierAnimation.swift */; settings = {COMPILER_FLAGS = "-fmodules"; }; };
+		6BB1AC80AD56303886A4C01CFDBFDC92 /* ScaleAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A66440B1DAB0E62FA797F268291DD60D /* ScaleAnimation.swift */; settings = {COMPILER_FLAGS = "-fmodules"; }; };
+		7489C2FBEFBBE40E56293C1C06F2171D /* Animatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8BC1127EFC676E7E0415F48E6F26029 /* Animatable.swift */; settings = {COMPILER_FLAGS = "-fmodules"; }; };
+		75FCDFA806DE0EC9A86CAAAB4D1EDC64 /* LayerStrokeStartAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73B06113F296D65A525BB39220DEA1E0 /* LayerStrokeStartAnimation.swift */; settings = {COMPILER_FLAGS = "-fmodules"; }; };
+		76CBE5ADA383539F5BCD679E24AC58BC /* RotationAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F365EDD511549869DC48A40001D9A6C /* RotationAnimation.swift */; settings = {COMPILER_FLAGS = "-fmodules"; }; };
+		8A875E95E22ADD76E612681565803686 /* HideAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D490D8724838EBFA9D6AB8CA098B14 /* HideAnimation.swift */; settings = {COMPILER_FLAGS = "-fmodules"; }; };
+		98328BAA46A1AC06EAAC098B573666FD /* ConstraintConstantAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34ADE3BAB17EF3771CA7746189C0900B /* ConstraintConstantAnimation.swift */; settings = {COMPILER_FLAGS = "-fmodules"; }; };
+		A604FFA4B0C71CE940FDA7B10181F29D /* Filmstrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC516B7BAC421F3724CD84BD8840EF0 /* Filmstrip.swift */; settings = {COMPILER_FLAGS = "-fmodules"; }; };
+		AB53F5C5CE1804F8116ACBB5965585DB /* UIView+Transform.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB763D78C897C76888E1B8F0E453465E /* UIView+Transform.swift */; settings = {COMPILER_FLAGS = "-fmodules"; }; };
+		B0011185AB3FB03BE8DE26839D6907B6 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EC994CDC2D681BA26389F78A7E4B325 /* UIKit.framework */; };
+		B2E3D042544819ACC567A5B5ED361D83 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 616BEB51ECCAD129BDBCB7A956B56CC6 /* Foundation.framework */; };
+		BA9696D562E1E0EB7F648115B7E1197E /* PathPositionAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3F956E83235D43D36E3FF51F945F632 /* PathPositionAnimation.swift */; settings = {COMPILER_FLAGS = "-fmodules"; }; };
+		C5F0A11B0A95786D0FC6D47E77A4B675 /* Animator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14F46765C364D7CA3F74973C8A022C68 /* Animator.swift */; settings = {COMPILER_FLAGS = "-fmodules"; }; };
+		CAF6B1FA6E84E28BA9EE124021B0EE4D /* RazzleDazzle-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = A029034522E0253FA2534C57DC3FF29D /* RazzleDazzle-dummy.m */; };
+		CB9696F7FD94DF0009A8109A0AD87D03 /* CornerRadiusAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29EAF16AFC4779332901544C5CD3B099 /* CornerRadiusAnimation.swift */; settings = {COMPILER_FLAGS = "-fmodules"; }; };
+		CC4565D95C9A7C7F2011263E704FE217 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 616BEB51ECCAD129BDBCB7A956B56CC6 /* Foundation.framework */; };
+		CEB46BE6FABA0250F1F4844E15A00AA5 /* CubicBezier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90A0563E2BF3ED8E85909F6B1C0DBAC /* CubicBezier.swift */; settings = {COMPILER_FLAGS = "-fmodules"; }; };
+		D31AF6299C0A6560C5035ECBC6773A77 /* AnimatedPagingScrollViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C3545B9F370B62F5A57EE49D28DC2AE /* AnimatedPagingScrollViewController.swift */; settings = {COMPILER_FLAGS = "-fmodules"; }; };
+		D75E8E754677CE47361B4611B2D4A5A0 /* Pods-sushnaya-ios-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = DA1D3A4464C4D5884BCF7FE2C9027574 /* Pods-sushnaya-ios-dummy.m */; };
+		E1DFFC5E8F1E25CBCB70E33D6BE51C2E /* Interpolatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C52B0B1D474BD55C03D8C5094C17F8 /* Interpolatable.swift */; settings = {COMPILER_FLAGS = "-fmodules"; }; };
+		E92A64D59BBE08404373584116B2BA2D /* LayerStrokeColorAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4130581DDAAE23A2242DAF811ADF21A0 /* LayerStrokeColorAnimation.swift */; settings = {COMPILER_FLAGS = "-fmodules"; }; };
+		ED0129EA498FDC839424812AF26FF507 /* EasingFunction.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB047040C887B62BA3FA4909BEDEEED6 /* EasingFunction.swift */; settings = {COMPILER_FLAGS = "-fmodules"; }; };
+		FA0056659E52A628989EB09B62740B4C /* RazzleDazzle.h in Headers */ = {isa = PBXBuildFile; fileRef = 378A3F40EFF4A8E8F12E1E728A7B6045 /* RazzleDazzle.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		AC76C1D1A97EC7A88F1E6066164240E6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D41D8CD98F00B204E9800998ECF8427E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0FE659A4ADD76129386E512D5124567C;
+			remoteInfo = RazzleDazzle;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		0BB0266A7E6BAD28B2AE7706C48D44F4 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0E5BB5682487CE89B6EAAC205DDFAF25 /* LayerStrokeEndAnimation.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LayerStrokeEndAnimation.swift; path = Source/LayerStrokeEndAnimation.swift; sourceTree = "<group>"; };
 		0EEDDB221FEBD41EE7B41152F03B2206 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		4EB7DDB7A18A7908E3AC657970850C59 /* Pods_sushnaya_ios.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_sushnaya_ios.framework; path = "Pods-sushnaya-ios.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		14F46765C364D7CA3F74973C8A022C68 /* Animator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Animator.swift; path = Source/Animator.swift; sourceTree = "<group>"; };
+		29EAF16AFC4779332901544C5CD3B099 /* CornerRadiusAnimation.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CornerRadiusAnimation.swift; path = Source/CornerRadiusAnimation.swift; sourceTree = "<group>"; };
+		2C3545B9F370B62F5A57EE49D28DC2AE /* AnimatedPagingScrollViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AnimatedPagingScrollViewController.swift; path = Source/AnimatedPagingScrollViewController.swift; sourceTree = "<group>"; };
+		2DB67DB2070589263560AC489F3B3874 /* RazzleDazzle.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; path = RazzleDazzle.modulemap; sourceTree = "<group>"; };
+		34ADE3BAB17EF3771CA7746189C0900B /* ConstraintConstantAnimation.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConstraintConstantAnimation.swift; path = Source/ConstraintConstantAnimation.swift; sourceTree = "<group>"; };
+		378A3F40EFF4A8E8F12E1E728A7B6045 /* RazzleDazzle.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RazzleDazzle.h; path = Source/RazzleDazzle.h; sourceTree = "<group>"; };
+		4130581DDAAE23A2242DAF811ADF21A0 /* LayerStrokeColorAnimation.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LayerStrokeColorAnimation.swift; path = Source/LayerStrokeColorAnimation.swift; sourceTree = "<group>"; };
+		437C85948814E17F0D5F535DF725827D /* AlphaAnimation.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AlphaAnimation.swift; path = Source/AlphaAnimation.swift; sourceTree = "<group>"; };
+		43AAE29C73411A7EB0718C3C9365A420 /* RazzleDazzle-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "RazzleDazzle-prefix.pch"; sourceTree = "<group>"; };
 		58679903FDBF1F2296F27A8621226506 /* Pods-sushnaya-ios.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-sushnaya-ios.release.xcconfig"; sourceTree = "<group>"; };
+		5E6FF6A5A0821FA36C213DCA07906FB6 /* Animation.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Animation.swift; path = Source/Animation.swift; sourceTree = "<group>"; };
+		616BEB51ECCAD129BDBCB7A956B56CC6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		670E63541A777BF5CAD55974A88EF380 /* ConstraintMultiplierAnimation.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConstraintMultiplierAnimation.swift; path = Source/ConstraintMultiplierAnimation.swift; sourceTree = "<group>"; };
+		6C93EF7CBCD9FCAE95EB9CF4FC615983 /* BackgroundColorAnimation.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BackgroundColorAnimation.swift; path = Source/BackgroundColorAnimation.swift; sourceTree = "<group>"; };
+		6F365EDD511549869DC48A40001D9A6C /* RotationAnimation.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RotationAnimation.swift; path = Source/RotationAnimation.swift; sourceTree = "<group>"; };
+		73B06113F296D65A525BB39220DEA1E0 /* LayerStrokeStartAnimation.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LayerStrokeStartAnimation.swift; path = Source/LayerStrokeStartAnimation.swift; sourceTree = "<group>"; };
+		744D963B727BC5D0A1552C7176E3CE19 /* Pods_sushnaya_ios.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_sushnaya_ios.framework; path = "Pods-sushnaya-ios.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7EC994CDC2D681BA26389F78A7E4B325 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.0.sdk/System/Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
 		80C711E480277D542555377DBF81A25A /* Pods-sushnaya-ios-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-sushnaya-ios-frameworks.sh"; sourceTree = "<group>"; };
+		87E960114260888ADA964E1C0D57F730 /* TranslationAnimation.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TranslationAnimation.swift; path = Source/TranslationAnimation.swift; sourceTree = "<group>"; };
 		8BEF7F0D084E17D774713348DEE70BFC /* Pods-sushnaya-ios-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-sushnaya-ios-acknowledgements.plist"; sourceTree = "<group>"; };
 		8EA87511B547B0470184AA0F97070E7D /* Pods-sushnaya-ios-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-sushnaya-ios-umbrella.h"; sourceTree = "<group>"; };
 		93A4A3777CF96A4AAC1D13BA6DCCEA73 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		967A1B88CB8B8E2335A42A35DD38E96A /* RazzleDazzle.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = RazzleDazzle.xcconfig; sourceTree = "<group>"; };
 		9BBF05B179B4EF52C6FC7969C71B4162 /* Pods-sushnaya-ios.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; path = "Pods-sushnaya-ios.modulemap"; sourceTree = "<group>"; };
+		A029034522E0253FA2534C57DC3FF29D /* RazzleDazzle-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "RazzleDazzle-dummy.m"; sourceTree = "<group>"; };
+		A6444894BBD9E802D0C2D2EA95B8B707 /* RazzleDazzle.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = RazzleDazzle.framework; path = RazzleDazzle.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A66440B1DAB0E62FA797F268291DD60D /* ScaleAnimation.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ScaleAnimation.swift; path = Source/ScaleAnimation.swift; sourceTree = "<group>"; };
+		AB047040C887B62BA3FA4909BEDEEED6 /* EasingFunction.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = EasingFunction.swift; path = Source/EasingFunction.swift; sourceTree = "<group>"; };
+		AB763D78C897C76888E1B8F0E453465E /* UIView+Transform.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "UIView+Transform.swift"; path = "Source/UIView+Transform.swift"; sourceTree = "<group>"; };
+		B8BC1127EFC676E7E0415F48E6F26029 /* Animatable.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Animatable.swift; path = Source/Animatable.swift; sourceTree = "<group>"; };
+		B90A0563E2BF3ED8E85909F6B1C0DBAC /* CubicBezier.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CubicBezier.swift; path = Source/CubicBezier.swift; sourceTree = "<group>"; };
+		C185574CC645B209ACB1667BEF808758 /* RazzleDazzle-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "RazzleDazzle-umbrella.h"; sourceTree = "<group>"; };
+		C2C52B0B1D474BD55C03D8C5094C17F8 /* Interpolatable.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Interpolatable.swift; path = Source/Interpolatable.swift; sourceTree = "<group>"; };
+		C3F956E83235D43D36E3FF51F945F632 /* PathPositionAnimation.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PathPositionAnimation.swift; path = Source/PathPositionAnimation.swift; sourceTree = "<group>"; };
+		C4D490D8724838EBFA9D6AB8CA098B14 /* HideAnimation.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HideAnimation.swift; path = Source/HideAnimation.swift; sourceTree = "<group>"; };
 		C71293250887676EBBA2A4B43BACF25E /* Pods-sushnaya-ios-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-sushnaya-ios-acknowledgements.markdown"; sourceTree = "<group>"; };
-		CBB3DE36805AF21409EC968A9691732F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		C9164EB3560986DCABB06708A3619748 /* LabelTextColorAnimation.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LabelTextColorAnimation.swift; path = Source/LabelTextColorAnimation.swift; sourceTree = "<group>"; };
+		CC0ADD3E9408E1C782C31E57127A4620 /* ScrollViewPageConstraintAnimation.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ScrollViewPageConstraintAnimation.swift; path = Source/ScrollViewPageConstraintAnimation.swift; sourceTree = "<group>"; };
 		D9C9A5658CA2E71409FC2ED188716CF1 /* Pods-sushnaya-ios-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-sushnaya-ios-resources.sh"; sourceTree = "<group>"; };
 		DA1D3A4464C4D5884BCF7FE2C9027574 /* Pods-sushnaya-ios-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-sushnaya-ios-dummy.m"; sourceTree = "<group>"; };
+		EFC516B7BAC421F3724CD84BD8840EF0 /* Filmstrip.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Filmstrip.swift; path = Source/Filmstrip.swift; sourceTree = "<group>"; };
+		F1590167B0CDF02945EC0F68CBE8C221 /* LayerFillColorAnimation.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LayerFillColorAnimation.swift; path = Source/LayerFillColorAnimation.swift; sourceTree = "<group>"; };
 		FFFEB2ADB284CD92C1443B2108D0E613 /* Pods-sushnaya-ios.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-sushnaya-ios.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		36E1EDA124AC34EB0AD6C150011A4F60 /* Frameworks */ = {
+		3FFA41CDD3C4D8A2657C0F468DA33A5C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				17F78EE9CA5A57B5CEBF6CBBC3272F57 /* Foundation.framework in Frameworks */,
+				B2E3D042544819ACC567A5B5ED361D83 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8C401408A14E7A090F9F19691731A106 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CC4565D95C9A7C7F2011263E704FE217 /* Foundation.framework in Frameworks */,
+				B0011185AB3FB03BE8DE26839D6907B6 /* UIKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		251C99A0CE3706E18AD8705F24B75C93 /* Products */ = {
+		3DE93085C7A7195F2FC7B5A037B09EA4 /* RazzleDazzle */ = {
 			isa = PBXGroup;
 			children = (
-				4EB7DDB7A18A7908E3AC657970850C59 /* Pods_sushnaya_ios.framework */,
+				437C85948814E17F0D5F535DF725827D /* AlphaAnimation.swift */,
+				B8BC1127EFC676E7E0415F48E6F26029 /* Animatable.swift */,
+				2C3545B9F370B62F5A57EE49D28DC2AE /* AnimatedPagingScrollViewController.swift */,
+				5E6FF6A5A0821FA36C213DCA07906FB6 /* Animation.swift */,
+				14F46765C364D7CA3F74973C8A022C68 /* Animator.swift */,
+				6C93EF7CBCD9FCAE95EB9CF4FC615983 /* BackgroundColorAnimation.swift */,
+				34ADE3BAB17EF3771CA7746189C0900B /* ConstraintConstantAnimation.swift */,
+				670E63541A777BF5CAD55974A88EF380 /* ConstraintMultiplierAnimation.swift */,
+				29EAF16AFC4779332901544C5CD3B099 /* CornerRadiusAnimation.swift */,
+				B90A0563E2BF3ED8E85909F6B1C0DBAC /* CubicBezier.swift */,
+				AB047040C887B62BA3FA4909BEDEEED6 /* EasingFunction.swift */,
+				EFC516B7BAC421F3724CD84BD8840EF0 /* Filmstrip.swift */,
+				C4D490D8724838EBFA9D6AB8CA098B14 /* HideAnimation.swift */,
+				C2C52B0B1D474BD55C03D8C5094C17F8 /* Interpolatable.swift */,
+				C9164EB3560986DCABB06708A3619748 /* LabelTextColorAnimation.swift */,
+				F1590167B0CDF02945EC0F68CBE8C221 /* LayerFillColorAnimation.swift */,
+				4130581DDAAE23A2242DAF811ADF21A0 /* LayerStrokeColorAnimation.swift */,
+				0E5BB5682487CE89B6EAAC205DDFAF25 /* LayerStrokeEndAnimation.swift */,
+				73B06113F296D65A525BB39220DEA1E0 /* LayerStrokeStartAnimation.swift */,
+				C3F956E83235D43D36E3FF51F945F632 /* PathPositionAnimation.swift */,
+				378A3F40EFF4A8E8F12E1E728A7B6045 /* RazzleDazzle.h */,
+				6F365EDD511549869DC48A40001D9A6C /* RotationAnimation.swift */,
+				A66440B1DAB0E62FA797F268291DD60D /* ScaleAnimation.swift */,
+				CC0ADD3E9408E1C782C31E57127A4620 /* ScrollViewPageConstraintAnimation.swift */,
+				87E960114260888ADA964E1C0D57F730 /* TranslationAnimation.swift */,
+				AB763D78C897C76888E1B8F0E453465E /* UIView+Transform.swift */,
+				9CAC7EF160FCB234AD0846E70EF26C0F /* Support Files */,
 			);
-			name = Products;
+			name = RazzleDazzle;
+			path = RazzleDazzle;
 			sourceTree = "<group>";
 		};
-		7531C8F8DE19F1AA3C8A7AC97A91DC29 /* iOS */ = {
+		41A014BF58D3A2A5B3F655A0C80A3A3C /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				CBB3DE36805AF21409EC968A9691732F /* Foundation.framework */,
+				3DE93085C7A7195F2FC7B5A037B09EA4 /* RazzleDazzle */,
 			);
-			name = iOS;
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		433CD3331B6C3787F473C941B61FC68F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E6EE98446B568159EE277B68FD442AF0 /* iOS */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		7DB346D0F39D3F0E887471402A8071AB = {
 			isa = PBXGroup;
 			children = (
 				93A4A3777CF96A4AAC1D13BA6DCCEA73 /* Podfile */,
-				BC3CA7F9E30CC8F7E2DD044DD34432FC /* Frameworks */,
-				251C99A0CE3706E18AD8705F24B75C93 /* Products */,
+				433CD3331B6C3787F473C941B61FC68F /* Frameworks */,
+				41A014BF58D3A2A5B3F655A0C80A3A3C /* Pods */,
+				C75A108C2E13B7BDDB7CD6A116CA9132 /* Products */,
 				D5918BC0797EC19DEFE52B1B171BD0F4 /* Targets Support Files */,
 			);
 			sourceTree = "<group>";
@@ -84,12 +203,27 @@
 			path = "Target Support Files/Pods-sushnaya-ios";
 			sourceTree = "<group>";
 		};
-		BC3CA7F9E30CC8F7E2DD044DD34432FC /* Frameworks */ = {
+		9CAC7EF160FCB234AD0846E70EF26C0F /* Support Files */ = {
 			isa = PBXGroup;
 			children = (
-				7531C8F8DE19F1AA3C8A7AC97A91DC29 /* iOS */,
+				0BB0266A7E6BAD28B2AE7706C48D44F4 /* Info.plist */,
+				2DB67DB2070589263560AC489F3B3874 /* RazzleDazzle.modulemap */,
+				967A1B88CB8B8E2335A42A35DD38E96A /* RazzleDazzle.xcconfig */,
+				A029034522E0253FA2534C57DC3FF29D /* RazzleDazzle-dummy.m */,
+				43AAE29C73411A7EB0718C3C9365A420 /* RazzleDazzle-prefix.pch */,
+				C185574CC645B209ACB1667BEF808758 /* RazzleDazzle-umbrella.h */,
 			);
-			name = Frameworks;
+			name = "Support Files";
+			path = "../Target Support Files/RazzleDazzle";
+			sourceTree = "<group>";
+		};
+		C75A108C2E13B7BDDB7CD6A116CA9132 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				744D963B727BC5D0A1552C7176E3CE19 /* Pods_sushnaya_ios.framework */,
+				A6444894BBD9E802D0C2D2EA95B8B707 /* RazzleDazzle.framework */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		D5918BC0797EC19DEFE52B1B171BD0F4 /* Targets Support Files */ = {
@@ -100,35 +234,71 @@
 			name = "Targets Support Files";
 			sourceTree = "<group>";
 		};
+		E6EE98446B568159EE277B68FD442AF0 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				616BEB51ECCAD129BDBCB7A956B56CC6 /* Foundation.framework */,
+				7EC994CDC2D681BA26389F78A7E4B325 /* UIKit.framework */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		FA14E85730A6678A5895C1BB45D0A936 /* Headers */ = {
+		3072C9C1F11A0361901EA254E1450932 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BBE534F02DA40AE00CC5EFB613A237F2 /* Pods-sushnaya-ios-umbrella.h in Headers */,
+				31CE07BDE33BC9EEE8DD4BF996E7C557 /* Pods-sushnaya-ios-umbrella.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8BC0C92E18A867115DD53C5F1841E0F8 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				275D4DF416EDC8CF530A0DF6980EF43C /* RazzleDazzle-umbrella.h in Headers */,
+				FA0056659E52A628989EB09B62740B4C /* RazzleDazzle.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		79BF036D297F179EEC4F6F73F87BC679 /* Pods-sushnaya-ios */ = {
+		0FE659A4ADD76129386E512D5124567C /* RazzleDazzle */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 612193EF407F5590E8D415542CD7F711 /* Build configuration list for PBXNativeTarget "Pods-sushnaya-ios" */;
+			buildConfigurationList = 5BF534FC6BB38503A7A635A4C821DEAC /* Build configuration list for PBXNativeTarget "RazzleDazzle" */;
 			buildPhases = (
-				41B3AE4FD974558FB05E488BA6C166BD /* Sources */,
-				36E1EDA124AC34EB0AD6C150011A4F60 /* Frameworks */,
-				FA14E85730A6678A5895C1BB45D0A936 /* Headers */,
+				79C3BBD8087ABA3AC251F1D375AE940C /* Sources */,
+				8C401408A14E7A090F9F19691731A106 /* Frameworks */,
+				8BC0C92E18A867115DD53C5F1841E0F8 /* Headers */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
+			name = RazzleDazzle;
+			productName = RazzleDazzle;
+			productReference = A6444894BBD9E802D0C2D2EA95B8B707 /* RazzleDazzle.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		576AB400EEA221FFEB5050C91D0C0473 /* Pods-sushnaya-ios */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E0ECC53371FDE4D7398424CD9F9661CB /* Build configuration list for PBXNativeTarget "Pods-sushnaya-ios" */;
+			buildPhases = (
+				225DE0C075D8FFA9B8B8280DDB9CCB7C /* Sources */,
+				3FFA41CDD3C4D8A2657C0F468DA33A5C /* Frameworks */,
+				3072C9C1F11A0361901EA254E1450932 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				887192E6D4F3EA3F0EA0204C41BEE0E8 /* PBXTargetDependency */,
+			);
 			name = "Pods-sushnaya-ios";
 			productName = "Pods-sushnaya-ios";
-			productReference = 4EB7DDB7A18A7908E3AC657970850C59 /* Pods_sushnaya_ios.framework */;
+			productReference = 744D963B727BC5D0A1552C7176E3CE19 /* Pods_sushnaya_ios.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
@@ -148,28 +318,71 @@
 				en,
 			);
 			mainGroup = 7DB346D0F39D3F0E887471402A8071AB;
-			productRefGroup = 251C99A0CE3706E18AD8705F24B75C93 /* Products */;
+			productRefGroup = C75A108C2E13B7BDDB7CD6A116CA9132 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				79BF036D297F179EEC4F6F73F87BC679 /* Pods-sushnaya-ios */,
+				576AB400EEA221FFEB5050C91D0C0473 /* Pods-sushnaya-ios */,
+				0FE659A4ADD76129386E512D5124567C /* RazzleDazzle */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
-		41B3AE4FD974558FB05E488BA6C166BD /* Sources */ = {
+		225DE0C075D8FFA9B8B8280DDB9CCB7C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C7B30C4DA3D221C75BA7A01425D9C0A4 /* Pods-sushnaya-ios-dummy.m in Sources */,
+				D75E8E754677CE47361B4611B2D4A5A0 /* Pods-sushnaya-ios-dummy.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		79C3BBD8087ABA3AC251F1D375AE940C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				43C3F2E76FB5E15CA61590C67432F795 /* AlphaAnimation.swift in Sources */,
+				7489C2FBEFBBE40E56293C1C06F2171D /* Animatable.swift in Sources */,
+				D31AF6299C0A6560C5035ECBC6773A77 /* AnimatedPagingScrollViewController.swift in Sources */,
+				1510D362F1B85A745EAD08B47090E41B /* Animation.swift in Sources */,
+				C5F0A11B0A95786D0FC6D47E77A4B675 /* Animator.swift in Sources */,
+				3002A4CD3FC25F310A495753C26D5252 /* BackgroundColorAnimation.swift in Sources */,
+				98328BAA46A1AC06EAAC098B573666FD /* ConstraintConstantAnimation.swift in Sources */,
+				69CEDAE57C414B4A6B5CD85FCB80D4D7 /* ConstraintMultiplierAnimation.swift in Sources */,
+				CB9696F7FD94DF0009A8109A0AD87D03 /* CornerRadiusAnimation.swift in Sources */,
+				CEB46BE6FABA0250F1F4844E15A00AA5 /* CubicBezier.swift in Sources */,
+				ED0129EA498FDC839424812AF26FF507 /* EasingFunction.swift in Sources */,
+				A604FFA4B0C71CE940FDA7B10181F29D /* Filmstrip.swift in Sources */,
+				8A875E95E22ADD76E612681565803686 /* HideAnimation.swift in Sources */,
+				E1DFFC5E8F1E25CBCB70E33D6BE51C2E /* Interpolatable.swift in Sources */,
+				4B0287A50272A11929898F9A63236439 /* LabelTextColorAnimation.swift in Sources */,
+				669A08D618CA61BCCED231E37D55DEAD /* LayerFillColorAnimation.swift in Sources */,
+				E92A64D59BBE08404373584116B2BA2D /* LayerStrokeColorAnimation.swift in Sources */,
+				19823C5C4C2785DDC4023B099782F8B9 /* LayerStrokeEndAnimation.swift in Sources */,
+				75FCDFA806DE0EC9A86CAAAB4D1EDC64 /* LayerStrokeStartAnimation.swift in Sources */,
+				BA9696D562E1E0EB7F648115B7E1197E /* PathPositionAnimation.swift in Sources */,
+				CAF6B1FA6E84E28BA9EE124021B0EE4D /* RazzleDazzle-dummy.m in Sources */,
+				76CBE5ADA383539F5BCD679E24AC58BC /* RotationAnimation.swift in Sources */,
+				6BB1AC80AD56303886A4C01CFDBFDC92 /* ScaleAnimation.swift in Sources */,
+				651FA910A3299390BEC40DD8F5A50746 /* ScrollViewPageConstraintAnimation.swift in Sources */,
+				19354D1E569090FAE0EAE7177A346EB5 /* TranslationAnimation.swift in Sources */,
+				AB53F5C5CE1804F8116ACBB5965585DB /* UIView+Transform.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		887192E6D4F3EA3F0EA0204C41BEE0E8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = RazzleDazzle;
+			target = 0FE659A4ADD76129386E512D5124567C /* RazzleDazzle */;
+			targetProxy = AC76C1D1A97EC7A88F1E6066164240E6 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
-		5590282DBD284ACCDE02E2E93243BFE4 /* Debug */ = {
+		1DBDF9897634CA2DCB117B6D63D0FEA0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = FFFEB2ADB284CD92C1443B2108D0E613 /* Pods-sushnaya-ios.debug.xcconfig */;
 			buildSettings = {
@@ -198,13 +411,14 @@
 				PRODUCT_NAME = Pods_sushnaya_ios;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
 			name = Debug;
 		};
-		576625355A517DD102C100B2914348D4 /* Release */ = {
+		2B6FA6B55A018C12B37D34656E940D32 /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 58679903FDBF1F2296F27A8621226506 /* Pods-sushnaya-ios.release.xcconfig */;
 			buildSettings = {
@@ -279,6 +493,39 @@
 			};
 			name = Release;
 		};
+		7C2F018B7AE6D796FF90CFC9CCFC64CF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 967A1B88CB8B8E2335A42A35DD38E96A /* RazzleDazzle.xcconfig */;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREFIX_HEADER = "Target Support Files/RazzleDazzle/RazzleDazzle-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/RazzleDazzle/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MODULEMAP_FILE = "Target Support Files/RazzleDazzle/RazzleDazzle.modulemap";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_NAME = RazzleDazzle;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
 		E4F26E6EB105713A6A7E7E2E283AC2DF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -323,6 +570,38 @@
 			};
 			name = Debug;
 		};
+		EE24EF7164CDA8F0CFE0A6BA2F77CCE2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 967A1B88CB8B8E2335A42A35DD38E96A /* RazzleDazzle.xcconfig */;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREFIX_HEADER = "Target Support Files/RazzleDazzle/RazzleDazzle-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/RazzleDazzle/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MODULEMAP_FILE = "Target Support Files/RazzleDazzle/RazzleDazzle.modulemap";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = RazzleDazzle;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -335,11 +614,20 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		612193EF407F5590E8D415542CD7F711 /* Build configuration list for PBXNativeTarget "Pods-sushnaya-ios" */ = {
+		5BF534FC6BB38503A7A635A4C821DEAC /* Build configuration list for PBXNativeTarget "RazzleDazzle" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				5590282DBD284ACCDE02E2E93243BFE4 /* Debug */,
-				576625355A517DD102C100B2914348D4 /* Release */,
+				7C2F018B7AE6D796FF90CFC9CCFC64CF /* Debug */,
+				EE24EF7164CDA8F0CFE0A6BA2F77CCE2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E0ECC53371FDE4D7398424CD9F9661CB /* Build configuration list for PBXNativeTarget "Pods-sushnaya-ios" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DBDF9897634CA2DCB117B6D63D0FEA0 /* Debug */,
+				2B6FA6B55A018C12B37D34656E940D32 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
