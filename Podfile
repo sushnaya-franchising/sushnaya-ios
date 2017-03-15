@@ -6,5 +6,6 @@ target 'sushnaya-ios' do
   use_frameworks!
 
   # Pods for sushnaya-ios
+  pod "RazzleDazzle"
 
 end
