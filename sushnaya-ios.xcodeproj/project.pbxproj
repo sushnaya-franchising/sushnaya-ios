@@ -14,7 +14,7 @@
 		2E94CC6A1E7963E800C51D58 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2E94CC681E7963E800C51D58 /* LaunchScreen.storyboard */; };
 		2E94CC721E79CBA700C51D58 /* UserSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E94CC711E79CBA700C51D58 /* UserSession.swift */; };
 		2E94CC761E79D15D00C51D58 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E94CC751E79D15D00C51D58 /* User.swift */; };
-		2E94CC781E79DB7D00C51D58 /* IntroViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E94CC771E79DB7D00C51D58 /* IntroViewController.swift */; };
+		2E94CC781E79DB7D00C51D58 /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E94CC771E79DB7D00C51D58 /* SignInViewController.swift */; };
 		95D281D1D25122E284D8AC09 /* Pods_sushnaya_ios.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 489991CA68AC90F346EF30BE /* Pods_sushnaya_ios.framework */; };
 /* End PBXBuildFile section */
 
@@ -29,7 +29,7 @@
 		2E94CC711E79CBA700C51D58 /* UserSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserSession.swift; sourceTree = "<group>"; };
 		2E94CC741E79D0E100C51D58 /* sushnaya-ios.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = "sushnaya-ios.playground"; sourceTree = "<group>"; };
 		2E94CC751E79D15D00C51D58 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
-		2E94CC771E79DB7D00C51D58 /* IntroViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntroViewController.swift; sourceTree = "<group>"; };
+		2E94CC771E79DB7D00C51D58 /* SignInViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
 		489991CA68AC90F346EF30BE /* Pods_sushnaya_ios.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_sushnaya_ios.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		874AE31D3C8DF2CCC6C39B8E /* Pods-sushnaya-ios.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sushnaya-ios.debug.xcconfig"; path = "Pods/Target Support Files/Pods-sushnaya-ios/Pods-sushnaya-ios.debug.xcconfig"; sourceTree = "<group>"; };
 		9654AE38439284722DBBACD9 /* Pods-sushnaya-ios.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sushnaya-ios.release.xcconfig"; path = "Pods/Target Support Files/Pods-sushnaya-ios/Pods-sushnaya-ios.release.xcconfig"; sourceTree = "<group>"; };
@@ -77,7 +77,7 @@
 				2E94CC6B1E7963E800C51D58 /* Info.plist */,
 				2E94CC711E79CBA700C51D58 /* UserSession.swift */,
 				2E94CC751E79D15D00C51D58 /* User.swift */,
-				2E94CC771E79DB7D00C51D58 /* IntroViewController.swift */,
+				2E94CC771E79DB7D00C51D58 /* SignInViewController.swift */,
 			);
 			path = "sushnaya-ios";
 			sourceTree = "<group>";
@@ -112,6 +112,7 @@
 				2E94CC5A1E7963E800C51D58 /* Resources */,
 				FA92968D66B2F323F412D7A1 /* [CP] Embed Pods Frameworks */,
 				9C65F56C7B4792BC8DE2DC82 /* [CP] Copy Pods Resources */,
+				2E43A5591E7A533500948413 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -171,6 +172,19 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		2E43A5591E7A533500948413 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Fabric/run\" d928ddcf780310e633532abb6b293291172339d8 40a74e0849687b842c32dbbfa84791257dad72dfb2f9ff4bfb0bc07b3a24c628";
+		};
 		9C65F56C7B4792BC8DE2DC82 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -223,7 +237,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2E94CC781E79DB7D00C51D58 /* IntroViewController.swift in Sources */,
+				2E94CC781E79DB7D00C51D58 /* SignInViewController.swift in Sources */,
 				2E94CC761E79D15D00C51D58 /* User.swift in Sources */,
 				2E94CC621E7963E800C51D58 /* MainViewController.swift in Sources */,
 				2E94CC601E7963E800C51D58 /* AppDelegate.swift in Sources */,
@@ -276,7 +290,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -352,7 +366,7 @@
 				DEVELOPMENT_TEAM = 634QEDY38N;
 				INFOPLIST_FILE = "sushnaya-ios/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.igorkurilenko.sushnaya-ios";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.sushnaya.sushnaya-ios";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
@@ -366,7 +380,7 @@
 				DEVELOPMENT_TEAM = 634QEDY38N;
 				INFOPLIST_FILE = "sushnaya-ios/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.igorkurilenko.sushnaya-ios";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.sushnaya.sushnaya-ios";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
