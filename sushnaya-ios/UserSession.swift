@@ -7,9 +7,14 @@
 //
 
 import Foundation
+import DigitsKit
 
 class UserSession {
-    var isLoggedIn = false
+    var isLoggedIn:Bool {
+        get {
+            return Digits.sharedInstance().session()?.userID != nil
+        }
+    }
     
     private init(){}
     
