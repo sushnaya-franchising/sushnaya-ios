@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2E7BCA621E7AAB9000B6FEE6 /* UiColorExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E7BCA611E7AAB9000B6FEE6 /* UiColorExt.swift */; };
 		2E94CC601E7963E800C51D58 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E94CC5F1E7963E800C51D58 /* AppDelegate.swift */; };
 		2E94CC621E7963E800C51D58 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E94CC611E7963E800C51D58 /* MainViewController.swift */; };
 		2E94CC651E7963E800C51D58 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2E94CC631E7963E800C51D58 /* Main.storyboard */; };
@@ -19,6 +20,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2E7BCA5E1E7AA93600B6FEE6 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Main.strings; sourceTree = "<group>"; };
+		2E7BCA5F1E7AA93600B6FEE6 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		2E7BCA611E7AAB9000B6FEE6 /* UiColorExt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UiColorExt.swift; sourceTree = "<group>"; };
 		2E94CC5C1E7963E800C51D58 /* sushnaya-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "sushnaya-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2E94CC5F1E7963E800C51D58 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2E94CC611E7963E800C51D58 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
@@ -47,6 +51,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2E7BCA601E7AAB7700B6FEE6 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				2E7BCA611E7AAB9000B6FEE6 /* UiColorExt.swift */,
+			);
+			name = Extensions;
+			sourceTree = "<group>";
+		};
 		2E94CC531E7963E700C51D58 = {
 			isa = PBXGroup;
 			children = (
@@ -78,6 +90,7 @@
 				2E94CC711E79CBA700C51D58 /* UserSession.swift */,
 				2E94CC751E79D15D00C51D58 /* User.swift */,
 				2E94CC771E79DB7D00C51D58 /* SignInViewController.swift */,
+				2E7BCA601E7AAB7700B6FEE6 /* Extensions */,
 			);
 			path = "sushnaya-ios";
 			sourceTree = "<group>";
@@ -238,6 +251,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2E94CC781E79DB7D00C51D58 /* SignInViewController.swift in Sources */,
+				2E7BCA621E7AAB9000B6FEE6 /* UiColorExt.swift in Sources */,
 				2E94CC761E79D15D00C51D58 /* User.swift in Sources */,
 				2E94CC621E7963E800C51D58 /* MainViewController.swift in Sources */,
 				2E94CC601E7963E800C51D58 /* AppDelegate.swift in Sources */,
@@ -252,6 +266,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				2E94CC641E7963E800C51D58 /* Base */,
+				2E7BCA5E1E7AA93600B6FEE6 /* ru */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -260,6 +275,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				2E94CC691E7963E800C51D58 /* Base */,
+				2E7BCA5F1E7AA93600B6FEE6 /* ru */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
@@ -271,6 +287,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -320,6 +337,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";

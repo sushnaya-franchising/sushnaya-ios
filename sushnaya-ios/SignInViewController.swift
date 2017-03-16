@@ -13,17 +13,20 @@ import DigitsKit
 
 
 class SignInViewController: AnimatedPagingScrollViewController {
-    private lazy var digitsAuthenticationConfig: DGTAuthenticationConfiguration = {
+    
+    private let digitsAuthenticationConfig: DGTAuthenticationConfiguration = {
+        let appearance = DGTAppearance()
+        appearance.backgroundColor = UIColor.fromUInt(0xFFFFFF)
+        appearance.accentColor = UIColor.fromUInt(0x007AFF)
+        
         let configuration = DGTAuthenticationConfiguration(accountFields: .defaultOptionMask)
-        configuration?.appearance = self.digitsAppearence
+        configuration?.appearance = appearance
+        configuration?.phoneNumber = "+7"
+        configuration?.title = ""
         
         return configuration!
     }()
-    lazy var digitsAppearence: DGTAppearance = {
-        var appearance = DGTAppearance()
-        
-        return appearance
-    }()
+    
     
     private let firstLabel = UILabel()
     private let secondLabel = UILabel()
@@ -71,8 +74,6 @@ class SignInViewController: AnimatedPagingScrollViewController {
     func signInButtonTapped(_ sender: AnyObject) {
         Digits.sharedInstance().authenticate(with: self, configuration: digitsAuthenticationConfig){ session, error in
             if let userDigitsId = session?.userID {
-                print("Logged in")
-                
                 Crashlytics.sharedInstance().setUserIdentifier(userDigitsId)
                 
                 Answers.logLogin(withMethod: "Digits", success: true,
@@ -83,7 +84,7 @@ class SignInViewController: AnimatedPagingScrollViewController {
                 Answers.logLogin(withMethod: "Digits", success: false,
                                  customAttributes: ["Error": error?.localizedDescription ?? "unknown error"])
             }
-        }        
+        }
     }
     
 }
