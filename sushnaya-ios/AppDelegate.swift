@@ -22,11 +22,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 
         Fabric.with([Digits.self, Crashlytics.self])
         
-//        if !UserSession.sharedInstance().isLoggedIn {
-//            let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        if !UserSession.sharedInstance().isLoggedIn {
+            let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
         
-//            window?.rootViewController = mainStoryboard.instantiateViewController(withIdentifier: "SignIn")
-//        }
+            window?.rootViewController = mainStoryboard.instantiateViewController(withIdentifier: "SignIn")
+        }
         
         return true
     }

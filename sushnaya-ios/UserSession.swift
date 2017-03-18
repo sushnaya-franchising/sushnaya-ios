@@ -10,6 +10,10 @@ import Foundation
 import DigitsKit
 
 class UserSession {
+    var isUserAgreementAccepted:Bool {
+        return false; // todo: persist hash of accepted license agreement
+    }
+    
     var isLoggedIn:Bool {
         get {
             return Digits.sharedInstance().session()?.userID != nil

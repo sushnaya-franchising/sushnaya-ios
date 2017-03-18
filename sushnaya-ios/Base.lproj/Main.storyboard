@@ -39,8 +39,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Витрина" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bUS-6s-IoW">
-                                <rect key="frame" x="153.5" y="323" width="68" height="21"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Начинаем делать витрину" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JRT-W9-6GK">
+                                <rect key="frame" x="82" y="323" width="211" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -48,8 +48,8 @@
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="bUS-6s-IoW" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="CGo-cG-sZ8"/>
-                            <constraint firstItem="bUS-6s-IoW" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="wBV-AY-SIp"/>
+                            <constraint firstItem="JRT-W9-6GK" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="XdP-3P-qhM"/>
+                            <constraint firstItem="JRT-W9-6GK" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="aeU-aK-4Wv"/>
                         </constraints>
                     </view>
                 </viewController>

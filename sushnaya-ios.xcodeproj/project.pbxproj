@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		2E7BCA621E7AAB9000B6FEE6 /* UiColorExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E7BCA611E7AAB9000B6FEE6 /* UiColorExt.swift */; };
+		2E7BCA651E7AC56500B6FEE6 /* UserAgreement.html in Resources */ = {isa = PBXBuildFile; fileRef = 2E7BCA641E7AC56500B6FEE6 /* UserAgreement.html */; };
+		2E7BCA681E7B087500B6FEE6 /* intro_video.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 2E7BCA671E7B087500B6FEE6 /* intro_video.mp4 */; };
+		2E7BCA6A1E7C923B00B6FEE6 /* IntroBackgroundVideo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E7BCA691E7C923B00B6FEE6 /* IntroBackgroundVideo.swift */; };
 		2E94CC601E7963E800C51D58 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E94CC5F1E7963E800C51D58 /* AppDelegate.swift */; };
 		2E94CC621E7963E800C51D58 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E94CC611E7963E800C51D58 /* MainViewController.swift */; };
 		2E94CC651E7963E800C51D58 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2E94CC631E7963E800C51D58 /* Main.storyboard */; };
@@ -23,6 +26,9 @@
 		2E7BCA5E1E7AA93600B6FEE6 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Main.strings; sourceTree = "<group>"; };
 		2E7BCA5F1E7AA93600B6FEE6 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		2E7BCA611E7AAB9000B6FEE6 /* UiColorExt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UiColorExt.swift; sourceTree = "<group>"; };
+		2E7BCA641E7AC56500B6FEE6 /* UserAgreement.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = UserAgreement.html; sourceTree = "<group>"; };
+		2E7BCA671E7B087500B6FEE6 /* intro_video.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = intro_video.mp4; sourceTree = "<group>"; };
+		2E7BCA691E7C923B00B6FEE6 /* IntroBackgroundVideo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntroBackgroundVideo.swift; sourceTree = "<group>"; };
 		2E94CC5C1E7963E800C51D58 /* sushnaya-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "sushnaya-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2E94CC5F1E7963E800C51D58 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2E94CC611E7963E800C51D58 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
@@ -59,6 +65,16 @@
 			name = Extensions;
 			sourceTree = "<group>";
 		};
+		2E7BCA631E7AC4F000B6FEE6 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				2E7BCA671E7B087500B6FEE6 /* intro_video.mp4 */,
+				2E94CC6B1E7963E800C51D58 /* Info.plist */,
+				2E7BCA641E7AC56500B6FEE6 /* UserAgreement.html */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		2E94CC531E7963E700C51D58 = {
 			isa = PBXGroup;
 			children = (
@@ -86,11 +102,12 @@
 				2E94CC631E7963E800C51D58 /* Main.storyboard */,
 				2E94CC661E7963E800C51D58 /* Assets.xcassets */,
 				2E94CC681E7963E800C51D58 /* LaunchScreen.storyboard */,
-				2E94CC6B1E7963E800C51D58 /* Info.plist */,
 				2E94CC711E79CBA700C51D58 /* UserSession.swift */,
 				2E94CC751E79D15D00C51D58 /* User.swift */,
 				2E94CC771E79DB7D00C51D58 /* SignInViewController.swift */,
+				2E7BCA631E7AC4F000B6FEE6 /* Supporting Files */,
 				2E7BCA601E7AAB7700B6FEE6 /* Extensions */,
+				2E7BCA691E7C923B00B6FEE6 /* IntroBackgroundVideo.swift */,
 			);
 			path = "sushnaya-ios";
 			sourceTree = "<group>";
@@ -176,6 +193,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2E7BCA651E7AC56500B6FEE6 /* UserAgreement.html in Resources */,
+				2E7BCA681E7B087500B6FEE6 /* intro_video.mp4 in Resources */,
 				2E94CC6A1E7963E800C51D58 /* LaunchScreen.storyboard in Resources */,
 				2E94CC671E7963E800C51D58 /* Assets.xcassets in Resources */,
 				2E94CC651E7963E800C51D58 /* Main.storyboard in Resources */,
@@ -254,6 +273,7 @@
 				2E7BCA621E7AAB9000B6FEE6 /* UiColorExt.swift in Sources */,
 				2E94CC761E79D15D00C51D58 /* User.swift in Sources */,
 				2E94CC621E7963E800C51D58 /* MainViewController.swift in Sources */,
+				2E7BCA6A1E7C923B00B6FEE6 /* IntroBackgroundVideo.swift in Sources */,
 				2E94CC601E7963E800C51D58 /* AppDelegate.swift in Sources */,
 				2E94CC721E79CBA700C51D58 /* UserSession.swift in Sources */,
 			);
