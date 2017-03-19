@@ -1,4 +1,4 @@
-# platform :ios, '9.0'
+#platform :ios, '9.0'
 
 target 'sushnaya-ios' do
   use_frameworks!

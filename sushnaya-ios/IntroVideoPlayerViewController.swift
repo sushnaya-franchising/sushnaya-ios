@@ -11,27 +11,31 @@ import AVKit
 import AVFoundation
 
 
-class IntroVideoPlayer {
-    private var player: AVPlayer?
-    var layer: AVPlayerLayer?
+class IntroVideoPlayerViewController: AVPlayerViewController {
     
-    init(forResource: String, ofType:String) {
-        self.player = createLoopingIntroVideoPlayer(forResource: forResource, ofType: ofType)
-        self.layer = AVPlayerLayer(player: player)
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        videoGravity = AVLayerVideoGravityResizeAspectFill
+        showsPlaybackControls = false
+        
+        player = createLoopingVideoPlayer(forResource: "intro_video", ofType: "mp4")
+        player?.isMuted = true
     }
     
-    public func play() {
-        player?.isMuted = true
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         player?.play()
     }
     
-    public func pause() {
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
         player?.pause()
     }
     
-    private func createLoopingIntroVideoPlayer(forResource: String, ofType:String) -> AVPlayer? {
+    private func createLoopingVideoPlayer(forResource: String, ofType:String) -> AVPlayer? {
         guard let path = Bundle.main.path(forResource: forResource, ofType: ofType) else {
-            debugPrint("intro_video.mp4 not found")
+            debugPrint("\(forResource)\(ofType) not found")
             return nil
         }
         
@@ -39,14 +43,14 @@ class IntroVideoPlayer {
         
         if #available(tvOS 10.0, *) {
             return createSeamlessLoopingVideoPlayer(url: url)
-            
+
         } else {
             return createLoopingVideoPlayer(url: url)
         }
     }
     
     private func createSeamlessLoopingVideoPlayer(url: URL) -> AVPlayer {
-        let player = AVQueuePlayer()
+        let player = AVQueuePlayer(items: [AVPlayerItem(url: url)])
         looper = AVPlayerLooper(player: player, templateItem: AVPlayerItem(url: url))
         
         return player
@@ -59,7 +63,7 @@ class IntroVideoPlayer {
         return player
     }
     
-    // we have to store reference to loop
+    // we have to store looper reference for looping
     private var looper: NSObject?
     
     private func loop(_ videoPlayer: AVPlayer) {

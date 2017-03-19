@@ -34,8 +34,8 @@ class SignInViewController: AnimatedPagingScrollViewController {
         return configuration!
     }()
     
-    private var introVideoPlayer:IntroVideoPlayer!
-    private var pageControl: UIPageControl?
+    var signInButton = UIButton()
+    var pageControl = UIPageControl()
     
     override var prefersStatusBarHidden: Bool {
         return true
@@ -49,18 +49,8 @@ class SignInViewController: AnimatedPagingScrollViewController {
         super.viewDidLoad()
         
         configureViews()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
         
-        introVideoPlayer.play()
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        introVideoPlayer.pause()
+        animateCurrentFrame() // walk around RazzleDazzle bug
     }
     
     private func configureViews() {
@@ -76,90 +66,69 @@ class SignInViewController: AnimatedPagingScrollViewController {
     private func configurePageControl() {
         guard introHeadings.count > 1 else {return}
         
-        pageControl = createPageControl()
-        pageControl!.addTarget(self, action: #selector(SignInViewController.changePage(sender:)), for: UIControlEvents.valueChanged)
-        
-        contentView.addSubview(pageControl!)
-        keepView(pageControl!, onPages: (0...introHeadings.count).map{CGFloat($0)})
-        
-        let vertConstr = NSLayoutConstraint(item: pageControl!, attribute: .bottom, relatedBy: .equal, toItem: contentView, attribute: .bottom, multiplier: 1, constant: -84)
-        
-        NSLayoutConstraint.activate([vertConstr])
-    }
-    
-    private func createPageControl() -> UIPageControl {
-        let pageControl = UIPageControl()
         pageControl.numberOfPages = introHeadings.count
         pageControl.currentPage = 0
         
-        return pageControl
+        pageControl.addTarget(self, action: #selector(SignInViewController.changePage(sender:)), for: UIControlEvents.valueChanged)
+        
+        contentView.addSubview(pageControl)
+        
+        let vertConstr = NSLayoutConstraint(item: pageControl, attribute: .bottom, relatedBy: .equal, toItem: contentView, attribute: .bottom, multiplier: 1, constant: -84)
+        
+        NSLayoutConstraint.activate([vertConstr])
+        
+        keepView(pageControl, onPages: (0...introHeadings.count).map{CGFloat($0)})
     }
     
     func changePage(sender: AnyObject) -> () {
-        let x = CGFloat(pageControl!.currentPage) * scrollView.frame.size.width
+        let x = CGFloat(pageControl.currentPage) * scrollView.frame.size.width
         scrollView.setContentOffset(CGPoint(x: x,y :0), animated: true)
     }
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         let pageNumber = round(scrollView.contentOffset.x / scrollView.frame.size.width)
-        pageControl?.currentPage = Int(pageNumber)
+        pageControl.currentPage = Int(pageNumber)
     }
     
     private func configureSignInButton() {
-        let button = createSignInButton()
-        button.addTarget(self, action: #selector(SignInViewController.signInButtonTapped(_:)), for: .touchUpInside)
+        signInButton.setTitle("Войти", for: .normal)
+        signInButton.setTitleColor(UIColor.white, for: .normal)
+        signInButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 17)
+        signInButton.titleLabel?.layer.shadowOffset = CGSize(width: 0, height: 0)
+        signInButton.titleLabel?.layer.shadowOpacity = 0.7
+        signInButton.titleLabel?.layer.shadowRadius = 3
+        signInButton.layer.cornerRadius = 5;
         
-        contentView.addSubview(button)
-        keepView(button, onPages: (0...introHeadings.count).map{CGFloat($0)})
+        signInButton.addTarget(self, action: #selector(SignInViewController.signInButtonTapped(_:)), for: .touchUpInside)
         
-        let vertConstr = NSLayoutConstraint(item: button, attribute: .bottom, relatedBy: .equal, toItem: contentView, attribute: .bottom, multiplier: 1, constant: -20)
+        contentView.addSubview(signInButton)
         
-        let widthConstr = NSLayoutConstraint(item:button, attribute: .width, relatedBy: .equal, toItem: scrollView.superview, attribute: .width, multiplier: 0.8, constant: 0)
-        
-        let heightConstr = NSLayoutConstraint(item:button, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 44)
+        let vertConstr = NSLayoutConstraint(item: signInButton, attribute: .bottom, relatedBy: .equal, toItem: contentView, attribute: .bottom, multiplier: 1, constant: -20)
+        let widthConstr = NSLayoutConstraint(item:signInButton, attribute: .width, relatedBy: .equal, toItem: scrollView.superview, attribute: .width, multiplier: 0.8, constant: 0)
+        let heightConstr = NSLayoutConstraint(item:signInButton, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 44)
         
         NSLayoutConstraint.activate([vertConstr, widthConstr, heightConstr])
-    }
-    
-    private func createSignInButton() -> UIButton {
-        let button = UIButton()
-        button.setTitle("Войти", for: .normal)
-        button.setTitleColor(UIColor.white, for: .normal)
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 17)
-        button.titleLabel?.layer.shadowOffset = CGSize(width: 0, height: 0)
-        button.titleLabel?.layer.shadowOpacity = 0.7
-        button.titleLabel?.layer.shadowRadius = 3
-        button.layer.cornerRadius = 5;
-//        button.layer.borderWidth = 2;
-//        button.layer.borderColor = UIColor.white.cgColor
         
-        return button
+        keepView(signInButton, onPages: (0...introHeadings.count-1).map{CGFloat($0)})
     }
     
     private func configureHeadingViews() {
-        var i = 0
-        for (header, subheading) in introHeadings {
-            let subheadingLabel = createSubheadingLabel(subheading: subheading)
-            let headerLabel = createHeaderLabel(header: header)
+        for (index, heading) in introHeadings.enumerated() {
+            let subheadingLabel = createSubheadingLabel(subheading: heading.subheading)
+            let headerLabel = createHeaderLabel(header: heading.header)
             
             contentView.addSubview(subheadingLabel)
             contentView.addSubview(headerLabel)
             
             let subheadingVertConstr = NSLayoutConstraint(item: subheadingLabel, attribute: .bottom, relatedBy: .equal, toItem: contentView, attribute: .bottom, multiplier: 1, constant: -124)
-            
             let subheadingWidthConstr = NSLayoutConstraint(item:subheadingLabel, attribute: .width, relatedBy: .equal, toItem: scrollView.superview, attribute: .width, multiplier: 0.8, constant: 0)
-            
-            let headerVertConstr = NSLayoutConstraint(item: headerLabel, attribute: .bottom, relatedBy: .equal, toItem: subheadingLabel, attribute: .top, multiplier: 1, constant: -5)
-            
+            let headerVertConstr = NSLayoutConstraint(item: headerLabel, attribute: .bottom, relatedBy: .equal, toItem: subheadingLabel, attribute: .top, multiplier: 1, constant: -5)            
             let headerWidthConstr = NSLayoutConstraint(item:headerLabel, attribute: .width, relatedBy: .equal, toItem: scrollView.superview, attribute: .width, multiplier: 0.8, constant: 0)
-            
             
             NSLayoutConstraint.activate([subheadingVertConstr, subheadingWidthConstr, headerVertConstr, headerWidthConstr])
             
-            keepView(headerLabel, onPage: CGFloat(i))
-            keepView(subheadingLabel, onPage: CGFloat(i))
-            
-            i += 1
+            keepView(headerLabel, onPage: CGFloat(index))
+            keepView(subheadingLabel, onPage: CGFloat(index))
         }
     }
     
@@ -192,15 +161,11 @@ class SignInViewController: AnimatedPagingScrollViewController {
         return label
     }
     
-    // todo: make video to appear smoothly
-    private func configureIntroVideoPlayerView(){
-        introVideoPlayer = IntroVideoPlayer(forResource: "intro_video", ofType: "mp4")
-        
-        if let introVideoLayer = introVideoPlayer.layer,
-            let parentLayer = scrollView.superview?.layer {
-            introVideoLayer.frame = parentLayer.bounds
-            parentLayer.insertSublayer(introVideoLayer, below: scrollView.layer)
-        }
+    private func configureIntroVideoPlayerView(){        
+        let introVideoPlayerViewController = IntroVideoPlayerViewController()
+        addChildViewController(introVideoPlayerViewController)
+        scrollView.superview?.insertSubview(introVideoPlayerViewController.view, belowSubview: scrollView)
+        introVideoPlayerViewController.view.frame = scrollView.superview!.frame
     }
     
     func signInButtonTapped(_ sender: AnyObject) {
@@ -218,5 +183,4 @@ class SignInViewController: AnimatedPagingScrollViewController {
             }
         }
     }
-    
 }
