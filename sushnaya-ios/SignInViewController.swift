@@ -71,13 +71,16 @@ class SignInViewController: AnimatedPagingScrollViewController {
         
         pageControl.addTarget(self, action: #selector(SignInViewController.changePage(sender:)), for: UIControlEvents.valueChanged)
         
-        contentView.addSubview(pageControl)
-        
+        contentView.addSubview(pageControl)        
+        keepPageControl()
+    }
+    
+    private func keepPageControl() {
         let vertConstr = NSLayoutConstraint(item: pageControl, attribute: .bottom, relatedBy: .equal, toItem: contentView, attribute: .bottom, multiplier: 1, constant: -84)
         
         NSLayoutConstraint.activate([vertConstr])
         
-        keepView(pageControl, onPages: (0...introHeadings.count).map{CGFloat($0)})
+        keepView(pageControl, onPages: (0...introHeadings.count-1).map{CGFloat($0)})
     }
     
     func changePage(sender: AnyObject) -> () {
@@ -102,7 +105,10 @@ class SignInViewController: AnimatedPagingScrollViewController {
         signInButton.addTarget(self, action: #selector(SignInViewController.signInButtonTapped(_:)), for: .touchUpInside)
         
         contentView.addSubview(signInButton)
-        
+        keepSignInButton()
+    }
+    
+    private func keepSignInButton() {
         let vertConstr = NSLayoutConstraint(item: signInButton, attribute: .bottom, relatedBy: .equal, toItem: contentView, attribute: .bottom, multiplier: 1, constant: -20)
         let widthConstr = NSLayoutConstraint(item:signInButton, attribute: .width, relatedBy: .equal, toItem: scrollView.superview, attribute: .width, multiplier: 0.8, constant: 0)
         let heightConstr = NSLayoutConstraint(item:signInButton, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 44)
@@ -120,16 +126,27 @@ class SignInViewController: AnimatedPagingScrollViewController {
             contentView.addSubview(subheadingLabel)
             contentView.addSubview(headerLabel)
             
-            let subheadingVertConstr = NSLayoutConstraint(item: subheadingLabel, attribute: .bottom, relatedBy: .equal, toItem: contentView, attribute: .bottom, multiplier: 1, constant: -124)
-            let subheadingWidthConstr = NSLayoutConstraint(item:subheadingLabel, attribute: .width, relatedBy: .equal, toItem: scrollView.superview, attribute: .width, multiplier: 0.8, constant: 0)
-            let headerVertConstr = NSLayoutConstraint(item: headerLabel, attribute: .bottom, relatedBy: .equal, toItem: subheadingLabel, attribute: .top, multiplier: 1, constant: -5)            
-            let headerWidthConstr = NSLayoutConstraint(item:headerLabel, attribute: .width, relatedBy: .equal, toItem: scrollView.superview, attribute: .width, multiplier: 0.8, constant: 0)
-            
-            NSLayoutConstraint.activate([subheadingVertConstr, subheadingWidthConstr, headerVertConstr, headerWidthConstr])
-            
-            keepView(headerLabel, onPage: CGFloat(index))
-            keepView(subheadingLabel, onPage: CGFloat(index))
+            keepSubheadingLabel(subheadingLabel: subheadingLabel, onPage: CGFloat(index))
+            keepHeaderLabel(headerLabel: headerLabel, subheadingLabel: subheadingLabel, onPage: CGFloat(index))
         }
+    }
+    
+    private func keepSubheadingLabel(subheadingLabel: UILabel, onPage page: CGFloat) {
+        let vertConstr = NSLayoutConstraint(item: subheadingLabel, attribute: .bottom, relatedBy: .equal, toItem: contentView, attribute: .bottom, multiplier: 1, constant: -124)
+        let widthConstr = NSLayoutConstraint(item:subheadingLabel, attribute: .width, relatedBy: .equal, toItem: scrollView.superview, attribute: .width, multiplier: 0.8, constant: 0)
+        
+        NSLayoutConstraint.activate([vertConstr, widthConstr])
+        
+        keepView(subheadingLabel, onPage: page)
+    }
+    
+    private func keepHeaderLabel(headerLabel: UILabel, subheadingLabel: UILabel, onPage page: CGFloat) {
+        let vertConstr = NSLayoutConstraint(item: headerLabel, attribute: .bottom, relatedBy: .equal, toItem: subheadingLabel, attribute: .top, multiplier: 1, constant: -5)
+        let widthConstr = NSLayoutConstraint(item:headerLabel, attribute: .width, relatedBy: .equal, toItem: scrollView.superview, attribute: .width, multiplier: 0.8, constant: 0)
+    
+        NSLayoutConstraint.activate([vertConstr, widthConstr])
+    
+        keepView(headerLabel, onPage: page)
     }
     
     private func createHeaderLabel(header: String) -> UILabel {
