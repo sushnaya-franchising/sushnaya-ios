@@ -12,6 +12,7 @@ import Crashlytics
 import DigitsKit
 import AVKit
 import AVFoundation
+import FontAwesome_swift
 
 
 class SignInViewController: AnimatedPagingScrollViewController {
@@ -21,21 +22,8 @@ class SignInViewController: AnimatedPagingScrollViewController {
         (header: "Бесплатная доставка", subheading: "При заказе от 600₽")
     ]
     
-    private let digitsAuthenticationConfig: DGTAuthenticationConfiguration = {
-        let appearance = DGTAppearance()
-        appearance.backgroundColor = UIColor.fromUInt(0xFFFFFF)
-        appearance.accentColor = UIColor.fromUInt(0x007AFF)
-        
-        let configuration = DGTAuthenticationConfiguration(accountFields: .defaultOptionMask)
-        configuration?.appearance = appearance
-        configuration?.phoneNumber = "+7"
-        configuration?.title = ""
-        
-        return configuration!
-    }()
-    
-    var signInButton = UIButton()
-    var pageControl = UIPageControl()
+    @IBOutlet weak var pageControl: UIPageControl!
+    @IBOutlet weak var signInButton: UIButton!
     
     override var prefersStatusBarHidden: Bool {
         return true
@@ -48,19 +36,30 @@ class SignInViewController: AnimatedPagingScrollViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        configureNavbar()
         configureViews()
+    }
+    
+    private func configureNavbar() {
+        let backIcon = UIImage.fontAwesomeIcon(name: .chevronLeft, textColor: UIColor.black, size: CGSize(width: 18, height: 18))
+        navigationController?.navigationBar.backIndicatorImage = backIcon
+        navigationController?.navigationBar.backIndicatorTransitionMaskImage = backIcon
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         
-        animateCurrentFrame() // walk around RazzleDazzle bug
+        navigationController?.setNavigationBarHidden(true, animated: false)
+        navigationController?.setToolbarHidden(true, animated: false)
     }
     
     private func configureViews() {
         configureIntroVideoPlayerView()
-        
         configureHeadingViews()
-        
         configureSignInButton()
-        
         configurePageControl()
+        
+        animateCurrentFrame() // walk around RazzleDazzle bug
     }
     
     private func configurePageControl() {
@@ -72,14 +71,6 @@ class SignInViewController: AnimatedPagingScrollViewController {
         pageControl.addTarget(self, action: #selector(SignInViewController.changePage(sender:)), for: UIControlEvents.valueChanged)
         
         contentView.addSubview(pageControl)        
-        keepPageControl()
-    }
-    
-    private func keepPageControl() {
-        let vertConstr = NSLayoutConstraint(item: pageControl, attribute: .bottom, relatedBy: .equal, toItem: contentView, attribute: .bottom, multiplier: 1, constant: -84)
-        
-        NSLayoutConstraint.activate([vertConstr])
-        
         keepView(pageControl, onPages: (0...introHeadings.count-1).map{CGFloat($0)})
     }
     
@@ -94,27 +85,20 @@ class SignInViewController: AnimatedPagingScrollViewController {
     }
     
     private func configureSignInButton() {
-        signInButton.setTitle("Войти", for: .normal)
-        signInButton.setTitleColor(UIColor.white, for: .normal)
-        signInButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 17)
+        let curSignInButtonText = signInButton.titleLabel!.text! + " "
+        let buttonString = curSignInButtonText + String.fontAwesomeIcon(name: .chevronRight)
+        let buttonStringAttributed = NSMutableAttributedString(string: buttonString, attributes: [NSFontAttributeName:UIFont.boldSystemFont(ofSize: 17)])
+        buttonStringAttributed.addAttribute(NSFontAttributeName, value: UIFont.fontAwesome(ofSize: 14), range: NSRange(location: curSignInButtonText.characters.count, length: 1))
+        buttonStringAttributed.addAttribute(NSForegroundColorAttributeName, value: UIColor.white, range: NSMakeRange(0, buttonString.characters.count))
+        
+        
+        signInButton.setAttributedTitle(buttonStringAttributed, for: .normal)
+
         signInButton.titleLabel?.layer.shadowOffset = CGSize(width: 0, height: 0)
         signInButton.titleLabel?.layer.shadowOpacity = 0.7
         signInButton.titleLabel?.layer.shadowRadius = 3
-        signInButton.layer.cornerRadius = 5;
-        
-        signInButton.addTarget(self, action: #selector(SignInViewController.signInButtonTapped(_:)), for: .touchUpInside)
         
         contentView.addSubview(signInButton)
-        keepSignInButton()
-    }
-    
-    private func keepSignInButton() {
-        let vertConstr = NSLayoutConstraint(item: signInButton, attribute: .bottom, relatedBy: .equal, toItem: contentView, attribute: .bottom, multiplier: 1, constant: -20)
-        let widthConstr = NSLayoutConstraint(item:signInButton, attribute: .width, relatedBy: .equal, toItem: scrollView.superview, attribute: .width, multiplier: 0.8, constant: 0)
-        let heightConstr = NSLayoutConstraint(item:signInButton, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 44)
-        
-        NSLayoutConstraint.activate([vertConstr, widthConstr, heightConstr])
-        
         keepView(signInButton, onPages: (0...introHeadings.count-1).map{CGFloat($0)})
     }
     
@@ -183,21 +167,5 @@ class SignInViewController: AnimatedPagingScrollViewController {
         addChildViewController(introVideoPlayerViewController)
         scrollView.superview?.insertSubview(introVideoPlayerViewController.view, belowSubview: scrollView)
         introVideoPlayerViewController.view.frame = scrollView.superview!.frame
-    }
-    
-    func signInButtonTapped(_ sender: AnyObject) {
-        Digits.sharedInstance().authenticate(with: self, configuration: digitsAuthenticationConfig){ session, error in
-            if let userDigitsId = session?.userID {
-                Crashlytics.sharedInstance().setUserIdentifier(userDigitsId)
-                
-                Answers.logLogin(withMethod: "Digits", success: true,
-                                 customAttributes: ["User Id": userDigitsId])
-            } else {
-                print("Error: " + (error?.localizedDescription)!)
-                
-                Answers.logLogin(withMethod: "Digits", success: false,
-                                 customAttributes: ["Error": error?.localizedDescription ?? "unknown error"])
-            }
-        }
     }
 }

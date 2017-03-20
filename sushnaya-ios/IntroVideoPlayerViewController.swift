@@ -13,6 +13,8 @@ import AVFoundation
 
 class IntroVideoPlayerViewController: AVPlayerViewController {
     
+    // todo: handle case when someone calls
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -21,6 +23,22 @@ class IntroVideoPlayerViewController: AVPlayerViewController {
         
         player = createLoopingVideoPlayer(forResource: "intro_video", ofType: "mp4")
         player?.isMuted = true
+        
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(IntroVideoPlayerViewController.applicationWillResignActive(notification:)), name: NSNotification.Name.UIApplicationWillResignActive, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(IntroVideoPlayerViewController.applicationDidBecomeActive(notification:)), name: NSNotification.Name.UIApplicationDidBecomeActive, object: nil)
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    func applicationWillResignActive(notification: NSNotification) {
+        player?.pause()
+    }
+    
+    func applicationDidBecomeActive(notification: NSNotification) {
+        player?.play()
     }
     
     override func viewWillAppear(_ animated: Bool) {

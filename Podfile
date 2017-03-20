@@ -6,4 +6,5 @@ target 'sushnaya-ios' do
   pod 'Fabric'
   pod 'Digits'
   pod 'Crashlytics'
+  pod 'FontAwesome.swift'
 end
