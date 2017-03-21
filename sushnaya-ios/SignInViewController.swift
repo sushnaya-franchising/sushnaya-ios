@@ -10,81 +10,163 @@ import UIKit
 import RazzleDazzle
 import Crashlytics
 import DigitsKit
+import AVKit
+import AVFoundation
+import FontAwesome_swift
 
 
 class SignInViewController: AnimatedPagingScrollViewController {
+    private let introHeadings = [
+        (header: "Добро пожаловать в Сушную!", subheading: "Лучшие роллы по самой низкой цене"),
+        (header: "Более 300 видов блюд", subheading: "70 видов роллов, 30 видов пиццы"),
+        (header: "Бесплатная доставка", subheading: "При заказе от 600₽")
+    ]
     
-    private let digitsAuthenticationConfig: DGTAuthenticationConfiguration = {
-        let appearance = DGTAppearance()
-        appearance.backgroundColor = UIColor.fromUInt(0xFFFFFF)
-        appearance.accentColor = UIColor.fromUInt(0x007AFF)
-        
-        let configuration = DGTAuthenticationConfiguration(accountFields: .defaultOptionMask)
-        configuration?.appearance = appearance
-        configuration?.phoneNumber = "+7"
-        configuration?.title = ""
-        
-        return configuration!
-    }()
-    
-    
-    private let firstLabel = UILabel()
-    private let secondLabel = UILabel()
-    private let thirdLabel = UILabel()
+    @IBOutlet weak var pageControl: UIPageControl!
+    @IBOutlet weak var signInButton: UIButton!
     
     override var prefersStatusBarHidden: Bool {
         return true
     }
     
     override func numberOfPages() -> Int {
-        return 3
+        return introHeadings.count
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        configureNavbar()
         configureViews()
     }
     
-    private func configureViews() {
-        let signInButton = UIButton(type: .roundedRect)
-        signInButton.frame = CGRect(x: 20, y: 50, width: 100, height: 30)
-        signInButton.setTitle("Войти", for: [])
-        signInButton.addTarget(self, action: #selector(self.signInButtonTapped(_:)), for: .touchUpInside)
-        
-        firstLabel.text = "Про продукцию"
-        secondLabel.text = "Про условия бесплатной доставки"
-        thirdLabel.text = "Как добавить в корзину"
-        
-        contentView.addSubview(signInButton)
-        contentView.addSubview(firstLabel)
-        contentView.addSubview(secondLabel)
-        contentView.addSubview(thirdLabel)
-        
-        NSLayoutConstraint(item: bottomLayoutGuide, attribute: .top, relatedBy: .equal, toItem: signInButton, attribute: .bottom, multiplier: 1, constant: 20).isActive=true
-        contentView.addConstraint(NSLayoutConstraint(item: firstLabel, attribute: .centerY, relatedBy: .equal, toItem: contentView, attribute: .centerY, multiplier: 1, constant: 0))
-        contentView.addConstraint(NSLayoutConstraint(item: secondLabel, attribute: .centerY, relatedBy: .equal, toItem: contentView, attribute: .centerY, multiplier: 1, constant: 0))
-        contentView.addConstraint(NSLayoutConstraint(item: thirdLabel, attribute: .centerY, relatedBy: .equal, toItem: contentView, attribute: .centerY, multiplier: 1, constant: 0))
-        
-        keepView(signInButton, onPages: [0,1,2])
-        keepView(firstLabel, onPage: 0)
-        keepView(secondLabel, onPage: 1)
-        keepView(thirdLabel, onPage: 2)
+    private func configureNavbar() {
+        let backIcon = UIImage.fontAwesomeIcon(name: .chevronLeft, textColor: UIColor.black, size: CGSize(width: 18, height: 18))
+        navigationController?.navigationBar.backIndicatorImage = backIcon
+        navigationController?.navigationBar.backIndicatorTransitionMaskImage = backIcon
+        navigationItem.title = ""
     }
     
-    func signInButtonTapped(_ sender: AnyObject) {
-        Digits.sharedInstance().authenticate(with: self, configuration: digitsAuthenticationConfig){ session, error in
-            if let userDigitsId = session?.userID {
-                Crashlytics.sharedInstance().setUserIdentifier(userDigitsId)
-                
-                Answers.logLogin(withMethod: "Digits", success: true,
-                                 customAttributes: ["User Id": userDigitsId])
-            } else {
-                print("Error: " + (error?.localizedDescription)!)
-                
-                Answers.logLogin(withMethod: "Digits", success: false,
-                                 customAttributes: ["Error": error?.localizedDescription ?? "unknown error"])
-            }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        navigationController?.setNavigationBarHidden(true, animated: false)
+        navigationController?.setToolbarHidden(true, animated: false)
+    }
+    
+    private func configureViews() {
+        configureIntroVideoPlayerView()
+        configureHeadingViews()
+        configureSignInButton()
+        configurePageControl()
+        
+        animateCurrentFrame() // walk around RazzleDazzle bug
+    }
+    
+    private func configurePageControl() {
+        guard introHeadings.count > 1 else {return}
+        
+        pageControl.numberOfPages = introHeadings.count
+        pageControl.currentPage = 0
+        
+        pageControl.addTarget(self, action: #selector(SignInViewController.changePage(sender:)), for: UIControlEvents.valueChanged)
+        
+        contentView.addSubview(pageControl)        
+        keepView(pageControl, onPages: (0...introHeadings.count-1).map{CGFloat($0)})
+    }
+    
+    func changePage(sender: AnyObject) -> () {
+        let x = CGFloat(pageControl.currentPage) * scrollView.frame.size.width
+        scrollView.setContentOffset(CGPoint(x: x,y :0), animated: true)
+    }
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        let pageNumber = round(scrollView.contentOffset.x / scrollView.frame.size.width)
+        pageControl.currentPage = Int(pageNumber)
+    }
+    
+    private func configureSignInButton() {
+        let curSignInButtonText = signInButton.titleLabel!.text! + " "
+        let buttonString = curSignInButtonText + String.fontAwesomeIcon(name: .chevronRight)
+        let buttonStringAttributed = NSMutableAttributedString(string: buttonString, attributes: [NSFontAttributeName:UIFont.boldSystemFont(ofSize: 17)])
+        buttonStringAttributed.addAttribute(NSFontAttributeName, value: UIFont.fontAwesome(ofSize: 14), range: NSRange(location: curSignInButtonText.characters.count, length: 1))
+        buttonStringAttributed.addAttribute(NSForegroundColorAttributeName, value: UIColor.white, range: NSMakeRange(0, buttonString.characters.count))
+        
+        
+        signInButton.setAttributedTitle(buttonStringAttributed, for: .normal)
+
+        signInButton.titleLabel?.layer.shadowOffset = CGSize(width: 0, height: 0)
+        signInButton.titleLabel?.layer.shadowOpacity = 0.7
+        signInButton.titleLabel?.layer.shadowRadius = 3
+        
+        contentView.addSubview(signInButton)
+        keepView(signInButton, onPages: (0...introHeadings.count-1).map{CGFloat($0)})
+    }
+    
+    private func configureHeadingViews() {
+        for (index, heading) in introHeadings.enumerated() {
+            let subheadingLabel = createSubheadingLabel(subheading: heading.subheading)
+            let headerLabel = createHeaderLabel(header: heading.header)
+            
+            contentView.addSubview(subheadingLabel)
+            contentView.addSubview(headerLabel)
+            
+            keepSubheadingLabel(subheadingLabel: subheadingLabel, onPage: CGFloat(index))
+            keepHeaderLabel(headerLabel: headerLabel, subheadingLabel: subheadingLabel, onPage: CGFloat(index))
         }
     }
     
+    private func keepSubheadingLabel(subheadingLabel: UILabel, onPage page: CGFloat) {
+        let vertConstr = NSLayoutConstraint(item: subheadingLabel, attribute: .bottom, relatedBy: .equal, toItem: contentView, attribute: .bottom, multiplier: 1, constant: -124)
+        let widthConstr = NSLayoutConstraint(item:subheadingLabel, attribute: .width, relatedBy: .equal, toItem: scrollView.superview, attribute: .width, multiplier: 0.8, constant: 0)
+        
+        NSLayoutConstraint.activate([vertConstr, widthConstr])
+        
+        keepView(subheadingLabel, onPage: page)
+    }
+    
+    private func keepHeaderLabel(headerLabel: UILabel, subheadingLabel: UILabel, onPage page: CGFloat) {
+        let vertConstr = NSLayoutConstraint(item: headerLabel, attribute: .bottom, relatedBy: .equal, toItem: subheadingLabel, attribute: .top, multiplier: 1, constant: -5)
+        let widthConstr = NSLayoutConstraint(item:headerLabel, attribute: .width, relatedBy: .equal, toItem: scrollView.superview, attribute: .width, multiplier: 0.8, constant: 0)
+    
+        NSLayoutConstraint.activate([vertConstr, widthConstr])
+    
+        keepView(headerLabel, onPage: page)
+    }
+    
+    private func createHeaderLabel(header: String) -> UILabel {
+        let label = UILabel()
+        label.text = header
+        label.textColor = UIColor.white
+        label.font = UIFont.boldSystemFont(ofSize: 17)
+        label.layer.shadowOffset = CGSize(width: 0, height: 0)
+        label.layer.shadowOpacity = 0.7
+        label.layer.shadowRadius = 3
+        label.numberOfLines = 0
+        label.textAlignment = NSTextAlignment.left
+        
+        return label
+    }
+    
+    private func createSubheadingLabel(subheading: String) -> UILabel {
+        let label = UILabel()
+        label.text = subheading
+        label.textColor = UIColor.white
+        label.font = UIFont.systemFont(ofSize: 14)
+        label.layer.opacity = 0.8
+        label.layer.shadowOffset = CGSize(width: 0, height: 0)
+        label.layer.shadowOpacity = 0.7
+        label.layer.shadowRadius = 3
+        label.numberOfLines = 0
+        label.textAlignment = NSTextAlignment.left
+        
+        return label
+    }
+    
+    private func configureIntroVideoPlayerView(){        
+        let introVideoPlayerViewController = IntroVideoPlayerViewController()
+        addChildViewController(introVideoPlayerViewController)
+        scrollView.superview?.insertSubview(introVideoPlayerViewController.view, belowSubview: scrollView)
+        introVideoPlayerViewController.view.frame = scrollView.superview!.frame
+    }
 }

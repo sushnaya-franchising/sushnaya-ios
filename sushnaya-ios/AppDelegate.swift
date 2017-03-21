@@ -19,14 +19,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-                
-        Fabric.with([Digits.self, Crashlytics.self])
+        Fabric.with([Crashlytics.self])
         
-//        if !UserSession.sharedInstance().isLoggedIn {
-//            let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        if !UserSession.sharedInstance().isLoggedIn {
+            let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
         
-//            window?.rootViewController = mainStoryboard.instantiateViewController(withIdentifier: "SignIn")
-//        }
+            window?.rootViewController = mainStoryboard.instantiateViewController(withIdentifier: "SignIn")
+        }
         
         return true
     }
