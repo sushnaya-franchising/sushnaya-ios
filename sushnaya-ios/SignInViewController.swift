@@ -44,6 +44,7 @@ class SignInViewController: AnimatedPagingScrollViewController {
         let backIcon = UIImage.fontAwesomeIcon(name: .chevronLeft, textColor: UIColor.black, size: CGSize(width: 18, height: 18))
         navigationController?.navigationBar.backIndicatorImage = backIcon
         navigationController?.navigationBar.backIndicatorTransitionMaskImage = backIcon
+        navigationItem.title = ""
     }
     
     override func viewWillAppear(_ animated: Bool) {

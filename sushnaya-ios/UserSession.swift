@@ -16,7 +16,7 @@ class UserSession {
     
     var isLoggedIn:Bool {
         get {
-            return Digits.sharedInstance().session()?.userID != nil
+            return false
         }
     }
     

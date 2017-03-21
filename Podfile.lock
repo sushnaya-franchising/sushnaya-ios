@@ -5,6 +5,8 @@ PODS:
     - TwitterCore (= 2.7.0)
   - Fabric (1.6.11)
   - FontAwesome.swift (1.0.0)
+  - libPhoneNumber-iOS (0.9.6)
+  - pop (1.0.9)
   - RazzleDazzle (0.1.5)
   - TwitterCore (2.7.0):
     - Fabric
@@ -14,6 +16,8 @@ DEPENDENCIES:
   - Digits
   - Fabric
   - FontAwesome.swift
+  - libPhoneNumber-iOS
+  - pop (~> 1.0)
   - RazzleDazzle
 
 SPEC CHECKSUMS:
@@ -21,9 +25,11 @@ SPEC CHECKSUMS:
   Digits: 67a14dea7cd470b2438380a09371bcdadc50d94e
   Fabric: 5911403591946b8228ab1c51d98f1d7137e863c6
   FontAwesome.swift: 2d32a3d62195343c2004b7c9043294ed2948553a
+  libPhoneNumber-iOS: 36044ed9658b5c11ee3cb3011751e47251d34992
+  pop: f667631a5108a2e60d9e8797c9b32ddaf2080bce
   RazzleDazzle: 0b1b9fc8ceed04bfdd4b3e8182e98ef7edacd1d1
   TwitterCore: fbdbeaf6d2d20cf7c7aa4136fe5173c1c85df2e2
 
-PODFILE CHECKSUM: 5fbf3680e570a262179402c99b064a1b62aad6f4
+PODFILE CHECKSUM: a09c5110039a60424f7fd05943196a0a27867ae2
 
 COCOAPODS: 1.2.0

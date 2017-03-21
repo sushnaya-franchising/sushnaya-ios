@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		2E63727D1E803945009EE5B8 /* TermsOfUse.html in Resources */ = {isa = PBXBuildFile; fileRef = 2E63727C1E803945009EE5B8 /* TermsOfUse.html */; };
+		2E63727F1E81596B009EE5B8 /* StringExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E63727E1E81596B009EE5B8 /* StringExt.swift */; };
+		2E6372811E817406009EE5B8 /* CategoriesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E6372801E817406009EE5B8 /* CategoriesViewController.swift */; };
 		2E77834B1E802FFF008C6C66 /* TermsOfUseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E77834A1E802FFF008C6C66 /* TermsOfUseViewController.swift */; };
 		2E7BCA621E7AAB9000B6FEE6 /* UiColorExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E7BCA611E7AAB9000B6FEE6 /* UiColorExt.swift */; };
 		2E7BCA681E7B087500B6FEE6 /* intro_video.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 2E7BCA671E7B087500B6FEE6 /* intro_video.mp4 */; };
@@ -27,6 +29,8 @@
 
 /* Begin PBXFileReference section */
 		2E63727C1E803945009EE5B8 /* TermsOfUse.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = TermsOfUse.html; sourceTree = "<group>"; };
+		2E63727E1E81596B009EE5B8 /* StringExt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringExt.swift; sourceTree = "<group>"; };
+		2E6372801E817406009EE5B8 /* CategoriesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategoriesViewController.swift; sourceTree = "<group>"; };
 		2E77834A1E802FFF008C6C66 /* TermsOfUseViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TermsOfUseViewController.swift; sourceTree = "<group>"; };
 		2E7BCA5E1E7AA93600B6FEE6 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Main.strings; sourceTree = "<group>"; };
 		2E7BCA5F1E7AA93600B6FEE6 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
@@ -67,6 +71,7 @@
 			isa = PBXGroup;
 			children = (
 				2E7BCA611E7AAB9000B6FEE6 /* UiColorExt.swift */,
+				2E63727E1E81596B009EE5B8 /* StringExt.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -117,6 +122,7 @@
 				2EE7C2451E7EF71300AFFA47 /* PhoneNumberViewController.swift */,
 				2ED49D251E7F2C0A0014859F /* VerificationCodeViewController.swift */,
 				2E77834A1E802FFF008C6C66 /* TermsOfUseViewController.swift */,
+				2E6372801E817406009EE5B8 /* CategoriesViewController.swift */,
 			);
 			path = "sushnaya-ios";
 			sourceTree = "<group>";
@@ -279,6 +285,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				2ED49D261E7F2C0A0014859F /* VerificationCodeViewController.swift in Sources */,
+				2E63727F1E81596B009EE5B8 /* StringExt.swift in Sources */,
+				2E6372811E817406009EE5B8 /* CategoriesViewController.swift in Sources */,
 				2E94CC781E79DB7D00C51D58 /* SignInViewController.swift in Sources */,
 				2E7BCA621E7AAB9000B6FEE6 /* UiColorExt.swift in Sources */,
 				2E94CC761E79D15D00C51D58 /* User.swift in Sources */,
