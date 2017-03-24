@@ -44,6 +44,8 @@ class VerificationCodeViewController: UIViewController, UITextFieldDelegate {
             return
         }
         
+        let e154PhoneNumber = try! phoneNumberUtil.format(phoneNumber, numberFormat: .E164)
+        
         let onNetworkActivity = Debouncer {
             UIApplication.shared.isNetworkActivityIndicatorVisible = true
             self.nextBarButtonItem.isEnabled = false
@@ -56,19 +58,17 @@ class VerificationCodeViewController: UIViewController, UITextFieldDelegate {
         firstly {
             onNetworkActivity.apply()
             
-            return API.requestAuthToken(code: codeTextField.text!)
+            return Authentication.requestAuthToken(phoneNumber: e154PhoneNumber, code: codeTextField.text!)
             
         }.then { (authToken: String) -> () in
-            self.app.userSession.authToken = authToken
-            
-            self.app.changeRootViewController(withIdentifier: "Entry")
+            AuthenticationEvent.fire(authToken: authToken)                        
             
         }.always { () -> () in
             onNetworkActivity.cancel()
         
         }.catch { error in
             switch error {
-            case APIError.invalidVerificationCode:
+            case AuthenticationError.invalidVerificationCode:
                 self.onInvalidCode(description: "Вы указали неправильный код.")
                 
             case APIChatError.connectionError(let reason):

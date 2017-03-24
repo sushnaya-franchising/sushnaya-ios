@@ -29,20 +29,24 @@ class Debouncer {
         self.onCancel = onCancel
     }
     
-    func apply() {
+    @discardableResult func apply() -> Debouncer {
         cancel()
         
         timer = Timer.scheduledTimer(withTimeInterval: delay, repeats: false) { timer in
             self.callback()
         }
+        
+        return self
     }
     
-    func cancel() {
+    @discardableResult func cancel() -> Debouncer {
         timer?.invalidate()
         onCancel?()
+        
+        return self
     }
     
-    func onCancel(onCancel: @escaping (()->())) -> Debouncer{
+    @discardableResult func onCancel(onCancel: @escaping (()->())) -> Debouncer {
         self.onCancel = onCancel
         
         return self

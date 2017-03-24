@@ -9,6 +9,8 @@
 import UIKit
 import Fabric
 import Crashlytics
+import PromiseKit
+import SwiftEventBus
 
 
 @UIApplicationMain
@@ -16,40 +18,37 @@ class App: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     
-    private(set) lazy var storyboard = UIStoryboard(name: "Main", bundle: nil)
+    let userSession = UserSession()
     
-    private(set) lazy var userSession: UserSession = UserSession()
+    private let apiChat = APIChat()
     
-    var isAPIChatOpened: Bool {
+    var storyboard: UIStoryboard {
         get{
-            return apiChat != nil
+            return UIStoryboard(name: "Main", bundle: nil)
         }
     }
-    
-    var apiChat: APIChat? {
-        willSet {
-            apiChat?.close()
-        }
-    }
-    
-    private var dispatcher: Dispatcher!
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        
         Fabric.with([Crashlytics.self])
         
-        dispatcher = Dispatcher(app: self)
+        initRootViewController()
         
-        if !userSession.isLoggedIn {
-            changeRootViewController(withIdentifier: "SignIn")
-        }
+        registerEventHandlers()                
         
         return true
     }
     
+    private func initRootViewController() {
+        if !userSession.isLoggedIn {
+            changeRootViewController(withIdentifier: "SignIn")
+        }
+    }        
+    
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
+        
+        apiChat.disconnect()
     }
 
     func applicationDidEnterBackground(_ application: UIApplication) {
@@ -63,12 +62,58 @@ class App: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+        
+        startAPIChat()
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+        
+        SwiftEventBus.unregister(self)
     }
 
+    private func startAPIChat() {
+        guard userSession.isLoggedIn else {
+            return
+        }
+        
+        let onNetworkActivity = Debouncer {
+            UIApplication.shared.isNetworkActivityIndicatorVisible = true
+                
+        }.onCancel {
+            UIApplication.shared.isNetworkActivityIndicatorVisible = false
+                    
+        }.apply()
+        
+        firstly {
+            return apiChat.connect(authToken: userSession.authToken!)
+                
+        }.always {
+            onNetworkActivity.cancel()
+                    
+        }.catch { error in
+            // todo: handle error
+        }
+    }
+    
+    private func registerEventHandlers() {
+        // todo: create event to show terms of use controller
+        SwiftEventBus.onMainThread(self, name: TermsOfUseUpdatedEvent.name) { [weak self] (notification) in
+            // todo: use url from event
+            let controller = self!.storyboard.instantiateViewController(withIdentifier: "TermsOfUse")
+            
+            self?.window?.rootViewController?.present(controller, animated: true, completion: nil)
+        }
+        
+        SwiftEventBus.onMainThread(self, name: AuthenticationEvent.name) { [weak self] (notification) in
+            self?.userSession.authToken = (notification.object as! AuthenticationEvent).authToken
+            
+            self?.startAPIChat()
+            
+            self?.changeRootViewController(withIdentifier: "Entry")
+        }
+    }
+    
     func changeRootViewController(withIdentifier identifier:String!) {
         let controller = storyboard.instantiateViewController(withIdentifier: identifier)
         
