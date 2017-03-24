@@ -13,7 +13,7 @@ import AVFoundation
 
 class IntroVideoPlayerViewController: AVPlayerViewController {
     
-    // todo: handle case when someone calls
+    // todo: handle case when someone calls phone
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,7 +23,6 @@ class IntroVideoPlayerViewController: AVPlayerViewController {
         
         player = createLoopingVideoPlayer(forResource: "intro_video", ofType: "mp4")
         player?.isMuted = true
-        
         
         NotificationCenter.default.addObserver(self, selector: #selector(IntroVideoPlayerViewController.applicationWillResignActive(notification:)), name: NSNotification.Name.UIApplicationWillResignActive, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(IntroVideoPlayerViewController.applicationDidBecomeActive(notification:)), name: NSNotification.Name.UIApplicationDidBecomeActive, object: nil)
@@ -48,7 +47,7 @@ class IntroVideoPlayerViewController: AVPlayerViewController {
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        player?.pause()
+        player?.pause()    
     }
     
     private func createLoopingVideoPlayer(forResource: String, ofType:String) -> AVPlayer? {

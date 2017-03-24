@@ -9,8 +9,7 @@
 import Foundation
 
 class User {
-    var id: NSNumber?
-    var digitsId: String?
+    var id: NSNumber?    
     var telegramId: String?
     var phoneNumber: String?
 }
