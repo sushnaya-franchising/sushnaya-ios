@@ -65,7 +65,7 @@ class PhoneNumberViewController: UIViewController, UITextFieldDelegate {
         firstly {
             onNetworkActivity.apply()
             
-            return API.requestSMSWithVerificationCode(phoneNumber: e154PhoneNumber)
+            return Authentication.requestSMSWithVerificationCode(phoneNumber: e154PhoneNumber)
         
         }.then { () -> () in
             self.pushVerificationCodeController(phoneNumber: phoneNumber!)
@@ -76,7 +76,7 @@ class PhoneNumberViewController: UIViewController, UITextFieldDelegate {
         }.catch { error in
             switch error {
                 
-            case APIError.invalidPhoneNumber:
+            case AuthenticationError.invalidPhoneNumber:
                 self.onInvalidPhoneNumber()
                 
             default:

@@ -10,16 +10,14 @@ import Foundation
 import PromiseKit
 import libPhoneNumber_iOS
 
-enum APIError: Error {
+enum AuthenticationError: Error {
     case invalidPhoneNumber
     
     case invalidVerificationCode        
 }
 
-class API {
+class Authentication {
     static let baseUrl = "https://sushnaya.com/0.1.0/"
-//    static let webSocketUrl = "wss://sushnaya.com:8080/0.1.0/"
-    static let webSocketUrl = "wss://echo.websocket.org"
     
     class func requestSMSWithVerificationCode(phoneNumber: String) -> Promise<Void> {
         return Promise { fulfill, reject in
@@ -29,14 +27,14 @@ class API {
         }
     }
     
-    class func requestAuthToken(code: String) -> Promise<String> {
+    class func requestAuthToken(phoneNumber: String, code: String) -> Promise<String> {
         return Promise { fullfill, reject in
             // todo: request auth token
             
     
             Debouncer(delay: 1) {
                 guard code.characters.count == 5 else {
-                    reject(APIError.invalidVerificationCode)
+                    reject(AuthenticationError.invalidVerificationCode)
                     return
                 }
                 
@@ -44,9 +42,5 @@ class API {
             }.apply() // simulate network delay
             
         }
-    }
-    
-    class func openAPIChat(authToken: String) -> Promise<APIChat> {
-        return APIChat.connect(authToken: authToken, webSocketUrl: webSocketUrl)
     }
 }

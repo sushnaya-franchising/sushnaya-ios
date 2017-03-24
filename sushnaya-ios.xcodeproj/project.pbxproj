@@ -7,14 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2E1545BB1E85714F007C56C0 /* TermsOfUseUpdatedEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E1545BA1E85714F007C56C0 /* TermsOfUseUpdatedEvent.swift */; };
 		2E21E5191E82404100DF614C /* Locality.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E21E5181E82404100DF614C /* Locality.swift */; };
 		2E21E51C1E82806200DF614C /* InternetUnavailableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E21E51B1E82806200DF614C /* InternetUnavailableViewController.swift */; };
 		2E21E51E1E82856100DF614C /* RestaurantIsClosedController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E21E51D1E82856100DF614C /* RestaurantIsClosedController.swift */; };
 		2E21E5201E82869700DF614C /* APIChat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E21E51F1E82869700DF614C /* APIChat.swift */; };
 		2E21E5221E82871400DF614C /* LocalitiesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E21E5211E82871400DF614C /* LocalitiesViewController.swift */; };
-		2E21E5241E82C62600DF614C /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E21E5231E82C62600DF614C /* API.swift */; };
+		2E21E5241E82C62600DF614C /* Authentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E21E5231E82C62600DF614C /* Authentication.swift */; };
+		2E39700A1E8563CA00A92227 /* AuthenticationEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E3970091E8563CA00A92227 /* AuthenticationEvent.swift */; };
+		2E39700C1E85643D00A92227 /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E39700B1E85643D00A92227 /* Event.swift */; };
 		2E3F729B1E83BFC200EAE05C /* UIViewControllerExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E3F729A1E83BFC200EAE05C /* UIViewControllerExt.swift */; };
-		2E3F729D1E844B1200EAE05C /* Dispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E3F729C1E844B1200EAE05C /* Dispatcher.swift */; };
 		2E3F72A01E84770700EAE05C /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E3F729F1E84770700EAE05C /* SettingsViewController.swift */; };
 		2E3F72A21E84777A00EAE05C /* ProductViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E3F72A11E84777A00EAE05C /* ProductViewController.swift */; };
 		2E3F72A41E8478CF00EAE05C /* CartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E3F72A31E8478CF00EAE05C /* CartViewController.swift */; };
@@ -43,14 +45,16 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2E1545BA1E85714F007C56C0 /* TermsOfUseUpdatedEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TermsOfUseUpdatedEvent.swift; sourceTree = "<group>"; };
 		2E21E5181E82404100DF614C /* Locality.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Locality.swift; sourceTree = "<group>"; };
 		2E21E51B1E82806200DF614C /* InternetUnavailableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InternetUnavailableViewController.swift; sourceTree = "<group>"; };
 		2E21E51D1E82856100DF614C /* RestaurantIsClosedController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RestaurantIsClosedController.swift; sourceTree = "<group>"; };
 		2E21E51F1E82869700DF614C /* APIChat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIChat.swift; sourceTree = "<group>"; };
 		2E21E5211E82871400DF614C /* LocalitiesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalitiesViewController.swift; sourceTree = "<group>"; };
-		2E21E5231E82C62600DF614C /* API.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
+		2E21E5231E82C62600DF614C /* Authentication.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Authentication.swift; sourceTree = "<group>"; };
+		2E3970091E8563CA00A92227 /* AuthenticationEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticationEvent.swift; sourceTree = "<group>"; };
+		2E39700B1E85643D00A92227 /* Event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
 		2E3F729A1E83BFC200EAE05C /* UIViewControllerExt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIViewControllerExt.swift; sourceTree = "<group>"; };
-		2E3F729C1E844B1200EAE05C /* Dispatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dispatcher.swift; sourceTree = "<group>"; };
 		2E3F729F1E84770700EAE05C /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		2E3F72A11E84777A00EAE05C /* ProductViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductViewController.swift; sourceTree = "<group>"; };
 		2E3F72A31E8478CF00EAE05C /* CartViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CartViewController.swift; sourceTree = "<group>"; };
@@ -145,6 +149,16 @@
 			name = App;
 			sourceTree = "<group>";
 		};
+		2E5F60E51E853A7F00C96388 /* Events */ = {
+			isa = PBXGroup;
+			children = (
+				2E3970091E8563CA00A92227 /* AuthenticationEvent.swift */,
+				2E39700B1E85643D00A92227 /* Event.swift */,
+				2E1545BA1E85714F007C56C0 /* TermsOfUseUpdatedEvent.swift */,
+			);
+			name = Events;
+			sourceTree = "<group>";
+		};
 		2E72A3AC1E830A1B00548DBA /* Utils */ = {
 			isa = PBXGroup;
 			children = (
@@ -197,11 +211,11 @@
 			children = (
 				2E94CC5F1E7963E800C51D58 /* App.swift */,
 				2E94CC711E79CBA700C51D58 /* UserSession.swift */,
-				2E21E5231E82C62600DF614C /* API.swift */,
+				2E21E5231E82C62600DF614C /* Authentication.swift */,
 				2E21E51F1E82869700DF614C /* APIChat.swift */,
-				2E3F729C1E844B1200EAE05C /* Dispatcher.swift */,
 				2E94CC631E7963E800C51D58 /* Main.storyboard */,
 				2E21E5171E823FA800DF614C /* Controllers */,
+				2E5F60E51E853A7F00C96388 /* Events */,
 				2E21E5161E823F9C00DF614C /* Models */,
 				2E94CC661E7963E800C51D58 /* Assets.xcassets */,
 				2E94CC681E7963E800C51D58 /* LaunchScreen.storyboard */,
@@ -370,16 +384,19 @@
 			buildActionMask = 2147483647;
 			files = (
 				2E21E5221E82871400DF614C /* LocalitiesViewController.swift in Sources */,
-				2E21E5241E82C62600DF614C /* API.swift in Sources */,
+				2E21E5241E82C62600DF614C /* Authentication.swift in Sources */,
 				2E21E51E1E82856100DF614C /* RestaurantIsClosedController.swift in Sources */,
 				2E3F72A61E84791A00EAE05C /* OrderWithDeliveryViewController.swift in Sources */,
+				2E1545BB1E85714F007C56C0 /* TermsOfUseUpdatedEvent.swift in Sources */,
 				2ED49D261E7F2C0A0014859F /* VerificationCodeViewController.swift in Sources */,
 				2E63727F1E81596B009EE5B8 /* StringExt.swift in Sources */,
 				2E3F729B1E83BFC200EAE05C /* UIViewControllerExt.swift in Sources */,
+				2E39700A1E8563CA00A92227 /* AuthenticationEvent.swift in Sources */,
 				2E3F72A21E84777A00EAE05C /* ProductViewController.swift in Sources */,
 				2E3F72A41E8478CF00EAE05C /* CartViewController.swift in Sources */,
 				2E6734F41E823A7A0077DA5B /* AppViewController.swift in Sources */,
 				2E6372811E817406009EE5B8 /* CategoriesViewController.swift in Sources */,
+				2E39700C1E85643D00A92227 /* Event.swift in Sources */,
 				2E94CC781E79DB7D00C51D58 /* SignInViewController.swift in Sources */,
 				2E7BCA621E7AAB9000B6FEE6 /* UiColorExt.swift in Sources */,
 				2E94CC761E79D15D00C51D58 /* User.swift in Sources */,
@@ -391,7 +408,6 @@
 				2E94CC601E7963E800C51D58 /* App.swift in Sources */,
 				2E21E51C1E82806200DF614C /* InternetUnavailableViewController.swift in Sources */,
 				2E94CC721E79CBA700C51D58 /* UserSession.swift in Sources */,
-				2E3F729D1E844B1200EAE05C /* Dispatcher.swift in Sources */,
 				2E21E5191E82404100DF614C /* Locality.swift in Sources */,
 				2E21E5201E82869700DF614C /* APIChat.swift in Sources */,
 				2E77834B1E802FFF008C6C66 /* TermsOfUseViewController.swift in Sources */,

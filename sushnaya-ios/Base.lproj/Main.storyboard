@@ -339,7 +339,7 @@
         <!--Terms Of Use View Controller-->
         <scene sceneID="J1K-Tr-wbZ">
             <objects>
-                <viewController id="gHL-gC-4je" customClass="TermsOfUseViewController" customModule="sushnaya_ios" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="TermsOfUse" id="gHL-gC-4je" customClass="TermsOfUseViewController" customModule="sushnaya_ios" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="721-Xh-NrT"/>
                         <viewControllerLayoutGuide type="bottom" id="kjh-bv-4JJ"/>

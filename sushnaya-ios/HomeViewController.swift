@@ -21,42 +21,11 @@ class HomeViewController: AppViewController {
         super.viewWillAppear(animated)
         
         navigationController?.setNavigationBarHidden(true, animated: false)
-        
-        ensureAPIChatIsOpened()
-    }
-    
-    private func ensureAPIChatIsOpened() {
-        if !app.isAPIChatOpened {
-            let onNetworkActivity = Debouncer {
-                UIApplication.shared.isNetworkActivityIndicatorVisible = true
-                
-            }.onCancel {
-                UIApplication.shared.isNetworkActivityIndicatorVisible = false
-            }
-            
-            onNetworkActivity.apply()
-            
-            firstly {
-                return API.openAPIChat(authToken: app.userSession.authToken!)
-            
-            }.then { apiChat -> () in
-                self.app.apiChat = apiChat
-                
-                apiChat.menu()// todo: request personal categories
-            
-            }.always {
-                onNetworkActivity.cancel()
-            
-            }.catch { error in
-                // todo: handle error
-            }
-        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        
     }
     
     override func didReceiveMemoryWarning() {

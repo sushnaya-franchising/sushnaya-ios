@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import CoreLocation
 import SwiftEventBus
+import PromiseKit
 
 class AppViewController: UIViewController, CLLocationManagerDelegate {
     
@@ -19,8 +20,6 @@ class AppViewController: UIViewController, CLLocationManagerDelegate {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        SwiftEventBus.post(DispatcherEvent.viewWillAppear.rawValue, sender: self)
     }
     
     override func viewDidAppear(_ animated: Bool) {

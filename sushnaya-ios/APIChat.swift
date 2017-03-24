@@ -15,37 +15,39 @@ enum APIChatCommand: String {
     case menu = "/menu"
     
     case changeLocality = "/changecity"
+    
+    case termsOfUseUpdate = "/termsofuseupdate"
 }
 
 enum APIChatError: Error {
     case connectionError(reason: String)        
 }
 
-class APIChat {
-    private let authToken: String
-    private let webSocketUrl: String
+class APIChat: NSObject {
+    //    static let webSocketUrl = "wss://sushnaya.com:8080/0.1.0/"
+    static let webSocketUrl = "wss://echo.websocket.org"
+    
     private var ws: WebSocket?
     
-    private init(authToken: String, webSocketUrl: String) {
-        self.authToken = authToken
-        self.webSocketUrl = webSocketUrl
+    override init() {
+        super.init()
     }
     
-    static func connect(authToken: String, webSocketUrl: String) -> Promise<APIChat> {
-        let chat = APIChat(authToken: authToken, webSocketUrl: webSocketUrl)
+    func connect(authToken: String) -> Promise<()> {
+        let (promise, fulfill, reject) = Promise<()>.pending()
+        
+        guard ws == nil else {
+            fulfill()
             
-        return chat.connect()
-    }
-    
-    private func connect() -> Promise<APIChat> {
-        let (promise, fulfill, reject) = Promise<APIChat>.pending()
+            return promise
+        }
         
         ws = WebSocket()
         
         ws?.event.open = {
             self.ws?.event.error = self.handleError
             
-            fulfill(self)
+            fulfill()
         }
         
         ws?.event.error = { error in
@@ -54,14 +56,14 @@ class APIChat {
         
         ws?.event.message = handleMessage
         
-        ws?.open(webSocketUrl)
+        ws?.open(APIChat.webSocketUrl)
         
         return promise
     }
     
     private func handleMessage(message: Any?) {
-        if let text = message as? String {
-            SwiftEventBus.post(text)
+        if let _ = message as? String {
+            // todo: parse message and fire appropriate event
         }
     }
     
@@ -71,16 +73,14 @@ class APIChat {
         print(error.localizedDescription)
     }
     
-    func menu() {
-        ws?.send("/menu")
-    }
-    
-    func close() {
+    func disconnect() {
         ws?.close()
         ws = nil // break strong reference
     }
     
     deinit {
-        close()
+        SwiftEventBus.unregister(self)
+        
+        disconnect()
     }
 }
