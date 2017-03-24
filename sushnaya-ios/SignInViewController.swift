@@ -9,7 +9,6 @@
 import UIKit
 import RazzleDazzle
 import Crashlytics
-import DigitsKit
 import AVKit
 import AVFoundation
 import FontAwesome_swift
@@ -17,13 +16,14 @@ import FontAwesome_swift
 
 class SignInViewController: AnimatedPagingScrollViewController {
     private let introHeadings = [
-        (header: "Добро пожаловать в Сушную!", subheading: "Лучшие роллы по самой низкой цене"),
+        (header: "Добро пожаловать в Сушную!", subheading: "Здесь лучшие роллы по самой низкой цене"),
         (header: "Более 300 видов блюд", subheading: "70 видов роллов, 30 видов пиццы"),
         (header: "Бесплатная доставка", subheading: "При заказе от 600₽")
     ]
     
+    
+    @IBOutlet weak var signInButton: UIButton!    
     @IBOutlet weak var pageControl: UIPageControl!
-    @IBOutlet weak var signInButton: UIButton!
     
     override var prefersStatusBarHidden: Bool {
         return true
@@ -37,7 +37,14 @@ class SignInViewController: AnimatedPagingScrollViewController {
         super.viewDidLoad()
         
         configureNavbar()
+        
         configureViews()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        hideNavbar()
     }
     
     private func configureNavbar() {
@@ -45,37 +52,36 @@ class SignInViewController: AnimatedPagingScrollViewController {
         navigationController?.navigationBar.backIndicatorImage = backIcon
         navigationController?.navigationBar.backIndicatorTransitionMaskImage = backIcon
         navigationItem.title = ""
+        
+        hideNavbar()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
+    private func hideNavbar() {
         navigationController?.setNavigationBarHidden(true, animated: false)
-        navigationController?.setToolbarHidden(true, animated: false)
     }
     
     private func configureViews() {
         configureIntroVideoPlayerView()
+        
         configureHeadingViews()
+        
         configureSignInButton()
+        
         configurePageControl()
         
-        animateCurrentFrame() // walk around RazzleDazzle bug
+        animateCurrentFrame() // tackles RazzleDazzle bug
     }
     
     private func configurePageControl() {
         guard introHeadings.count > 1 else {return}
         
+        scrollView.superview?.addSubview(pageControl)
+        
         pageControl.numberOfPages = introHeadings.count
         pageControl.currentPage = 0
-        
-        pageControl.addTarget(self, action: #selector(SignInViewController.changePage(sender:)), for: UIControlEvents.valueChanged)
-        
-        contentView.addSubview(pageControl)        
-        keepView(pageControl, onPages: (0...introHeadings.count-1).map{CGFloat($0)})
     }
     
-    func changePage(sender: AnyObject) -> () {
+    @IBAction func onPageControlValueChanged(_ sender: Any) {
         let x = CGFloat(pageControl.currentPage) * scrollView.frame.size.width
         scrollView.setContentOffset(CGPoint(x: x,y :0), animated: true)
     }
@@ -86,21 +92,23 @@ class SignInViewController: AnimatedPagingScrollViewController {
     }
     
     private func configureSignInButton() {
-        let curSignInButtonText = signInButton.titleLabel!.text! + " "
+        scrollView.superview?.addSubview(signInButton)
+        
+        configureSignInButtonTitle(signInButton)
+    }
+    
+    private func configureSignInButtonTitle(_ signInButton: UIButton) {
+        let curSignInButtonText = "Войти "
         let buttonString = curSignInButtonText + String.fontAwesomeIcon(name: .chevronRight)
         let buttonStringAttributed = NSMutableAttributedString(string: buttonString, attributes: [NSFontAttributeName:UIFont.boldSystemFont(ofSize: 17)])
         buttonStringAttributed.addAttribute(NSFontAttributeName, value: UIFont.fontAwesome(ofSize: 14), range: NSRange(location: curSignInButtonText.characters.count, length: 1))
         buttonStringAttributed.addAttribute(NSForegroundColorAttributeName, value: UIColor.white, range: NSMakeRange(0, buttonString.characters.count))
         
-        
         signInButton.setAttributedTitle(buttonStringAttributed, for: .normal)
-
+        
         signInButton.titleLabel?.layer.shadowOffset = CGSize(width: 0, height: 0)
         signInButton.titleLabel?.layer.shadowOpacity = 0.7
         signInButton.titleLabel?.layer.shadowRadius = 3
-        
-        contentView.addSubview(signInButton)
-        keepView(signInButton, onPages: (0...introHeadings.count-1).map{CGFloat($0)})
     }
     
     private func configureHeadingViews() {
@@ -163,10 +171,10 @@ class SignInViewController: AnimatedPagingScrollViewController {
         return label
     }
     
-    private func configureIntroVideoPlayerView(){        
+    private func configureIntroVideoPlayerView() {
         let introVideoPlayerViewController = IntroVideoPlayerViewController()
         addChildViewController(introVideoPlayerViewController)
         scrollView.superview?.insertSubview(introVideoPlayerViewController.view, belowSubview: scrollView)
         introVideoPlayerViewController.view.frame = scrollView.superview!.frame
-    }
+    }        
 }

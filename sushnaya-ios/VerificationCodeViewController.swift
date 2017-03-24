@@ -10,53 +10,105 @@ import Foundation
 import UIKit
 import libPhoneNumber_iOS
 import pop
+import PromiseKit
 
 class VerificationCodeViewController: UIViewController, UITextFieldDelegate {
     var phoneNumber: NBPhoneNumber!
     
     @IBOutlet weak var promptLabel: UILabel!
     @IBOutlet weak var codeTextField: UITextField!
+    @IBOutlet weak var nextBarButtonItem: UIBarButtonItem!
     
     private let phoneNumberUtil = NBPhoneNumberUtil()
     
     override func viewWillAppear(_ animated: Bool) {        
         super.viewWillAppear(animated)
-        
-        let formattedPhoneNumber = try? phoneNumberUtil.format(phoneNumber, numberFormat: .INTERNATIONAL)
-        promptLabel.text = "На номер \(formattedPhoneNumber!) было отправлено SMS c кодом."
-        
+                        
         codeTextField.becomeFirstResponder()
     }
     
+    private func configurePromptLabel() {
+        let formattedPhoneNumber = try? phoneNumberUtil.format(phoneNumber, numberFormat: .INTERNATIONAL)
+        promptLabel.text = "На номер \(formattedPhoneNumber!) было отправлено SMS c кодом."
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        codeTextField.resignFirstResponder()
+    }
+    
     @IBAction func nextButtonTapped(_ sender: Any) {
-        guard isValidCode(code: codeTextField.text ?? "") else {
-            onInvalidCode()
+        guard !(codeTextField.text?.isEmpty ?? true) else {
+            onEmptyCode()
             return
         }
         
-        presentVerificationCodeController()
-    }
-    
-    private func isValidCode(code: String) -> Bool {
-        // todo: verify the code
+        let onNetworkActivity = Debouncer {
+            UIApplication.shared.isNetworkActivityIndicatorVisible = true
+            self.nextBarButtonItem.isEnabled = false
+            
+        }.onCancel {
+            UIApplication.shared.isNetworkActivityIndicatorVisible = false
+            self.nextBarButtonItem.isEnabled = true
+        }
         
-        return code.characters.count == 5
+        firstly {
+            onNetworkActivity.apply()
+            
+            return API.requestAuthToken(code: codeTextField.text!)
+            
+        }.then { (authToken: String) -> () in
+            self.app.userSession.authToken = authToken
+            
+            self.app.changeRootViewController(withIdentifier: "Entry")
+            
+        }.always { () -> () in
+            onNetworkActivity.cancel()
+        
+        }.catch { error in
+            switch error {
+            case APIError.invalidVerificationCode:
+                self.onInvalidCode(description: "Вы указали неправильный код.")
+                
+            case APIChatError.connectionError(let reason):
+                debugPrint("APIChat connection error: \(reason)")
+                // todo: reconnect APIChat
+                
+            default:
+                // todo: handle open api chat error
+                debugPrint(error.localizedDescription)
+                // todo: show death screen
+            }
+        }
+    }
+ 
+    private func onEmptyCode() {
+        shakeCodeTextField()
     }
     
-    private func onInvalidCode() {
-        guard (codeTextField.pop_animation(forKey: "shake") == nil) else {
+    private func onInvalidCode(description: String) {
+        shakeCodeTextField()
+        
+        // todo: update label message with pop animation
+        
+        // todo: reveal resend button
+    }
+    
+    private func shakeCodeTextField() {
+        guard codeTextField.pop_animation(forKey: "shake") == nil else {
             return
         }
         
         let shake = POPSpringAnimation(propertyNamed: kPOPLayerPositionX)
         shake?.springBounciness = 20
-        shake?.velocity = NSNumber(value: 2000)
+        shake?.velocity = NSNumber(value: 1500)
         
         codeTextField.pop_add(shake, forKey: "shake")
     }
     
-    private func presentVerificationCodeController() {
-        let controller = storyboard?.instantiateViewController(withIdentifier: "Categories") as! CategoriesViewContoller
+    private func presentLocalitiesViewController() {
+        let controller = storyboard?.instantiateViewController(withIdentifier: "Localities") as! LocalitiesViewController
         
         present(controller, animated: true, completion: nil)
     }

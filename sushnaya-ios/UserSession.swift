@@ -7,26 +7,40 @@
 //
 
 import Foundation
-import DigitsKit
 
-class UserSession {
-    var isUserAgreementAccepted:Bool {
-        return false; // todo: persist hash of accepted license agreement
+class UserSession: NSObject {
+    var authToken:String? {
+        didSet {
+            // todo: persist the auth token
+        }
     }
     
     var isLoggedIn:Bool {
         get {
-            return false
+            return authToken != nil
         }
     }
     
-    private init(){}
-    
-    class func sharedInstance() -> UserSession {
-        struct Singleton {
-            static var sharedInstance = UserSession()
+    // todo: create UserSettings and move this property there
+    var locality: Locality? {
+        didSet {
+            // todo: persist locality
         }
+    }
+    
+    var isLocalitySelected: Bool {
+        get {
+            return locality != nil
+        }
+    }        
+    
+    override init() {
+        super.init()
         
-        return Singleton.sharedInstance
+        // todo: query the auth token
+//        authToken = "Mi1SNkF6UDJjRkVaWFA1Mkl6TlRMOE85VStodz09"
+        
+        // todo: query locality
+//        locality = ...
     }
 }
