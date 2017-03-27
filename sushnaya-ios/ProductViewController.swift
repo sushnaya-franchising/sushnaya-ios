@@ -9,6 +9,6 @@
 import Foundation
 import UIKit
 
-class ProductViewController: AppViewController {
+class ProductViewController: UIViewController {
     
 }

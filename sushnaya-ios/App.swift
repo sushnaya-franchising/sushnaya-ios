@@ -11,6 +11,7 @@ import Fabric
 import Crashlytics
 import PromiseKit
 import SwiftEventBus
+import SwiftWebSocket
 
 
 @UIApplicationMain
@@ -21,6 +22,8 @@ class App: UIResponder, UIApplicationDelegate {
     let userSession = UserSession()
     
     private let apiChat = APIChat()
+    
+    private var restartDelay = 1
     
     var storyboard: UIStoryboard {
         get{
@@ -77,6 +80,8 @@ class App: UIResponder, UIApplicationDelegate {
             return
         }
         
+        print("Starting API chat...")
+        
         let onNetworkActivity = Debouncer {
             UIApplication.shared.isNetworkActivityIndicatorVisible = true
                 
@@ -87,30 +92,85 @@ class App: UIResponder, UIApplicationDelegate {
         
         firstly {
             return apiChat.connect(authToken: userSession.authToken!)
-                
+            
         }.always {
             onNetworkActivity.cancel()
-                    
-        }.catch { error in
-            // todo: handle error
+            
+        }.catch { _ in
+        }
+    }
+    
+    private func restartAPIChat() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(restartDelay), execute: self.startAPIChat)
+        
+        if restartDelay < 60 {
+            restartDelay = restartDelay << 1
         }
     }
     
     private func registerEventHandlers() {
-        // todo: create event to show terms of use controller
-        SwiftEventBus.onMainThread(self, name: TermsOfUseUpdatedEvent.name) { [weak self] (notification) in
+        SwiftEventBus.onMainThread(self, name: TermsOfUseUpdatedEvent.name) { [unowned self] (notification) in
             // todo: use url from event
-            let controller = self!.storyboard.instantiateViewController(withIdentifier: "TermsOfUse")
+            let controller = self.storyboard.instantiateViewController(withIdentifier: "TermsOfUse")
             
-            self?.window?.rootViewController?.present(controller, animated: true, completion: nil)
+            self.window?.rootViewController?.present(controller, animated: true, completion: nil)
         }
         
-        SwiftEventBus.onMainThread(self, name: AuthenticationEvent.name) { [weak self] (notification) in
-            self?.userSession.authToken = (notification.object as! AuthenticationEvent).authToken
+        SwiftEventBus.onMainThread(self, name: AuthenticationEvent.name) { [unowned self] (notification) in
+            self.userSession.authToken = (notification.object as! AuthenticationEvent).authToken
             
-            self?.startAPIChat()
+            self.startAPIChat()
             
-            self?.changeRootViewController(withIdentifier: "Entry")
+            self.changeRootViewController(withIdentifier: "Entry")
+        }
+        
+        SwiftEventBus.onMainThread(self, name: ChangeLocalityProposalEvent.name) { [unowned self] (notification) in
+            let localities = (notification.object as! ChangeLocalityProposalEvent).localities
+            
+            func presentLocalitiesController(){
+                let controller = self.storyboard.instantiateViewController(withIdentifier: "Localities") as! LocalitiesViewController
+                controller.localities = localities
+                
+                self.window?.rootViewController?.present(controller, animated: true, completion: nil)
+            }
+            
+            func getLocality(by location: CLLocation) -> Locality? {
+                return localities.filter{ $0.isIncluded(location: location) }.first
+            }
+            
+            CLLocationManager.promise().then { location -> () in
+                if let locality = getLocality(by: location) {
+                    ChangeLocalityEvent.fire(locality: locality)
+                    
+                } else {
+                    presentLocalitiesController()
+                }
+                
+            }.catch { error in
+                presentLocalitiesController()
+            }
+        }
+        
+        SwiftEventBus.onMainThread(self, name: APIChatErrorEvent.name) { notification in
+            if let event = notification.object as? APIChatErrorEvent {
+                switch event.cause {
+                
+                case WebSocketError.network(let description):
+                    print("Websocket error: \(description)")
+                
+                default:
+                    print(event.cause)
+                }
+            }
+        }
+        
+        SwiftEventBus.onMainThread(self, name: ConnectionDidOpenAPIChatEvent.name) { [unowned self] (notification) in
+            print("API chat connected")
+            self.restartDelay = 1
+        }
+        
+        SwiftEventBus.onMainThread(self, name: ConnectionDidCloseAPIChatEvent.name) { [unowned self] (notification) in
+            self.restartAPIChat()
         }
     }
     

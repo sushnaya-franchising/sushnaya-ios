@@ -9,6 +9,7 @@
 import Foundation
 import AVKit
 import AVFoundation
+import SwiftEventBus
 
 
 class IntroVideoPlayerViewController: AVPlayerViewController {
@@ -28,10 +29,6 @@ class IntroVideoPlayerViewController: AVPlayerViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(IntroVideoPlayerViewController.applicationDidBecomeActive(notification:)), name: NSNotification.Name.UIApplicationDidBecomeActive, object: nil)
     }
     
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
-    
     func applicationWillResignActive(notification: NSNotification) {
         player?.pause()
     }
@@ -42,12 +39,14 @@ class IntroVideoPlayerViewController: AVPlayerViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
         player?.play()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        player?.pause()    
+        
+        player?.pause()
     }
     
     private func createLoopingVideoPlayer(forResource: String, ofType:String) -> AVPlayer? {
@@ -75,18 +74,15 @@ class IntroVideoPlayerViewController: AVPlayerViewController {
     
     private func createLoopingVideoPlayer(url: URL) -> AVPlayer {
         let player = AVPlayer(url: url)
-        loop(player)
+        
+        NotificationCenter.default.addObserver(forName: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: nil, queue: nil) { notification in
+            player.seek(to: kCMTimeZero)
+            player.play()
+        }
         
         return player
     }
     
     // we have to store looper reference for looping
     private var looper: NSObject?
-    
-    private func loop(_ videoPlayer: AVPlayer) {
-        NotificationCenter.default.addObserver(forName: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: nil, queue: nil) { notification in
-            videoPlayer.seek(to: kCMTimeZero)
-            videoPlayer.play()
-        }
-    }
 }

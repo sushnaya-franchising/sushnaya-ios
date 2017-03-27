@@ -9,6 +9,6 @@
 import Foundation
 import UIKit
 
-class OrderWithDeliveryViewController: AppViewController {
+class OrderWithDeliveryViewController: UIViewController {
     
 }

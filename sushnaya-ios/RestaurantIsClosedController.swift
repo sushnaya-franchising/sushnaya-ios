@@ -9,6 +9,6 @@
 import Foundation
 import UIKit
 
-class RestaurantIsClosedController: AppViewController {
+class RestaurantIsClosedController: UIViewController {
     // todo: implement RestaurantIsClosedController
 }

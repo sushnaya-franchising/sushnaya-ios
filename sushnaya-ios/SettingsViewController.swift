@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 
-class SettingsViewController: AppViewController {
+class SettingsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         

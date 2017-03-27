@@ -10,8 +10,11 @@ import UIKit
 import SwiftWebSocket
 import CoreLocation
 import PromiseKit
+import SwiftEventBus
 
-class HomeViewController: AppViewController {
+class HomeViewController: UIViewController {
+    
+    var products: [Product]?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,11 +24,16 @@ class HomeViewController: AppViewController {
         super.viewWillAppear(animated)
         
         navigationController?.setNavigationBarHidden(true, animated: false)
+        
+        if self.products == nil {
+            AskMenuEvent.fire()
+        }
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        SwiftEventBus.unregister(self)
     }
     
     override func didReceiveMemoryWarning() {

@@ -10,7 +10,7 @@ import Foundation
 import CoreLocation
 import UIKit
 
-class CategoriesViewContoller: AppViewController {
+class CategoriesViewContoller: UIViewController {
                     
     override func viewDidLoad() {
         super.viewDidLoad()
