@@ -23,7 +23,9 @@ class VerificationCodeViewController: UIViewController, UITextFieldDelegate {
     
     override func viewWillAppear(_ animated: Bool) {        
         super.viewWillAppear(animated)
-                        
+        
+        configurePromptLabel()
+        
         codeTextField.becomeFirstResponder()
     }
     
@@ -70,11 +72,7 @@ class VerificationCodeViewController: UIViewController, UITextFieldDelegate {
             switch error {
             case AuthenticationError.invalidVerificationCode:
                 self.onInvalidCode(description: "Вы указали неправильный код.")
-                
-            case APIChatError.connectionError(let reason):
-                debugPrint("APIChat connection error: \(reason)")
-                // todo: reconnect APIChat
-                
+            
             default:
                 // todo: handle open api chat error
                 debugPrint(error.localizedDescription)

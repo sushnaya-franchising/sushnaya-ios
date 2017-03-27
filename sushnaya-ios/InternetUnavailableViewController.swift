@@ -9,6 +9,6 @@
 import Foundation
 import UIKit
 
-class InternetUnavailableViewController: AppViewController {
+class InternetUnavailableViewController: UIViewController {
     // todo: implement InternetUnavailableViewController
 }

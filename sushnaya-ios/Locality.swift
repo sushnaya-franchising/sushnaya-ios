@@ -14,15 +14,26 @@ class Locality {
     var name: String
     var description: String
     var coatOfArmsUrl: String?
+    var boundedBy: (lowerCorner: CLLocation, upperCorner: CLLocation)
     
-    convenience init(location: CLLocation, name: String, description: String) {
-        self.init(location: location, name: name, description: description, coatOfArmsUrl: nil)
+    convenience init(location: CLLocation, name: String, description: String, boundedBy: (CLLocation, CLLocation)) {
+        self.init(location: location, name: name, description: description, boundedBy: boundedBy, coatOfArmsUrl: nil)
     }
     
-    init(location: CLLocation, name: String, description: String, coatOfArmsUrl: String?) {
+    init(location: CLLocation, name: String, description: String, boundedBy: (CLLocation, CLLocation), coatOfArmsUrl: String?) {
         self.location = location
         self.name = name
         self.description = description
+        self.boundedBy = boundedBy
         self.coatOfArmsUrl = coatOfArmsUrl
+    }
+    
+    func isIncluded(location: CLLocation) -> Bool {
+        let (lower, upper) = boundedBy
+        
+        return lower.coordinate.latitude <= location.coordinate.latitude &&
+                location.coordinate.latitude <= upper.coordinate.latitude &&
+                lower.coordinate.longitude <= location.coordinate.longitude &&
+                location.coordinate.longitude <= upper.coordinate.longitude
     }
 }

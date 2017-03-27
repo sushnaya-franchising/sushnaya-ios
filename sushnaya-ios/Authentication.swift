@@ -9,6 +9,7 @@
 import Foundation
 import PromiseKit
 import libPhoneNumber_iOS
+import Alamofire
 
 enum AuthenticationError: Error {
     case invalidPhoneNumber
@@ -17,30 +18,51 @@ enum AuthenticationError: Error {
 }
 
 class Authentication {
-    static let baseUrl = "https://sushnaya.com/0.1.0/"
+    // todo: use ssl
+    static let baseUrl = "http://auth.sushnaya.com:8443"
+    
+    static let authenticateUrl = baseUrl + "/authenticate"
+    
+    static let tokenUrl = baseUrl + "/token"
+
     
     class func requestSMSWithVerificationCode(phoneNumber: String) -> Promise<Void> {
         return Promise { fulfill, reject in
-            // todo: post to server phoneNumberUtil.format(phoneNumber, numberFormat: .E164)
+            let parameters = ["phoneNumber": phoneNumber.replacingOccurrences(of: "+", with: "")]
             
-            Debouncer(delay: 1, callback: fulfill).apply() // simulate network delay
+            fulfill()
+            //Alamofire.request(authenticateUrl , method: .post, parameters: parameters).validate().response { response in
+            //    if let error = response.error {
+                    // todo: handle error gently
+            //        reject(error)
+                    
+            //    }else {
+            //        fulfill()
+            //    }
+            //}
         }
     }
     
     class func requestAuthToken(phoneNumber: String, code: String) -> Promise<String> {
-        return Promise { fullfill, reject in
-            // todo: request auth token
+        return Promise { fulfill, reject in
+            let parameters = [
+                "phoneNumber": phoneNumber.replacingOccurrences(of: "+", with: ""),
+                "code": code
+            ]
             
-    
-            Debouncer(delay: 1) {
-                guard code.characters.count == 5 else {
-                    reject(AuthenticationError.invalidVerificationCode)
-                    return
-                }
+            fulfill("ok")
+            
+            //Alamofire.request(tokenUrl , method: .get, parameters: parameters).validate().responseString { response in
+            //    switch response.result {
                 
-                fullfill("Mi1SNkF6UDJjRkVaWFA1Mkl6TlRMOE85VStodz09")// todo: encode an accepted user agreement hash in the auth token
-            }.apply() // simulate network delay
-            
+            //    case .success:
+            //        fulfill(response.result.value!)
+                    
+            //    case .failure(let error) :
+                    // todo: handle error gently
+            //        reject(error)
+            //    }
+            //}
         }
     }
 }

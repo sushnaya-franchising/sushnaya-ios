@@ -9,6 +9,6 @@
 import Foundation
 import UIKit
 
-class CartViewController: AppViewController {
+class CartViewController: UIViewController {
     
 }

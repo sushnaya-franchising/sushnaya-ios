@@ -8,6 +8,16 @@
 
 /* Begin PBXBuildFile section */
 		2E1545BB1E85714F007C56C0 /* TermsOfUseUpdatedEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E1545BA1E85714F007C56C0 /* TermsOfUseUpdatedEvent.swift */; };
+		2E1545BD1E8611AB007C56C0 /* Menu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E1545BC1E8611AB007C56C0 /* Menu.swift */; };
+		2E1545BF1E8611C7007C56C0 /* MenuCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E1545BE1E8611C7007C56C0 /* MenuCategory.swift */; };
+		2E1545C11E861350007C56C0 /* OpeningConnectionAPIChatEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E1545C01E861350007C56C0 /* OpeningConnectionAPIChatEvent.swift */; };
+		2E1545C31E8613F8007C56C0 /* APIChatErrorEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E1545C21E8613F8007C56C0 /* APIChatErrorEvent.swift */; };
+		2E1545C51E861555007C56C0 /* ConnectionDidOpenAPIChatEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E1545C41E861555007C56C0 /* ConnectionDidOpenAPIChatEvent.swift */; };
+		2E1545C71E861E27007C56C0 /* ChangeLocalityProposalEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E1545C61E861E27007C56C0 /* ChangeLocalityProposalEvent.swift */; };
+		2E1545C91E862B4A007C56C0 /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E1545C81E862B4A007C56C0 /* Product.swift */; };
+		2E1545CB1E862BE5007C56C0 /* AskMenuEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E1545CA1E862BE5007C56C0 /* AskMenuEvent.swift */; };
+		2E1545CD1E862FE5007C56C0 /* ConnectionDidCloseAPIChatEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E1545CC1E862FE5007C56C0 /* ConnectionDidCloseAPIChatEvent.swift */; };
+		2E1545CF1E86F348007C56C0 /* UpdateLocalityEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E1545CE1E86F348007C56C0 /* UpdateLocalityEvent.swift */; };
 		2E21E5191E82404100DF614C /* Locality.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E21E5181E82404100DF614C /* Locality.swift */; };
 		2E21E51C1E82806200DF614C /* InternetUnavailableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E21E51B1E82806200DF614C /* InternetUnavailableViewController.swift */; };
 		2E21E51E1E82856100DF614C /* RestaurantIsClosedController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E21E51D1E82856100DF614C /* RestaurantIsClosedController.swift */; };
@@ -25,7 +35,6 @@
 		2E63727D1E803945009EE5B8 /* TermsOfUse.html in Resources */ = {isa = PBXBuildFile; fileRef = 2E63727C1E803945009EE5B8 /* TermsOfUse.html */; };
 		2E63727F1E81596B009EE5B8 /* StringExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E63727E1E81596B009EE5B8 /* StringExt.swift */; };
 		2E6372811E817406009EE5B8 /* CategoriesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E6372801E817406009EE5B8 /* CategoriesViewController.swift */; };
-		2E6734F41E823A7A0077DA5B /* AppViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E6734F31E823A7A0077DA5B /* AppViewController.swift */; };
 		2E72A3AE1E830A4200548DBA /* Debouncer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E72A3AD1E830A4200548DBA /* Debouncer.swift */; };
 		2E77834B1E802FFF008C6C66 /* TermsOfUseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E77834A1E802FFF008C6C66 /* TermsOfUseViewController.swift */; };
 		2E7BCA621E7AAB9000B6FEE6 /* UiColorExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E7BCA611E7AAB9000B6FEE6 /* UiColorExt.swift */; };
@@ -46,6 +55,16 @@
 
 /* Begin PBXFileReference section */
 		2E1545BA1E85714F007C56C0 /* TermsOfUseUpdatedEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TermsOfUseUpdatedEvent.swift; sourceTree = "<group>"; };
+		2E1545BC1E8611AB007C56C0 /* Menu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Menu.swift; sourceTree = "<group>"; };
+		2E1545BE1E8611C7007C56C0 /* MenuCategory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuCategory.swift; sourceTree = "<group>"; };
+		2E1545C01E861350007C56C0 /* OpeningConnectionAPIChatEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpeningConnectionAPIChatEvent.swift; sourceTree = "<group>"; };
+		2E1545C21E8613F8007C56C0 /* APIChatErrorEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIChatErrorEvent.swift; sourceTree = "<group>"; };
+		2E1545C41E861555007C56C0 /* ConnectionDidOpenAPIChatEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionDidOpenAPIChatEvent.swift; sourceTree = "<group>"; };
+		2E1545C61E861E27007C56C0 /* ChangeLocalityProposalEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChangeLocalityProposalEvent.swift; sourceTree = "<group>"; };
+		2E1545C81E862B4A007C56C0 /* Product.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Product.swift; sourceTree = "<group>"; };
+		2E1545CA1E862BE5007C56C0 /* AskMenuEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AskMenuEvent.swift; sourceTree = "<group>"; };
+		2E1545CC1E862FE5007C56C0 /* ConnectionDidCloseAPIChatEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionDidCloseAPIChatEvent.swift; sourceTree = "<group>"; };
+		2E1545CE1E86F348007C56C0 /* UpdateLocalityEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateLocalityEvent.swift; sourceTree = "<group>"; };
 		2E21E5181E82404100DF614C /* Locality.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Locality.swift; sourceTree = "<group>"; };
 		2E21E51B1E82806200DF614C /* InternetUnavailableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InternetUnavailableViewController.swift; sourceTree = "<group>"; };
 		2E21E51D1E82856100DF614C /* RestaurantIsClosedController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RestaurantIsClosedController.swift; sourceTree = "<group>"; };
@@ -63,7 +82,6 @@
 		2E63727C1E803945009EE5B8 /* TermsOfUse.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = TermsOfUse.html; sourceTree = "<group>"; };
 		2E63727E1E81596B009EE5B8 /* StringExt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringExt.swift; sourceTree = "<group>"; };
 		2E6372801E817406009EE5B8 /* CategoriesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategoriesViewController.swift; sourceTree = "<group>"; };
-		2E6734F31E823A7A0077DA5B /* AppViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppViewController.swift; sourceTree = "<group>"; };
 		2E72A3AD1E830A4200548DBA /* Debouncer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Debouncer.swift; sourceTree = "<group>"; };
 		2E77834A1E802FFF008C6C66 /* TermsOfUseViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TermsOfUseViewController.swift; sourceTree = "<group>"; };
 		2E7BCA5E1E7AA93600B6FEE6 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Main.strings; sourceTree = "<group>"; };
@@ -106,6 +124,9 @@
 			children = (
 				2E94CC751E79D15D00C51D58 /* User.swift */,
 				2E21E5181E82404100DF614C /* Locality.swift */,
+				2E1545BC1E8611AB007C56C0 /* Menu.swift */,
+				2E1545BE1E8611C7007C56C0 /* MenuCategory.swift */,
+				2E1545C81E862B4A007C56C0 /* Product.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -134,7 +155,6 @@
 		2E3F729E1E846D4000EAE05C /* App */ = {
 			isa = PBXGroup;
 			children = (
-				2E6734F31E823A7A0077DA5B /* AppViewController.swift */,
 				2E94CC611E7963E800C51D58 /* HomeViewController.swift */,
 				2E6372801E817406009EE5B8 /* CategoriesViewController.swift */,
 				2E21E51B1E82806200DF614C /* InternetUnavailableViewController.swift */,
@@ -155,6 +175,13 @@
 				2E3970091E8563CA00A92227 /* AuthenticationEvent.swift */,
 				2E39700B1E85643D00A92227 /* Event.swift */,
 				2E1545BA1E85714F007C56C0 /* TermsOfUseUpdatedEvent.swift */,
+				2E1545C01E861350007C56C0 /* OpeningConnectionAPIChatEvent.swift */,
+				2E1545C21E8613F8007C56C0 /* APIChatErrorEvent.swift */,
+				2E1545C41E861555007C56C0 /* ConnectionDidOpenAPIChatEvent.swift */,
+				2E1545CC1E862FE5007C56C0 /* ConnectionDidCloseAPIChatEvent.swift */,
+				2E1545C61E861E27007C56C0 /* ChangeLocalityProposalEvent.swift */,
+				2E1545CA1E862BE5007C56C0 /* AskMenuEvent.swift */,
+				2E1545CE1E86F348007C56C0 /* UpdateLocalityEvent.swift */,
 			);
 			name = Events;
 			sourceTree = "<group>";
@@ -384,17 +411,23 @@
 			buildActionMask = 2147483647;
 			files = (
 				2E21E5221E82871400DF614C /* LocalitiesViewController.swift in Sources */,
+				2E1545C31E8613F8007C56C0 /* APIChatErrorEvent.swift in Sources */,
 				2E21E5241E82C62600DF614C /* Authentication.swift in Sources */,
+				2E1545CB1E862BE5007C56C0 /* AskMenuEvent.swift in Sources */,
+				2E1545BF1E8611C7007C56C0 /* MenuCategory.swift in Sources */,
 				2E21E51E1E82856100DF614C /* RestaurantIsClosedController.swift in Sources */,
+				2E1545CD1E862FE5007C56C0 /* ConnectionDidCloseAPIChatEvent.swift in Sources */,
 				2E3F72A61E84791A00EAE05C /* OrderWithDeliveryViewController.swift in Sources */,
 				2E1545BB1E85714F007C56C0 /* TermsOfUseUpdatedEvent.swift in Sources */,
 				2ED49D261E7F2C0A0014859F /* VerificationCodeViewController.swift in Sources */,
+				2E1545CF1E86F348007C56C0 /* UpdateLocalityEvent.swift in Sources */,
+				2E1545C11E861350007C56C0 /* OpeningConnectionAPIChatEvent.swift in Sources */,
 				2E63727F1E81596B009EE5B8 /* StringExt.swift in Sources */,
 				2E3F729B1E83BFC200EAE05C /* UIViewControllerExt.swift in Sources */,
 				2E39700A1E8563CA00A92227 /* AuthenticationEvent.swift in Sources */,
 				2E3F72A21E84777A00EAE05C /* ProductViewController.swift in Sources */,
 				2E3F72A41E8478CF00EAE05C /* CartViewController.swift in Sources */,
-				2E6734F41E823A7A0077DA5B /* AppViewController.swift in Sources */,
+				2E1545C71E861E27007C56C0 /* ChangeLocalityProposalEvent.swift in Sources */,
 				2E6372811E817406009EE5B8 /* CategoriesViewController.swift in Sources */,
 				2E39700C1E85643D00A92227 /* Event.swift in Sources */,
 				2E94CC781E79DB7D00C51D58 /* SignInViewController.swift in Sources */,
@@ -407,11 +440,14 @@
 				2E3F72A01E84770700EAE05C /* SettingsViewController.swift in Sources */,
 				2E94CC601E7963E800C51D58 /* App.swift in Sources */,
 				2E21E51C1E82806200DF614C /* InternetUnavailableViewController.swift in Sources */,
+				2E1545C91E862B4A007C56C0 /* Product.swift in Sources */,
+				2E1545BD1E8611AB007C56C0 /* Menu.swift in Sources */,
 				2E94CC721E79CBA700C51D58 /* UserSession.swift in Sources */,
 				2E21E5191E82404100DF614C /* Locality.swift in Sources */,
 				2E21E5201E82869700DF614C /* APIChat.swift in Sources */,
 				2E77834B1E802FFF008C6C66 /* TermsOfUseViewController.swift in Sources */,
 				2E3F72A81E84794500EAE05C /* OrderWithoutDeliveryViewController.swift in Sources */,
+				2E1545C51E861555007C56C0 /* ConnectionDidOpenAPIChatEvent.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -537,6 +573,8 @@
 			baseConfigurationReference = 874AE31D3C8DF2CCC6C39B8E /* Pods-sushnaya-ios.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEBUG_ACTIVITY_MODE = "";
+				"DEBUG_ACTIVITY_MODE[sdk=iphonesimulator*]" = disable;
 				DEVELOPMENT_TEAM = 634QEDY38N;
 				INFOPLIST_FILE = "sushnaya-ios/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -551,6 +589,7 @@
 			baseConfigurationReference = 9654AE38439284722DBBACD9 /* Pods-sushnaya-ios.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEBUG_ACTIVITY_MODE = "";
 				DEVELOPMENT_TEAM = 634QEDY38N;
 				INFOPLIST_FILE = "sushnaya-ios/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
