@@ -10,12 +10,11 @@ import Foundation
 import SwiftEventBus
 
 struct AuthenticationEvent: Event {
-    
     static var name: String = "\(AuthenticationEvent.self)"
     
     var authToken: String
     
     static func fire(authToken: String) {
-        SwiftEventBus.post(AuthenticationEvent.name, sender: AuthenticationEvent(authToken: authToken))
+        EventBus.post(AuthenticationEvent.name, sender: AuthenticationEvent(authToken: authToken))
     }
 }

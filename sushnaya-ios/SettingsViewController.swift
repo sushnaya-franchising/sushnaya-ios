@@ -1,24 +1,34 @@
 //
-//  SettingsViewController.swift
-//  sushnaya-ios
+//  SettingsNodeController.swift
+//  Food
 //
-//  Created by Igor Kurylenko on 3/24/17.
+//  Created by Igor Kurylenko on 3/27/17.
 //  Copyright © 2017 igor kurilenko. All rights reserved.
 //
 
 import Foundation
-import UIKit
+import AsyncDisplayKit
 
+class SettingsViewController: ASViewController<ASTableNode> {
 
-class SettingsViewController: UIViewController {
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
+    var tableNode: ASTableNode {
+        return node
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        navigationController?.setNavigationBarHidden(true, animated: false)
+
+    init() {
+        super.init(node: ASTableNode())
+
+//        tableNode.delegate = self
+//        tableNode.dataSource = self
+//        tableNode.view.separatorStyle = .none
+        tableNode.backgroundColor = UIColor.white
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("storyboards are not supported")
     }
 }
+
+//extension SettingsViewController: ASTableDataSource, ASTableDelegate {
+//
+//}

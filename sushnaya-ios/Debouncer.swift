@@ -8,6 +8,7 @@
 
 import Foundation
 
+typealias debounce = Debouncer
 
 class Debouncer {
     private weak var timer: Timer?

@@ -1,48 +1,102 @@
 //
-//  PhoneNumberViewController.swift
-//  sushnaya-ios
+//  PhoneViewController.swift
+//  Food
 //
-//  Created by Igor Kurylenko on 3/19/17.
+//  Created by Igor Kurylenko on 3/29/17.
 //  Copyright © 2017 igor kurilenko. All rights reserved.
 //
 
 import Foundation
-import UIKit
+import AsyncDisplayKit
 import libPhoneNumber_iOS
-import pop
-import AVFoundation
 import PromiseKit
+import pop
 
-class PhoneNumberViewController: UIViewController, UITextFieldDelegate {
+class PhoneNumberViewController: ASViewController<ASTableNode> {
     
-    @IBOutlet weak var nextBarButtonItem: UIBarButtonItem!
-    @IBOutlet weak var phoneNumberTextField: UITextField!
-    @IBOutlet weak var termsOfUseButton: UIButton!
+    lazy var phoneNumberUtil = NBPhoneNumberUtil()
+    lazy var phoneNumberNode = PhoneNumberNode()
     
-    private let phoneNumberUtil = NBPhoneNumberUtil()
-    private let phoneNumberAsYouType = NBAsYouTypeFormatter(regionCode: "RU")
+    var phoneNumberTextNode: ASEditableTextNode {
+        return phoneNumberNode.textNode
+    }
+    
+    var phoneNumberText: String {
+        set{
+            phoneNumberTextNode.setTextWhileKeepingAttributes(text: newValue)
+        }
+        get{
+            return phoneNumberTextNode.attributedText?.string ?? ""
+        }
+    }
+    
+    override var preferredStatusBarUpdateAnimation: UIStatusBarAnimation {
+        return UIStatusBarAnimation.fade
+    }
+    
+    var tableNode: ASTableNode {
+        return node
+    }
+    
+    init() {
+        super.init(node: ASTableNode())
+        
+        tableNode.delegate = self
+        tableNode.dataSource = self
+        tableNode.view.separatorStyle = .none
+        tableNode.backgroundColor = UIColor.white
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("storyboards are not supported")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationController?.setNavigationBarHidden(false, animated: true)
-        navigationItem.title = ""
+        setupPhoneNumberNode()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        phoneNumberTextField.becomeFirstResponder()
+        setupNavbar()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        startPhoneNumberEditing()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        phoneNumberTextField.resignFirstResponder()
+        phoneNumberTextNode.textView.resignFirstResponder()
     }
     
-    @IBAction func nextButtonTapped(_ sender: Any) {
-        let phoneNumber = try? phoneNumberUtil.parse(phoneNumberTextField.text, defaultRegion: "RU")
+    private func setupPhoneNumberNode() {
+        phoneNumberTextNode.delegate = self
+        phoneNumberNode.termsOfUseButton.addTarget(self, action: #selector(onTermsOfUseButtonTapped), forControlEvents: .touchUpInside)
+    }
+    
+    private func setupNavbar() {        
+        let nextBarButtonItem = UIBarButtonItem(title: "Дальше", style: .plain,target: self,action: #selector(onNextButtonTapped))
+        navigationItem.setRightBarButton(nextBarButtonItem, animated: false)
+        navigationController?.setNavigationBarHidden(false, animated: true)
+        navigationItem.title = EmptyString
+    }
+    
+    private func startPhoneNumberEditing() {
+        let phoneNumberTextView = phoneNumberTextNode.textView
+        phoneNumberTextView.becomeFirstResponder()
+        // place cursor at the end of text
+        let newPosition = phoneNumberTextView.endOfDocument
+        phoneNumberTextView.selectedTextRange = phoneNumberTextView.textRange(from: newPosition, to: newPosition)
+    }
+    
+    func onNextButtonTapped() {
+        let phoneNumber = try? phoneNumberUtil.parse(phoneNumberText, defaultRegion: "RU")
         
         guard phoneNumberUtil.isValidNumber(phoneNumber) else {
             onInvalidPhoneNumber()
@@ -51,50 +105,41 @@ class PhoneNumberViewController: UIViewController, UITextFieldDelegate {
         
         let e154PhoneNumber = try! phoneNumberUtil.format(phoneNumber, numberFormat: .E164)
         
-        let onNetworkActivity = Debouncer {
+        let onNetworkActivity = debounce {
             UIApplication.shared.isNetworkActivityIndicatorVisible = true
-            self.nextBarButtonItem.isEnabled = false
-            self.termsOfUseButton.isEnabled = false
+            self.navigationItem.rightBarButtonItem?.isEnabled = false
             
         }.onCancel {
             UIApplication.shared.isNetworkActivityIndicatorVisible = false
-            self.nextBarButtonItem.isEnabled = true
-            self.termsOfUseButton.isEnabled = true
+            self.navigationItem.rightBarButtonItem?.isEnabled = true
         }
         
         firstly {
             onNetworkActivity.apply()
             
             return Authentication.requestSMSWithVerificationCode(phoneNumber: e154PhoneNumber)
-        
+            
         }.then { () -> () in
             self.pushVerificationCodeController(phoneNumber: phoneNumber!)
-            
+                
         }.always { () -> () in
             onNetworkActivity.cancel()
-            
+                
         }.catch { error in
-            switch error {
-                
-            case AuthenticationError.invalidPhoneNumber:
-                self.onInvalidPhoneNumber()
-                
-            default:
-                // todo: handle other erorrs
-                self.onInvalidPhoneNumber()
-                break
-            }
+            // todo: handle error gently
+            self.onInvalidPhoneNumber()
+            debugPrint(error)
         }
     }
     
     private func pushVerificationCodeController(phoneNumber: NBPhoneNumber) {
-        let controller = storyboard?.instantiateViewController(withIdentifier: "VerificationCode") as! VerificationCodeViewController
-        controller.phoneNumber = phoneNumber
-        navigationController?.pushViewController(controller, animated: true)
+        let verificationCodeVC = VerificationCodeViewController(phoneNumber: phoneNumber)
+        
+        navigationController?.pushViewController(verificationCodeVC, animated: true)
     }
     
     private func onInvalidPhoneNumber() {
-        guard (phoneNumberTextField.pop_animation(forKey: "shake") == nil) else {
+        guard (phoneNumberTextNode.pop_animation(forKey: "shake") == nil) else {
             return
         }
         
@@ -102,13 +147,31 @@ class PhoneNumberViewController: UIViewController, UITextFieldDelegate {
         shake?.springBounciness = 20
         shake?.velocity = NSNumber(value: 1500)
         
-        phoneNumberTextField.pop_add(shake, forKey: "shake")
+        phoneNumberTextNode.pop_add(shake, forKey: "shake")
     }
     
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+    func onTermsOfUseButtonTapped() {
+        let termsOfUserVC = TermsOfUseViewController()
+        
+        navigationController?.present(termsOfUserVC, animated: true, completion: nil)
+    }
+}
+
+extension PhoneNumberViewController: ASTableDataSource, ASTableDelegate {
+    func tableNode(_ tableNode: ASTableNode, numberOfRowsInSection section: Int) -> Int {
+        return 1
+    }
+    
+    func tableNode(_ tableNode: ASTableNode, nodeForRowAt indexPath: IndexPath) -> ASCellNode {
+        return phoneNumberNode
+    }
+}
+
+extension PhoneNumberViewController: ASEditableTextNodeDelegate {
+    func editableTextNode(_ editableTextNode: ASEditableTextNode, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         let countryPrefix = "+7 "
-        let oldText = (phoneNumberTextField.text!) as NSString
-        let newText = oldText.replacingCharacters(in: range, with: string)
+        let oldText = phoneNumberText as NSString
+        let newText = oldText.replacingCharacters(in: range, with: text)
         
         guard newText.hasPrefix(countryPrefix) else {
             return false
@@ -121,8 +184,18 @@ class PhoneNumberViewController: UIViewController, UITextFieldDelegate {
         }
         
         let phoneNumberAsYouType = NBAsYouTypeFormatter(regionCode: "RU")!
-        phoneNumberTextField.text = countryPrefix + phoneNumberAsYouType.inputString(numberDigits)
+        phoneNumberText = countryPrefix + phoneNumberAsYouType.inputString(numberDigits)
         
         return false
     }
 }
+
+
+
+
+
+
+
+
+
+

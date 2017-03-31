@@ -13,6 +13,6 @@ struct ConnectionDidOpenAPIChatEvent: Event {
     static var name: String = "\(ConnectionDidOpenAPIChatEvent.self)"
     
     static func fire() {
-        SwiftEventBus.post(ConnectionDidOpenAPIChatEvent.name)
+        EventBus.post(ConnectionDidOpenAPIChatEvent.name)
     }
 }

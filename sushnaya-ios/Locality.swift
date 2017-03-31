@@ -22,7 +22,7 @@ class Locality {
     
     init(location: CLLocation, name: String, description: String, boundedBy: (CLLocation, CLLocation), coatOfArmsUrl: String?) {
         self.location = location
-        self.name = name
+        self.name = name.capitalized
         self.description = description
         self.boundedBy = boundedBy
         self.coatOfArmsUrl = coatOfArmsUrl

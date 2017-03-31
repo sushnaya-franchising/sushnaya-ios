@@ -1,43 +1,49 @@
 //
-//  ViewController.swift
-//  sushnaya-ios
+//  HomeNodeController.swift
+//  Food
 //
-//  Created by Igor Kurylenko on 3/15/17.
+//  Created by Igor Kurylenko on 3/27/17.
 //  Copyright © 2017 igor kurilenko. All rights reserved.
 //
 
-import UIKit
-import SwiftWebSocket
-import CoreLocation
-import PromiseKit
-import SwiftEventBus
+import Foundation
+import AsyncDisplayKit
 
-class HomeViewController: UIViewController {
-    
+class HomeViewController: ASViewController<ASTableNode> {
+
     var products: [Product]?
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
+
+    var tableNode: ASTableNode {
+        return node
+    }
+
+    convenience init() {
+        self.init(node: ASTableNode())
+
+//        tableNode.delegate = self
+//        tableNode.dataSource = self
+        tableNode.view.separatorStyle = .none
+        tableNode.backgroundColor = UIColor.white
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+
         navigationController?.setNavigationBarHidden(true, animated: false)
-        
+
         if self.products == nil {
             AskMenuEvent.fire()
         }
+        //fireFakeChangeLoalitiesProposal()
     }
-    
+
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        
-        SwiftEventBus.unregister(self)
+
+        EventBus.unregister(self)
     }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }    
 }
+
+//extension HomeViewController: ASTableDataSource, ASTableDelegate {
+//
+//}

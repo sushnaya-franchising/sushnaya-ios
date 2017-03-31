@@ -13,6 +13,6 @@ struct AskMenuEvent: Event {
     static var name: String = "\(AskMenuEvent.self)"
     
     static func fire() {
-        SwiftEventBus.post(AskMenuEvent.name)
+        EventBus.post(AskMenuEvent.name)
     }
 }

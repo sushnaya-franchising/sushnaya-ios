@@ -1,22 +1,19 @@
 //
 //  CategoriesViewController.swift
-//  sushnaya-ios
+//  Food
 //
-//  Created by Igor Kurylenko on 3/21/17.
+//  Created by Igor Kurylenko on 3/30/17.
 //  Copyright © 2017 igor kurilenko. All rights reserved.
 //
 
 import Foundation
-import CoreLocation
-import UIKit
+import AsyncDisplayKit
 
-class CategoriesViewContoller: UIViewController {
-                    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+class CategoriesViewController: ASViewController<ASTableNode> {
+    convenience init() {
+        self.init(node: ASTableNode())
+        
+        node.backgroundColor = PaperColor.Gray200
+        //node.view.separatorStyle = .none
     }
 }

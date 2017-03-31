@@ -10,12 +10,11 @@ import Foundation
 import SwiftEventBus
 
 struct TermsOfUseUpdatedEvent: Event {
-    
     static var name: String = "\(TermsOfUseUpdatedEvent.self)"
     
     var url: String
     
     static func fire(url: String) {
-        SwiftEventBus.post(TermsOfUseUpdatedEvent.name, sender: TermsOfUseUpdatedEvent(url: url))
+        EventBus.post(TermsOfUseUpdatedEvent.name, sender: TermsOfUseUpdatedEvent(url: url))
     }
 }

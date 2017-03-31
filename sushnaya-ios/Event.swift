@@ -14,6 +14,3 @@ protocol Event {
     static var name: String { get }
 }
 
-//enum Event {
-  //  case authenticationEvent(authToken: String)
-//}

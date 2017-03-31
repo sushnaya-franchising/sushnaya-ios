@@ -15,6 +15,6 @@ struct ChangeLocalityEvent {
     var locality: Locality
     
     static func fire(locality: Locality) {
-        SwiftEventBus.post(ChangeLocalityEvent.name, sender: ChangeLocalityEvent(locality: locality))
+        EventBus.post(ChangeLocalityEvent.name, sender: ChangeLocalityEvent(locality: locality))
     }
 }
