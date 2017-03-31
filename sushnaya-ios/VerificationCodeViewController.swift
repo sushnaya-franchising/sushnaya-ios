@@ -1,86 +1,112 @@
 //
-//  CodeConfirmationViewController.swift
-//  sushnaya-ios
+//  VerificationCodeNodeController.swift
+//  Food
 //
-//  Created by Igor Kurylenko on 3/20/17.
+//  Created by Igor Kurylenko on 3/27/17.
 //  Copyright © 2017 igor kurilenko. All rights reserved.
 //
 
 import Foundation
-import UIKit
+import AsyncDisplayKit
 import libPhoneNumber_iOS
 import pop
 import PromiseKit
 
-class VerificationCodeViewController: UIViewController, UITextFieldDelegate {
-    var phoneNumber: NBPhoneNumber!
+class VerificationCodeViewController: ASViewController<ASTableNode> {
+    let phoneNumberUtil = NBPhoneNumberUtil()
+    let phoneNumber: NBPhoneNumber
+    let verificationCodeNode:VerificationCodeNode
     
-    @IBOutlet weak var promptLabel: UILabel!
-    @IBOutlet weak var codeTextField: UITextField!
-    @IBOutlet weak var nextBarButtonItem: UIBarButtonItem!
-    
-    private let phoneNumberUtil = NBPhoneNumberUtil()
-    
-    override func viewWillAppear(_ animated: Bool) {        
-        super.viewWillAppear(animated)
-        
-        configurePromptLabel()
-        
-        codeTextField.becomeFirstResponder()
+    var tableNode: ASTableNode {
+        return node
     }
     
-    private func configurePromptLabel() {
-        let formattedPhoneNumber = try? phoneNumberUtil.format(phoneNumber, numberFormat: .INTERNATIONAL)
-        promptLabel.text = "На номер \(formattedPhoneNumber!) было отправлено SMS c кодом."
+    var verificationCodeTextNode:ASEditableTextNode {
+        return verificationCodeNode.textNode
+    }
+    
+    var verificationCodeText: String {
+        set {
+            verificationCodeTextNode.setTextWhileKeepingAttributes(text: newValue)
+        }
+        get {
+            return verificationCodeTextNode.attributedText?.string ?? ""
+        }
+    }
+    
+    init(phoneNumber: NBPhoneNumber) {
+        self.phoneNumber = phoneNumber        
+        self.verificationCodeNode = VerificationCodeNode(phoneNumber: try! phoneNumberUtil.format(phoneNumber, numberFormat: .INTERNATIONAL))
+        super.init(node: ASTableNode())
+        
+        tableNode.delegate = self
+        tableNode.dataSource = self
+        tableNode.view.separatorStyle = .none
+        tableNode.backgroundColor = UIColor.white
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("storyboards are not supported")
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        verificationCodeTextNode.delegate = self
+        setupNavbar()
+    }
+    
+    private func setupNavbar() {
+        let nextBarButtonItem = UIBarButtonItem(title: "Дальше", style: .plain,target: self,action: #selector(onNextButtonTapped))
+        navigationItem.setRightBarButton(nextBarButtonItem, animated: false)        
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        startVerificationCodeEditing()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        codeTextField.resignFirstResponder()
+        verificationCodeTextNode.resignFirstResponder()
     }
     
-    @IBAction func nextButtonTapped(_ sender: Any) {
-        guard !(codeTextField.text?.isEmpty ?? true) else {
+    func onNextButtonTapped() {
+        guard !verificationCodeText.isEmpty else {
             onEmptyCode()
             return
         }
         
         let e154PhoneNumber = try! phoneNumberUtil.format(phoneNumber, numberFormat: .E164)
         
-        let onNetworkActivity = Debouncer {
+        let onNetworkActivity = debounce {
             UIApplication.shared.isNetworkActivityIndicatorVisible = true
-            self.nextBarButtonItem.isEnabled = false
+            self.navigationItem.rightBarButtonItem?.isEnabled = false
             
         }.onCancel {
             UIApplication.shared.isNetworkActivityIndicatorVisible = false
-            self.nextBarButtonItem.isEnabled = true
+            self.navigationItem.rightBarButtonItem?.isEnabled = true
         }
         
         firstly {
             onNetworkActivity.apply()
             
-            return Authentication.requestAuthToken(phoneNumber: e154PhoneNumber, code: codeTextField.text!)
+            return Authentication.requestAuthToken(phoneNumber: e154PhoneNumber, code: verificationCodeText)
             
         }.then { (authToken: String) -> () in
-            AuthenticationEvent.fire(authToken: authToken)                        
-            
+            AuthenticationEvent.fire(authToken: authToken)
+                
         }.always { () -> () in
             onNetworkActivity.cancel()
-        
+                
         }.catch { error in
-            switch error {
-            case AuthenticationError.invalidVerificationCode:
-                self.onInvalidCode(description: "Вы указали неправильный код.")
-            
-            default:
-                // todo: handle open api chat error
-                debugPrint(error.localizedDescription)
-                // todo: show death screen
-            }
+            // todo: handle all error cases
+            self.onInvalidCode(description: "Вы указали неправильный код.")
+            debugPrint(error.localizedDescription)
         }
     }
- 
+    
     private func onEmptyCode() {
         shakeCodeTextField()
     }
@@ -94,7 +120,7 @@ class VerificationCodeViewController: UIViewController, UITextFieldDelegate {
     }
     
     private func shakeCodeTextField() {
-        guard codeTextField.pop_animation(forKey: "shake") == nil else {
+        guard verificationCodeTextNode.pop_animation(forKey: "shake") == nil else {
             return
         }
         
@@ -102,25 +128,40 @@ class VerificationCodeViewController: UIViewController, UITextFieldDelegate {
         shake?.springBounciness = 20
         shake?.velocity = NSNumber(value: 1500)
         
-        codeTextField.pop_add(shake, forKey: "shake")
+        verificationCodeTextNode.pop_add(shake, forKey: "shake")
     }
     
-    private func presentLocalitiesViewController() {
-        let controller = storyboard?.instantiateViewController(withIdentifier: "Localities") as! LocalitiesViewController
+    private func startVerificationCodeEditing() {
+        let phoneNumberTextView = verificationCodeTextNode.textView
+        phoneNumberTextView.becomeFirstResponder()
         
-        present(controller, animated: true, completion: nil)
+        let newPosition = phoneNumberTextView.endOfDocument
+        phoneNumberTextView.selectedTextRange = phoneNumberTextView.textRange(from: newPosition, to: newPosition)
+    }
+}
+
+extension VerificationCodeViewController: ASTableDataSource, ASTableDelegate {
+    func tableNode(_ tableNode: ASTableNode, numberOfRowsInSection section: Int) -> Int {
+        return 1
     }
     
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        let oldText = (codeTextField.text ?? "") as NSString
-        let newText = oldText.replacingCharacters(in: range, with: string).digits
+    func tableNode(_ tableNode: ASTableNode, nodeForRowAt indexPath: IndexPath) -> ASCellNode {
+        return verificationCodeNode
+    }
+}
+
+extension VerificationCodeViewController: ASEditableTextNodeDelegate {
+    func editableTextNode(_ editableTextNode: ASEditableTextNode, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        let oldText = verificationCodeText as NSString
+        let newText = oldText.replacingCharacters(in: range, with: text).digits
         
         guard newText.characters.count <= 10 else {
             return false
         }
         
-        codeTextField.text = newText
+        verificationCodeText = newText
         
         return false
     }
 }
+

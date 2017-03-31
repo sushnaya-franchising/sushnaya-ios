@@ -15,6 +15,6 @@ struct APIChatErrorEvent: Event {
     var cause: Error
     
     static func fire(_ cause: Error) {
-        SwiftEventBus.post(APIChatErrorEvent.name, sender: APIChatErrorEvent(cause: cause))
+        EventBus.post(APIChatErrorEvent.name, sender: APIChatErrorEvent(cause: cause))
     }
 }
