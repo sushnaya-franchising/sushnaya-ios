@@ -28,17 +28,17 @@ class Authentication {
         return Promise { fulfill, reject in
             let parameters = ["phoneNumber": phoneNumber.replacingOccurrences(of: "+", with: "")]
 
-            fulfill()
+            //fulfill()
 
-//            Alamofire.request(authenticateUrl, method: .post, parameters: parameters).validate().response { response in
-//                if let error = response.error {
-//                    todo: handle error gently
-//                    reject(error)
-//
-//                } else {
-//                    fulfill()
-//                }
-//            }
+            Alamofire.request(authenticateUrl, method: .post, parameters: parameters).validate().response { response in
+                if let error = response.error {
+                    // todo: handle error gently
+                    reject(error)
+
+                } else {
+                    fulfill()
+                }
+            }
         }
     }
 
@@ -49,19 +49,19 @@ class Authentication {
                     "code": code
             ]
 
-            fulfill("token")
+//            fulfill("token")
 
-//            Alamofire.request(tokenUrl, method: .get, parameters: parameters).validate().responseString { response in
-//                switch response.result {
-//
-//                case .success:
-//                    fulfill(response.result.value!)
-//
-//                case .failure(let error):
-//                    todo: handle error gently
-//                    reject(error)
-//                }
-//            }
+            Alamofire.request(tokenUrl, method: .get, parameters: parameters).validate().responseString { response in
+                switch response.result {
+
+                case .success:
+                    fulfill(response.result.value!)
+
+                case .failure(let error):
+                    //todo: handle error gently
+                    reject(error)
+                }
+            }
         }
     }
 }

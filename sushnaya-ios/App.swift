@@ -13,6 +13,7 @@ import PromiseKit
 import SwiftEventBus
 import SwiftWebSocket
 import PaperFold
+import FontAwesome_swift
 
 @UIApplicationMain
 class App: UIResponder, UIApplicationDelegate {
@@ -50,20 +51,26 @@ class App: UIResponder, UIApplicationDelegate {
 
         return ASNavigationController(rootViewController: signInVC)
     }
-    
+
     private func createDefaultRootViewController() -> UIViewController {
-        let rootTBC = PaperFoldTabBarController(s:"Hello world")
-        rootTBC.tabBar.tintColor = PaperColor.Blue500
-        
-        let homeNC = UINavigationController(rootViewController: HomeViewController())
-        homeNC.tabBarItem.title = "Дом"
-        
-        let settingsNC = UINavigationController(rootViewController: SettingsViewController())
-        settingsNC.tabBarItem.title = "Настройки"
+        let rootTBC = PaperFoldTabBarController()
+        rootTBC.delegate = self
+        rootTBC.tabBar.unselectedItemTintColor = PaperColor.Gray
+        rootTBC.tabBar.tintColor = PaperColor.Gray700
+
+        let homeNC = ASNavigationController(rootViewController: HomeViewController())
+        homeNC.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
+        let image = UIImage(named: "logo")!
+        homeNC.tabBarItem.image = image.convertToGrayScale().tranlucentWithAlpha(alpha: 0.5).withRenderingMode(.alwaysOriginal)
+        homeNC.tabBarItem.selectedImage = image.withRenderingMode(.alwaysOriginal)
+
+        let settingsNC = ASNavigationController(rootViewController: SettingsViewController())
+        settingsNC.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
+        settingsNC.tabBarItem.image = UIImage.fontAwesomeIcon(name: .ellipsisH, textColor: PaperColor.Gray, size: CGSize(width: 25, height: 25))
         
         rootTBC.addChildViewController(homeNC, narrowSideController: CategoriesSideViewController(), fullSideController: CategoriesViewController())
         rootTBC.addChildViewController(settingsNC)
-        
+
         return rootTBC
     }
 
@@ -142,6 +149,7 @@ class App: UIResponder, UIApplicationDelegate {
             self.startAPIChat()
 
             let authenticatedVC = self.createDefaultRootViewController()
+            // todo: open full side vc with categories and set tab bar invisible
 
             self.changeRootViewController(authenticatedVC)
         }
@@ -213,3 +221,8 @@ class App: UIResponder, UIApplicationDelegate {
     }
 }
 
+extension App: UITabBarControllerDelegate {
+    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
+        (tabBarController as! PaperFoldTabBarController).setPaperFoldState(isFolded: true, animated: true)
+    }
+}

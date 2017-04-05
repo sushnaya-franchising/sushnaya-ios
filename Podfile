@@ -3,7 +3,6 @@ source 'https://github.com/CocoaPods/Specs.git'
 
 target 'sushnaya-ios' do
     use_frameworks!
-    pod "RazzleDazzle"
     pod 'Fabric'
     pod 'Crashlytics'
     pod 'FontAwesome.swift'

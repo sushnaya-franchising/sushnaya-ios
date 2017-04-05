@@ -9,21 +9,15 @@
 import Foundation
 import AsyncDisplayKit
 
-class HomeViewController: ASViewController<ASTableNode> {
-
+class HomeViewController: ASViewController<ASDisplayNode> {
+    
     var products: [Product]?
 
-    var tableNode: ASTableNode {
-        return node
-    }
-
     convenience init() {
-        self.init(node: ASTableNode())
-
-//        tableNode.delegate = self
-//        tableNode.dataSource = self
-        tableNode.view.separatorStyle = .none
-        tableNode.backgroundColor = UIColor.white
+        self.init(node: ASDisplayNode())
+        
+        node.automaticallyManagesSubnodes = true
+        node.backgroundColor = PaperColor.White
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -34,16 +28,11 @@ class HomeViewController: ASViewController<ASTableNode> {
         if self.products == nil {
             AskMenuEvent.fire()
         }
-        //fireFakeChangeLoalitiesProposal()
     }
 
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
 
-        EventBus.unregister(self)
+        fireFakeChangeLoalitiesProposal()
     }
 }
-
-//extension HomeViewController: ASTableDataSource, ASTableDelegate {
-//
-//}
