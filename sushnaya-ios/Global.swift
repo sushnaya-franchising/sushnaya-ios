@@ -9,7 +9,7 @@ import AsyncDisplayKit
 
 typealias EventBus = SwiftEventBus
 
-func ASImageNodePrecompositedCornerModification(cornerRadius: CGFloat) -> ((UIImage) -> UIImage){
+func ImageNodePrecompositedCornerModification(cornerRadius: CGFloat) -> ((UIImage) -> UIImage){
     return{ (image:UIImage) -> UIImage in
             let rect = CGRect(origin: CGPoint.zero, size: image.size)
 

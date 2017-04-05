@@ -15,13 +15,8 @@ class LocalitiesViewController: ASViewController<LocalitiesNode> {
         }
     }
 
-    init(localities: [Locality]) {
-        super.init(node: LocalitiesNode(localities: localities))
-
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("storyboards are not supported")
+    convenience init(localities: [Locality]) {
+        self.init(node: LocalitiesNode(localities: localities))
     }
 
     override func viewWillAppear(_ animated: Bool) {

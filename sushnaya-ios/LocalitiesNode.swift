@@ -76,8 +76,12 @@ extension LocalitiesNode: ASTableDataSource, ASTableDelegate {
     }
 
     func tableNode(_ tableNode: ASTableNode, nodeBlockForRowAt indexPath: IndexPath) -> ASCellNodeBlock {
-        return { [unowned self] () -> ASCellNode in
-            return LocalityCellNode(locality: self.localities[indexPath.row])
+        guard localities.count > indexPath.row else { return { ASCellNode() } }
+
+        let locality = self.localities[indexPath.row]
+
+        return {
+            return LocalityCellNode(locality: locality)
         }
     }
 }

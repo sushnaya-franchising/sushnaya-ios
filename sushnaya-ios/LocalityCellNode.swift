@@ -14,7 +14,7 @@ class LocalityCellNode: ASCellNode {
     var imageNode: ASNetworkImageNode = {
         let imageNode = ASNetworkImageNode()
         imageNode.contentMode = .scaleAspectFit
-        imageNode.imageModificationBlock = ASImageNodePrecompositedCornerModification(cornerRadius: 10)
+        imageNode.imageModificationBlock = ImageNodePrecompositedCornerModification(cornerRadius: 10)
         return imageNode
     }()
 

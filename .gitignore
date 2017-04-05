@@ -54,3 +54,5 @@ fastlane/test_output
 timeline.xctimeline
 playground.xcworkspace
 *.playground
+
+.idea

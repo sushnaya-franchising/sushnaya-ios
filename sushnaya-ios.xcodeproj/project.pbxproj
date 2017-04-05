@@ -7,8 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		19BB485CFD3BF7ECAE14EC5E /* CategoriesMosaicCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19BB4E7419EC6262ACB49B2B /* CategoriesMosaicCollectionViewLayout.swift */; };
 		2E63727D1E803945009EE5B8 /* TermsOfUse.html in Resources */ = {isa = PBXBuildFile; fileRef = 2E63727C1E803945009EE5B8 /* TermsOfUse.html */; };
 		2E7BCA681E7B087500B6FEE6 /* intro_video.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 2E7BCA671E7B087500B6FEE6 /* intro_video.mp4 */; };
+		2E80ACE81E8EDFA600D0DBCF /* CategoryCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E80ACE71E8EDFA600D0DBCF /* CategoryCellNode.swift */; };
+		2E80ACEA1E8FAC9B00D0DBCF /* CategorySmallCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E80ACE91E8FAC9B00D0DBCF /* CategorySmallCellNode.swift */; };
 		2E926DE21E8E53D100070538 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E926DDE1E8E53D100070538 /* App.swift */; };
 		2E926DE31E8E53D100070538 /* UserSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E926DDF1E8E53D100070538 /* UserSession.swift */; };
 		2E926DE41E8E53D100070538 /* Authentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E926DE01E8E53D100070538 /* Authentication.swift */; };
@@ -69,8 +72,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		19BB4E7419EC6262ACB49B2B /* CategoriesMosaicCollectionViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategoriesMosaicCollectionViewLayout.swift; sourceTree = "<group>"; };
 		2E63727C1E803945009EE5B8 /* TermsOfUse.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = TermsOfUse.html; sourceTree = "<group>"; };
 		2E7BCA671E7B087500B6FEE6 /* intro_video.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = intro_video.mp4; sourceTree = "<group>"; };
+		2E80ACE71E8EDFA600D0DBCF /* CategoryCellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategoryCellNode.swift; sourceTree = "<group>"; };
+		2E80ACE91E8FAC9B00D0DBCF /* CategorySmallCellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategorySmallCellNode.swift; sourceTree = "<group>"; };
 		2E926DDE1E8E53D100070538 /* App.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		2E926DDF1E8E53D100070538 /* UserSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserSession.swift; sourceTree = "<group>"; };
 		2E926DE01E8E53D100070538 /* Authentication.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Authentication.swift; sourceTree = "<group>"; };
@@ -277,8 +283,11 @@
 		2E926E211E8E547400070538 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				19BB4E7419EC6262ACB49B2B /* CategoriesMosaicCollectionViewLayout.swift */,
 				2E926E2B1E8E54E800070538 /* LocalityCellNode.swift */,
 				2E926E2C1E8E54E800070538 /* LocalitiesNode.swift */,
+				2E80ACE91E8FAC9B00D0DBCF /* CategorySmallCellNode.swift */,
+				2E80ACE71E8EDFA600D0DBCF /* CategoryCellNode.swift */,
 			);
 			name = App;
 			sourceTree = "<group>";
@@ -492,6 +501,7 @@
 				2E926E011E8E53F700070538 /* TermsOfUseViewController.swift in Sources */,
 				2E926DF51E8E53E100070538 /* ConnectionDidOpenAPIChatEvent.swift in Sources */,
 				2E926E0D1E8E540900070538 /* PaperFold.swift in Sources */,
+				2E80ACE81E8EDFA600D0DBCF /* CategoryCellNode.swift in Sources */,
 				2E926E131E8E544300070538 /* PaperButton.swift in Sources */,
 				2E926E4C1E8E551600070538 /* CGFloatExt.swift in Sources */,
 				2E926DF41E8E53E100070538 /* APIChatErrorEvent.swift in Sources */,
@@ -512,6 +522,7 @@
 				2E926E461E8E551600070538 /* Debouncer.swift in Sources */,
 				2E926E4E1E8E551600070538 /* ASEditableTextNodeExt.swift in Sources */,
 				2E926E0B1E8E540000070538 /* CategoriesSideViewController.swift in Sources */,
+				2E80ACEA1E8FAC9B00D0DBCF /* CategorySmallCellNode.swift in Sources */,
 				2E926DFE1E8E53F700070538 /* SignInViewController.swift in Sources */,
 				2E926DE51E8E53D100070538 /* APIChat.swift in Sources */,
 				2E926E371E8E54F200070538 /* MenuCategory.swift in Sources */,
@@ -533,6 +544,7 @@
 				2E926DE41E8E53D100070538 /* Authentication.swift in Sources */,
 				2E926DF61E8E53E100070538 /* ConnectionDidCloseAPIChatEvent.swift in Sources */,
 				2E926E4F1E8E551600070538 /* Global.swift in Sources */,
+				19BB485CFD3BF7ECAE14EC5E /* CategoriesMosaicCollectionViewLayout.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -25,7 +25,6 @@ class SignInNode: ASDisplayNode {
         initIntroVideoNode()
         
         initSignInButtonNode()
-        // todo: sign in button click animation
     }
         
     private func initIntroVideoNode() {
