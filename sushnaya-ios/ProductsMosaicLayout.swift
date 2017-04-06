@@ -6,7 +6,7 @@
 import Foundation
 import AsyncDisplayKit
 
-protocol ProductsMosaicCollectionViewLayoutDelegate: ASCollectionDelegate {
+protocol ProductsMosaicLayoutDelegate: ASCollectionDelegate {
     func collectionView(_ collectionView: UICollectionView, heightForPhotoAtIndexPath indexPath: IndexPath,
                         withWidth width: CGFloat) -> CGFloat
     
@@ -20,8 +20,8 @@ protocol ProductsMosaicCollectionViewLayoutDelegate: ASCollectionDelegate {
                         withWidth width: CGFloat) -> CGFloat
 }
 
-class ProductsMosaicCollectionViewLayout: UICollectionViewFlowLayout {
-    var delegate: ProductsMosaicCollectionViewLayoutDelegate!
+class ProductsMosaicLayout: UICollectionViewFlowLayout {
+    var delegate: ProductsMosaicLayoutDelegate!
     
     var numberOfColumns = 2
     var cellPadding: CGFloat = 0
