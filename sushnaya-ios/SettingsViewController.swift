@@ -18,9 +18,6 @@ class SettingsViewController: ASViewController<ASTableNode> {
     init() {
         super.init(node: ASTableNode())
 
-//        tableNode.delegate = self
-//        tableNode.dataSource = self
-//        tableNode.view.separatorStyle = .none
         tableNode.backgroundColor = UIColor.white
     }
 
@@ -28,7 +25,3 @@ class SettingsViewController: ASViewController<ASTableNode> {
         fatalError("storyboards are not supported")
     }
 }
-
-//extension SettingsViewController: ASTableDataSource, ASTableDelegate {
-//
-//}

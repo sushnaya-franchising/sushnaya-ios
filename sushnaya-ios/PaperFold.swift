@@ -20,7 +20,7 @@ class PaperFoldTabBarController: ASTabBarController {
     static let NarrowSideControllerWidth = CGFloat(96)
 
     private lazy var paperFoldNCs: [PaperFoldNavigationController] = []
-
+    
     func setPaperFoldState(isFolded: Bool, animated: Bool) {
         paperFoldNCs.forEach {
             $0.setPaperFoldState(isFolded: isFolded, animated: animated)
@@ -75,7 +75,7 @@ class PaperFoldTabBarController: ASTabBarController {
         if var asyncView = (vc as? PaperFoldAsyncView) {
             asyncView.onViewUpdated = navigationController.retakeScreenShot
         }
-    }
+    }               
 }
 
 class PaperFoldNavigationController: ASNavigationController, PaperFoldViewDelegate {

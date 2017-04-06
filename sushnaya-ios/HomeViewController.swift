@@ -8,6 +8,7 @@
 
 import Foundation
 import AsyncDisplayKit
+import FontAwesome_swift
 
 class HomeViewController: ASViewController<ASDisplayNode> {
 
@@ -73,7 +74,7 @@ class HomeViewController: ASViewController<ASDisplayNode> {
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         
-        _collectionNode.view.contentInset = UIEdgeInsets(top: 5, left: 0, bottom: 49 + 10, right: 0)
+        _collectionNode.view.contentInset = UIEdgeInsets(top: 5, left: 0, bottom: 49 + 16, right: 0)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -89,7 +90,7 @@ class HomeViewController: ASViewController<ASDisplayNode> {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        fireFakeChangeLoalitiesProposal()
+        fireFakeChangeLoalitiesProposal()                
     }
 }
 
