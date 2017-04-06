@@ -19,13 +19,7 @@ class ProductCellNode: ASCellNode {
     let titleLabel = ASTextNode()
     private(set) var subtitleLabel: ASTextNode?
     let priceLabel = ASTextNode()
-    
-    override var isSelected: Bool {
-        didSet {
-            backgroundColor = isSelected ? selectedCellBackground: cellBackground
-        }
-    }
-    
+
     init(product: Product) {
         super.init()
 

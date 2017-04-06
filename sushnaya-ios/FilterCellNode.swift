@@ -9,11 +9,12 @@
 import Foundation
 import AsyncDisplayKit
 
-class CategorySmallCellNode: ASCellNode {
+class FilterCellNode: ASCellNode {
 
-    let imageCornerRadius = Constants.CategorySmallCellLayout.ImageCornerRadius
-    let cellBackgroundColor = Constants.CategorySmallCellLayout.BackgroundColor
-    let cellSelectedBackground = Constants.CategorySmallCellLayout.SelectedBackgroundColor
+    let imageCornerRadius = Constants.FilterCellLayout.ImageCornerRadius
+    let cellBackgroundColor = Constants.FilterCellLayout.BackgroundColor
+    let cellSelectedBackground = Constants.FilterCellLayout.SelectedBackgroundColor
+    let cellInsets = Constants.FilterCellLayout.CellInsets
     
     let imageNode: ASImageNode = {// todo: make it ASNetworkingNode
         let imageNode = ASImageNode()
@@ -31,25 +32,25 @@ class CategorySmallCellNode: ASCellNode {
         }
     }
     
-    init(category: MenuCategory) {
+    init(filter: Filter) {
         super.init()
         
         self.automaticallyManagesSubnodes = true
         self.selectionStyle = .none
         self.backgroundColor = cellBackgroundColor
         
-        setupNodes(category)
+        setupNodes(filter)
     }
     
-    private func setupNodes(_ category: MenuCategory) {
-        setupImageNode(category)
-        setupTitleLabel(category)
+    private func setupNodes(_ filter: Filter) {
+        setupImageNode(filter)
+        setupTitleLabel(filter)
     }
     
-    private func setupImageNode(_ category: MenuCategory) {
+    private func setupImageNode(_ filter: Filter) {
         //imageNode.defaultImage = UIImage(color: PaperColor.Gray300, size: Constants.CellLayout.CoatOfArmsImageSize)
         
-        if let url = category.photoUrl {
+        if let url = filter.imageUrl {
         //    imageNode.url = URL(string: url)
             imageNode.image = UIImage(named: url)
         }
@@ -62,21 +63,23 @@ class CategorySmallCellNode: ASCellNode {
         imageNode.clipsToBounds = true
     }
     
-    private func setupTitleLabel(_ category: MenuCategory) {
-        titleLabel.attributedText = NSAttributedString(string: category.title, attributes: Constants.CategorySmallCellLayout.TitleStringAttributes)
+    private func setupTitleLabel(_ filter: Filter) {
+        titleLabel.attributedText = NSAttributedString(string: filter.title, attributes: Constants.FilterCellLayout.TitleStringAttributes)
     }
 
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let stack = ASStackLayoutSpec.vertical()
         stack.alignItems = .center
-        stack.justifyContent = .center
+        stack.justifyContent = .start
         
-        imageNode.style.preferredSize = Constants.CategorySmallCellLayout.CategorySmallImageSize
+        imageNode.style.preferredSize = Constants.FilterCellLayout.ImageSize
         
-        stack.children = [imageNode, titleLabel]
+        stack.children = [
+                imageNode,
+                ASInsetLayoutSpec(insets: Constants.FilterCellLayout.TitleLabelInsets, child: titleLabel)
+        ]
         
-        let rowInsets = UIEdgeInsets(top: 6, left: 4, bottom: 6, right: 4)
-        return ASInsetLayoutSpec(insets: rowInsets, child: stack)
+        return ASInsetLayoutSpec(insets: cellInsets, child: stack)
     }
 }
 

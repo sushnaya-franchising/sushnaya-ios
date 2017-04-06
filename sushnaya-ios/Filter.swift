@@ -9,38 +9,26 @@
 import Foundation
 
 protocol Filter {
-    associatedtype Payload
-    
-    var name:String { get }
-    
-    var imageSize:CGSize? { get }
-    
-    var imageUrl:String? { get }
-    
-    var payload: Payload { get }
+    var title: String { get }
+    var imageSize: CGSize? { get }
+    var imageUrl: String? { get }
 }
 
 class FilterByCategory: Filter {
-    typealias Payload = MenuCategory
-    
-    var payload: MenuCategory {
-        return category
-    }
-    
-    var name: String {
+    var title: String {
         return category.title
     }
-    
+
     var imageSize: CGSize? {
         return category.photoSize
     }
-    
+
     var imageUrl: String? {
         return category.photoUrl
     }
-    
-    private var category: MenuCategory
-    
+
+    let category: MenuCategory
+
     init(_ category: MenuCategory) {
         self.category = category
     }

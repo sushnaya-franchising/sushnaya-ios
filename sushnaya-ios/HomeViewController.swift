@@ -37,7 +37,7 @@ class HomeViewController: ASViewController<ASDisplayNode> {
     }
 
     private func setupCollectionNode() {
-        let layout = ProductsMosaicCollectionViewLayout()
+        let layout = ProductsMosaicLayout()
         layout.delegate = self
 
         _collectionNode = ASCollectionNode(frame: CGRect.zero, collectionViewLayout: layout)
@@ -112,7 +112,7 @@ extension HomeViewController: ASCollectionDataSource, ASCollectionDelegate {
     }        
 }
 
-extension HomeViewController: ProductsMosaicCollectionViewLayoutDelegate {
+extension HomeViewController: ProductsMosaicLayoutDelegate {
     func collectionView(_ collectionView: UICollectionView, heightForPhotoAtIndexPath indexPath: IndexPath, withWidth width: CGFloat) -> CGFloat {
         let maxWidth = width - (cellInsets.left + cellInsets.right)
 
