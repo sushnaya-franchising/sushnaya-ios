@@ -11,25 +11,23 @@ import AsyncDisplayKit
 
 class CategorySmallCellNode: ASCellNode {
 
+    let imageCornerRadius = Constants.CategorySmallCellLayout.ImageCornerRadius
+    let cellBackgroundColor = Constants.CategorySmallCellLayout.BackgroundColor
+    let cellSelectedBackground = Constants.CategorySmallCellLayout.SelectedBackgroundColor
+    
     let imageNode: ASImageNode = {// todo: make it ASNetworkingNode
         let imageNode = ASImageNode()
         imageNode.contentMode = .scaleAspectFit
-        imageNode.imageModificationBlock = ImageNodePrecompositedCornerModification(cornerRadius: 20)
+//        imageNode.imageModificationBlock = ImageNodePrecompositedCornerModification(
+//            cornerRadius: Constants.LocalityCellLayout.ImageCornerRadius)
         return imageNode
     }()
 
-    let titleLabel = ASTextNode()
-
-    lazy var titleStringAttributes: [String: AnyObject] = {
-        return [
-            NSForegroundColorAttributeName: PaperColor.Gray800,
-            NSFontAttributeName: UIFont.boldSystemFont(ofSize: 10)
-        ]
-    }()
+    let titleLabel = ASTextNode()    
     
     override var isSelected: Bool {
         didSet {
-            backgroundColor = isSelected ? PaperColor.Gray200: PaperColor.White
+            backgroundColor = isSelected ? cellSelectedBackground: cellBackgroundColor
         }
     }
     
@@ -37,6 +35,8 @@ class CategorySmallCellNode: ASCellNode {
         super.init()
         
         self.automaticallyManagesSubnodes = true
+        self.selectionStyle = .none
+        self.backgroundColor = cellBackgroundColor
         
         setupNodes(category)
     }
@@ -52,11 +52,18 @@ class CategorySmallCellNode: ASCellNode {
         if let url = category.photoUrl {
         //    imageNode.url = URL(string: url)
             imageNode.image = UIImage(named: url)
-        } 
+        }
     }
 
+    override func didLoad() {
+        super.didLoad()
+        
+        imageNode.layer.cornerRadius = imageCornerRadius // todo: use optimized corner radius, update corner radius in ASNetworkImageNodeDelegate
+        imageNode.clipsToBounds = true
+    }
+    
     private func setupTitleLabel(_ category: MenuCategory) {
-        titleLabel.attributedText = NSAttributedString(string: category.title, attributes: titleStringAttributes)
+        titleLabel.attributedText = NSAttributedString(string: category.title, attributes: Constants.CategorySmallCellLayout.TitleStringAttributes)
     }
 
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
@@ -64,11 +71,11 @@ class CategorySmallCellNode: ASCellNode {
         stack.alignItems = .center
         stack.justifyContent = .center
         
-        imageNode.style.preferredSize = Constants.CellLayout.CategorySmallImageSize
+        imageNode.style.preferredSize = Constants.CategorySmallCellLayout.CategorySmallImageSize
         
         stack.children = [imageNode, titleLabel]
         
-        let rowInsets = UIEdgeInsets(top: 6, left: 16, bottom: 6, right: 16)
+        let rowInsets = UIEdgeInsets(top: 6, left: 4, bottom: 6, right: 4)
         return ASInsetLayoutSpec(insets: rowInsets, child: stack)
     }
 }

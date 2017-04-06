@@ -9,21 +9,30 @@
 import Foundation
 import AsyncDisplayKit
 
-class CategoriesViewController: ASViewController<ASDisplayNode> {
+class CategoriesViewController: ASViewController<ASDisplayNode>, PaperFoldAsyncView {
+    
+    let cellInsets = Constants.CategoryCellLayout.CellInsets
+    let titleLabelInsets = Constants.CategoryCellLayout.TitleLabelInsets
+    let subtitleLabelInsets = Constants.CategoryCellLayout.SubtitleLabelInsets
+    let titleStringAttrs = Constants.CategoryCellLayout.TitleStringAttributes
+    let subtitleStringAttrs = Constants.CategoryCellLayout.SubtitleStringAttributes
     
     var categories: [MenuCategory]?
     
-    let kNumberOfСategories: UInt = 6
     var _collectionNode: ASCollectionNode!
     
+    var onViewUpdated: (() -> ())?
+    
+    static var _homeTabBarItemSelectedImage: UIImage?
+    
     convenience init() {
-        self.init(node: ASDisplayNode())
+        self.init(node: ASDisplayNode())                
         
         setupCollectionNode()
         
-        node.automaticallyManagesSubnodes = true
-        node.backgroundColor = PaperColor.White
-        node.layoutSpecBlock = { [unowned self] _ in
+        self.node.automaticallyManagesSubnodes = true
+        self.node.backgroundColor = PaperColor.White
+        self.node.layoutSpecBlock = { [unowned self] _ in
             return ASInsetLayoutSpec(insets: UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0), child: self._collectionNode)
         }
         
@@ -41,7 +50,7 @@ class CategoriesViewController: ASViewController<ASDisplayNode> {
     
     private func initFakeData() {
         categories = []
-        for idx in 0 ..< kNumberOfСategories {
+        for idx in 0 ..< 6 {
             let title = "Раздел \(idx)"
             let subtitle = "Описание раздела \(idx)"
             let photoUrl = "category_\(idx)"
@@ -77,55 +86,45 @@ extension CategoriesViewController: ASCollectionDataSource, ASCollectionDelegate
     
     
     func collectionNode(_ collectionNode: ASCollectionNode, nodeForItemAt indexPath: IndexPath) -> ASCellNode {
-        guard let category = categories?[indexPath.row] else {return ASCellNode()}
+        guard let category = categories?[indexPath.row] else { return ASCellNode() }
         
         return CategoryCellNode(category: category)
     }
+    
+    func collectionNode(_ collectionNode: ASCollectionNode, didEndDisplayingItemWith node: ASCellNode) {
+        onViewUpdated?()
+    }
 }
 
-extension CategoriesViewController: MosaicCollectionViewLayoutDelegate {
+extension CategoriesViewController: CategoriesMosaicCollectionViewLayoutDelegate {
     func collectionView(_ collectionView: UICollectionView, heightForPhotoAtIndexPath indexPath: IndexPath, withWidth width: CGFloat) -> CGFloat {
-        let category = categories?[indexPath.item]
-        let maxWidth = width - Constants.CategoryCellLayout.CellInsets.left - Constants.CategoryCellLayout.CellInsets.right
-        
-        if let imageSize = category?.photoSize {
-            
-            let boundingRect = CGRect(x: 0, y: 0, width: maxWidth, height: CGFloat(MAXFLOAT))
-            let rect = AVMakeRect(aspectRatio: imageSize, insideRect: boundingRect)
-            
-            return Constants.CategoryCellLayout.CellInsets.top +
-                rect.size.height
-            
-        }else {
-            return Constants.CategoryCellLayout.CellInsets.top +
-                (maxWidth) * Constants.GoldenRatio
+        let maxWidth = width - (cellInsets.left + cellInsets.right)
+
+        guard let imageSize = categories?[indexPath.item].photoSize else {
+            return cellInsets.top + (maxWidth) * Constants.GoldenRatio
         }
+        
+        let boundingRect = CGRect(x: 0, y: 0, width: maxWidth, height: CGFloat(MAXFLOAT))
+        let rect = AVMakeRect(aspectRatio: imageSize, insideRect: boundingRect)
+            
+        return cellInsets.top + rect.size.height
     }
     
     func collectionView(_ collectionView: UICollectionView, heightForTitleAtIndexPath indexPath: IndexPath, withWidth width: CGFloat) -> CGFloat {
-        if let category = categories?[indexPath.item] {
-            let maxWidth = width - Constants.CategoryCellLayout.CellInsets.left - Constants.CategoryCellLayout.CellInsets.right -
-                Constants.CategoryCellLayout.TitleLabelInsets.left - Constants.CategoryCellLayout.TitleLabelInsets.right
-            return Constants.CategoryCellLayout.TitleLabelInsets.top +
-                category.heightForTitle(attributes: Constants.CategoryCellLayout.TitleStringAttributes, width: maxWidth) +
-                Constants.CategoryCellLayout.TitleLabelInsets.bottom
+        guard let title = categories?[indexPath.item].title  else { return 0 }
+        
+        let maxWidth = width - (cellInsets.left + cellInsets.right + titleLabelInsets.left + titleLabelInsets.right)
             
-        } else {
-            return 0
-        }
+        return title.computeHeight(attributes: titleStringAttrs, width: maxWidth) +
+            titleLabelInsets.top + titleLabelInsets.bottom
     }
     
     func collectionView(_ collectionView: UICollectionView, heightForSubtitleAtIndexPath indexPath: IndexPath, withWidth width: CGFloat) -> CGFloat {
-        if let category = categories?[indexPath.item] {
-            let maxWidth = width - Constants.CategoryCellLayout.CellInsets.left - Constants.CategoryCellLayout.CellInsets.right -
-            Constants.CategoryCellLayout.SubtitleLabelInsets.left - Constants.CategoryCellLayout.SubtitleLabelInsets.right
-            return Constants.CategoryCellLayout.SubtitleLabelInsets.top +
-                category.heightForSubtitle(attributes: Constants.CategoryCellLayout.SubtitleStringAttributes, width: maxWidth) +
-            Constants.CategoryCellLayout.SubtitleLabelInsets.bottom +
-            Constants.CategoryCellLayout.CellInsets.bottom
-            
-        } else {
-            return 0
-        }
+        guard let subtitle = categories?[indexPath.item].subtitle else { return cellInsets.bottom }
+        
+        let maxWidth = width - (cellInsets.left + cellInsets.right + subtitleLabelInsets.left + subtitleLabelInsets.right)
+        
+        return subtitle.computeHeight(attributes: subtitleStringAttrs, width: maxWidth) +
+            subtitleLabelInsets.top + subtitleLabelInsets.bottom + cellInsets.bottom
     }
 }

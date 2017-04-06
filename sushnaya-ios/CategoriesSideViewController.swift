@@ -9,7 +9,7 @@
 import Foundation
 import AsyncDisplayKit
 
-class CategoriesSideViewController: ASViewController<ASDisplayNode> {
+class CategoriesSideViewController: ASViewController<ASDisplayNode>, PaperFoldAsyncView {
     
     lazy var categories: [MenuCategory] = {
         let categories = [
@@ -24,48 +24,56 @@ class CategoriesSideViewController: ASViewController<ASDisplayNode> {
         return categories
     }()
     
-    let _tableNode = ASTableNode()
+    var _collectionNode: ASCollectionNode!
+    
+    var onViewUpdated: (() -> ())?
     
     convenience init() {
         self.init(node: ASDisplayNode())
+        
+        let layout = UICollectionViewFlowLayout()
+        layout.minimumLineSpacing = 0
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        _collectionNode = ASCollectionNode(collectionViewLayout: layout)
         
         setupTableNode()
         
         node.automaticallyManagesSubnodes = true
         node.backgroundColor = PaperColor.White
         node.layoutSpecBlock = { [unowned self] _ in
-            return ASInsetLayoutSpec(insets: UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0), child: self._tableNode)
+            return ASInsetLayoutSpec(insets: UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0), child: self._collectionNode)
         }
     }
     
     private func setupTableNode() {
-        _tableNode.delegate = self
-        _tableNode.dataSource = self
-        _tableNode.backgroundColor = PaperColor.White
+        _collectionNode.delegate = self
+        _collectionNode.dataSource = self
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        _tableNode.view.contentInset = UIEdgeInsets(top: 7, left: 0, bottom: 49 + 10, right: 0)
-        _tableNode.view.separatorStyle = .none
-        _tableNode.view.showsVerticalScrollIndicator = false
+        _collectionNode.view.contentInset = UIEdgeInsets(top: 5, left: 0, bottom: 49 + 10, right: 0)
+        _collectionNode.view.showsVerticalScrollIndicator = false
     }
 }
 
-extension CategoriesSideViewController: ASTableDataSource, ASTableDelegate {
-    func tableNode(_ tableNode: ASTableNode, numberOfRowsInSection section: Int) -> Int {
+extension CategoriesSideViewController: ASCollectionDelegate, ASCollectionDataSource {
+    func collectionNode(_ collectionNode: ASCollectionNode, numberOfItemsInSection section: Int) -> Int {
         return categories.count
     }
     
-    func tableNode(_ tableNode: ASTableNode, nodeBlockForRowAt indexPath: IndexPath) -> ASCellNodeBlock {
-        guard categories.count > indexPath.row else { return { ASCellNode() } }
+    func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
+        return 1
+    }    
+    
+    func collectionNode(_ collectionNode: ASCollectionNode, nodeForItemAt indexPath: IndexPath) -> ASCellNode {
+        let category = categories[indexPath.row]
         
-        let category = self.categories[indexPath.row]
-        
-        return {
-            return CategorySmallCellNode(category: category)
-        }
+        return CategorySmallCellNode(category: category)
+    }
+    
+    func collectionNode(_ collectionNode: ASCollectionNode, didEndDisplayingItemWith node: ASCellNode) {
+        onViewUpdated?()
     }
 }
-

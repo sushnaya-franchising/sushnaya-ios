@@ -3,13 +3,16 @@ import AsyncDisplayKit
 
 class CategoryCellNode: ASCellNode {
 
-    // todo: selection background
-
+    let cellInsets = Constants.CategoryCellLayout.CellInsets
+    let cellBackground = Constants.CategoryCellLayout.BackgroundColor
+    let selectedCellBackground = Constants.CategoryCellLayout.SelectedBackgroundColor
+    let imageCornerRadius = Constants.CategoryCellLayout.ImageCornerRadius
+    
     let imageNode: ASImageNode = {// todo: make it ASNetworkingNode
         let imageNode = ASImageNode()
         imageNode.contentMode = .scaleAspectFit
-        imageNode.imageModificationBlock = ImageNodePrecompositedCornerModification(
-            cornerRadius: Constants.CategoryCellLayout.ImageCornerRadius)
+//        imageNode.imageModificationBlock = ImageNodePrecompositedCornerModification(
+//            cornerRadius: Constants.CategoryCellLayout.ImageCornerRadius)
         return imageNode
     }()
 
@@ -18,16 +21,16 @@ class CategoryCellNode: ASCellNode {
 
     override var isSelected: Bool {
         didSet {
-            backgroundColor = isSelected ? Constants.CategoryCellLayout.SelectedBackgroundColor:
-                Constants.CategoryCellLayout.BackgroundColor
+            backgroundColor = isSelected ? selectedCellBackground: cellBackground
         }
     }
     
     init(category: MenuCategory) {
         super.init()
 
-        automaticallyManagesSubnodes = true
-        backgroundColor = Constants.CategoryCellLayout.BackgroundColor
+        self.automaticallyManagesSubnodes = true
+        self.selectionStyle = .none
+        self.backgroundColor = cellBackground
         
         setupNodes(category)
     }
@@ -58,22 +61,31 @@ class CategoryCellNode: ASCellNode {
         }
     }
 
+    override func didLoad() {
+        super.didLoad()
+        
+        layer.cornerRadius =  imageCornerRadius + min(cellInsets.left, cellInsets.top, cellInsets.right, cellInsets.bottom)
+        
+        imageNode.layer.cornerRadius = imageCornerRadius // todo: use optimized corner radius, update corner radius in ASNetworkImageNodeDelegate
+        imageNode.clipsToBounds = true
+    }
+    
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
         var imageRatio: CGFloat = 0.5
-        if imageNode.image != nil {
-            imageRatio = (imageNode.image?.size.height)! / (imageNode.image?.size.width)!
+        if let image = imageNode.image {
+            imageRatio = image.size.height / image.size.width
         }
-
-        let imageNodeSpec = ASRatioLayoutSpec(ratio: imageRatio, child: imageNode)
-        let titleLabelSpec = ASInsetLayoutSpec(insets: Constants.CategoryCellLayout.TitleLabelInsets, child: titleLabel)
-        let subtitleLabelSpec = ASInsetLayoutSpec(insets: Constants.CategoryCellLayout.SubtitleLabelInsets, child: subtitleLabel)
+        
+        let imageNodeLayout = ASRatioLayoutSpec(ratio: imageRatio, child: imageNode)
+        let titleLabelLayout = ASInsetLayoutSpec(insets: Constants.CategoryCellLayout.TitleLabelInsets, child: titleLabel)
+        let subtitleLabelLayout = ASInsetLayoutSpec(insets: Constants.CategoryCellLayout.SubtitleLabelInsets, child: subtitleLabel)
         
         let stackLayout = ASStackLayoutSpec.vertical()
         stackLayout.alignItems = .start
         stackLayout.justifyContent = .start
         stackLayout.style.flexShrink = 1.0
-        stackLayout.children = [imageNodeSpec, titleLabelSpec, subtitleLabelSpec]
+        stackLayout.children = [imageNodeLayout, titleLabelLayout, subtitleLabelLayout]
 
-        return ASInsetLayoutSpec(insets: Constants.CategoryCellLayout.CellInsets, child: stackLayout)
+        return ASInsetLayoutSpec(insets: cellInsets, child: stackLayout)
     }
 }

@@ -57,7 +57,7 @@ class App: UIResponder, UIApplicationDelegate {
         rootTBC.delegate = self
         rootTBC.tabBar.unselectedItemTintColor = PaperColor.Gray
         rootTBC.tabBar.tintColor = PaperColor.Gray700
-
+        
         let homeNC = ASNavigationController(rootViewController: HomeViewController())
         homeNC.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
         let image = UIImage(named: "logo")!
@@ -67,8 +67,8 @@ class App: UIResponder, UIApplicationDelegate {
         let settingsNC = ASNavigationController(rootViewController: SettingsViewController())
         settingsNC.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
         settingsNC.tabBarItem.image = UIImage.fontAwesomeIcon(name: .ellipsisH, textColor: PaperColor.Gray, size: CGSize(width: 25, height: 25))
-        
-        rootTBC.addChildViewController(homeNC, narrowSideController: CategoriesSideViewController(), fullSideController: CategoriesViewController())
+                
+        rootTBC.addChildViewController(homeNC, narrowSideController: CategoriesSideViewController())
         rootTBC.addChildViewController(settingsNC)
 
         return rootTBC

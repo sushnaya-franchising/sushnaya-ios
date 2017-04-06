@@ -11,9 +11,13 @@ import AsyncDisplayKit
 import PaperFold
 import UIKit
 
+protocol PaperFoldAsyncView {
+    var onViewUpdated: (() -> ())? { get set }
+}
+
 class PaperFoldTabBarController: ASTabBarController {
 
-    static let NarrowSideControllerWidth = CGFloat(92)
+    static let NarrowSideControllerWidth = CGFloat(96)
 
     private lazy var paperFoldNCs: [PaperFoldNavigationController] = []
 
@@ -31,24 +35,27 @@ class PaperFoldTabBarController: ASTabBarController {
         if let narrowSideController = narrowSideController,
            let fullSideController = fullSideController {
 
-            let narrowFNC = PaperFoldNavigationController(rootViewController: childController)
-            narrowFNC.setLeftViewController(leftViewController: narrowSideController, width: PaperFoldTabBarController.NarrowSideControllerWidth)
-            paperFoldNCs.append(narrowFNC)
+            let narrowNC = PaperFoldNavigationController(rootViewController: childController)
+            narrowNC.setLeftViewController(leftViewController: narrowSideController, width: PaperFoldTabBarController.NarrowSideControllerWidth)
+            paperFoldNCs.append(narrowNC)
 
-            let fullFNC = PaperFoldNavigationController(rootViewController: narrowFNC)
+            let fullFNC = PaperFoldNavigationController(rootViewController: narrowNC)
             fullFNC.setLeftViewController(leftViewController: fullSideController)
             fullFNC.tabBarItem = childController.tabBarItem
             paperFoldNCs.append(fullFNC)
 
-            self.addChildViewController(fullFNC)
+            self.addChildViewController(fullFNC)            
+            retakeScreenshotIfAsyncView(narrowSideController, navigationController: narrowNC)
+            retakeScreenshotIfAsyncView(fullSideController, navigationController: fullFNC)
 
         } else if let narrowSideController = narrowSideController {
-            let narrowFNC = PaperFoldNavigationController(rootViewController: childController)
-            narrowFNC.setLeftViewController(leftViewController: narrowSideController, width: PaperFoldTabBarController.NarrowSideControllerWidth)
-            narrowFNC.tabBarItem = childController.tabBarItem
-            paperFoldNCs.append(narrowFNC)
+            let narrowNC = PaperFoldNavigationController(rootViewController: childController)
+            narrowNC.setLeftViewController(leftViewController: narrowSideController, width: PaperFoldTabBarController.NarrowSideControllerWidth)
+            narrowNC.tabBarItem = childController.tabBarItem
+            paperFoldNCs.append(narrowNC)
 
-            self.addChildViewController(narrowFNC)
+            self.addChildViewController(narrowNC)
+            retakeScreenshotIfAsyncView(narrowSideController, navigationController: narrowNC)
 
         } else if let fullSideController = fullSideController {
             let fullFNC = PaperFoldNavigationController(rootViewController: childController)
@@ -57,9 +64,16 @@ class PaperFoldTabBarController: ASTabBarController {
             paperFoldNCs.append(fullFNC)
 
             self.addChildViewController(fullFNC)
-
+            retakeScreenshotIfAsyncView(fullSideController, navigationController: fullFNC)
+            
         } else {
             self.addChildViewController(childController)
+        }
+    }
+    
+    private func retakeScreenshotIfAsyncView(_ vc: UIViewController, navigationController: PaperFoldNavigationController) {
+        if var asyncView = (vc as? PaperFoldAsyncView) {
+            asyncView.onViewUpdated = navigationController.retakeScreenShot
         }
     }
 }
@@ -68,7 +82,9 @@ class PaperFoldNavigationController: ASNavigationController, PaperFoldViewDelega
     private var paperFoldView: PaperFoldView!
     private var rootViewController: UIViewController!
     private var leftViewController: UIViewController?
-
+    private var updateScreenShotDelayed:Debouncer!
+    
+    
     func setPaperFoldState(isFolded: Bool, animated: Bool) {
         if isFolded {
             self.paperFoldView.setPaperFoldState(PaperFoldStateDefault, animated: animated)
@@ -80,6 +96,15 @@ class PaperFoldNavigationController: ASNavigationController, PaperFoldViewDelega
 
     convenience override init(rootViewController: UIViewController) {
         self.init()
+        
+        // todo: fix PaperFold MultiFoldView to retake screenshot before open
+        updateScreenShotDelayed = debounce(delay: 1) { [unowned self] in
+            if self.paperFoldView.state == PaperFoldStateDefault {
+                self.paperFoldView.leftFoldView.contentViewHolder.isHidden = false
+                self.paperFoldView.leftFoldView.drawScreenshotOnFolds()
+                self.paperFoldView.leftFoldView.contentViewHolder.isHidden = true
+            }
+        }
         
         self.view.autoresizesSubviews = true
 
@@ -106,19 +131,12 @@ class PaperFoldNavigationController: ASNavigationController, PaperFoldViewDelega
         let foldCount: Int32 = width > self.view.bounds.size.width / Constants.GoldenRatio ? 2 : 1
         paperFoldView.setLeftFoldContent(leftViewController.view, foldCount: foldCount, pullFactor: 0.9)
         
-        // HACK TO TACKLE ASYNC DISPLAYING. Retake screenshot after some period of time.
-        // todo: implement paper fold with AsyncDisplayKit support
-        updateScreenshotHack()
-        
         self.leftViewController = leftViewController
     }
 
-    private func updateScreenshotHack() {
-        debounce(delay: 1) { [unowned self] in
-            self.paperFoldView.leftFoldView.contentViewHolder.isHidden = false
-            self.paperFoldView.leftFoldView.drawScreenshotOnFolds()
-            self.paperFoldView.leftFoldView.contentViewHolder.isHidden = true
-        }.apply()
+    func retakeScreenShot() {
+        // HACK TO TACKLE ASYNC DISPLAYING. Retake screenshot after some period of time.
+        updateScreenShotDelayed.apply()
     }
     
     func paperFoldView(_ paperFoldView: Any!, didFoldAutomatically automated: Bool, to paperFoldState: PaperFoldState) {
@@ -134,7 +152,7 @@ class PaperFoldNavigationController: ASNavigationController, PaperFoldViewDelega
         case PaperFoldStateLeftUnfolded:
             rootViewController.viewWillDisappear(true)
             rootViewController.viewDidDisappear(true)
-
+            
             leftViewController?.viewWillAppear(true)
             leftViewController?.viewDidAppear(true)
 
