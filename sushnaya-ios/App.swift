@@ -26,6 +26,18 @@ class App: UIResponder, UIApplicationDelegate {
 
     private var apiChatRestartDelay = 1
 
+    // todo: refactor basket button creation
+    lazy var basketButton:PaperButton = {
+        let basketButtonSize = CGSize(width: 66, height: 66)
+        let basketButtonOrigin = CGPoint(x: UIScreen.main.bounds.width/2 - basketButtonSize.width/2, y: UIScreen.main.bounds.height - (basketButtonSize.height + 5))
+        let basketButtonFrame = CGRect(origin: basketButtonOrigin, size: basketButtonSize)
+        let basketButton = PaperButton(frame: basketButtonFrame)
+        basketButton.cornerRadius = 33
+        basketButton.backgroundColor = PaperColor.Gray100
+        basketButton.icon = UIImage.fontAwesomeIcon(name: .shoppingBasket, textColor: PaperColor.Gray, size: CGSize(width: 25, height: 25))
+        return basketButton
+    }()
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         setupWindow()
         registerEventHandlers()
@@ -57,6 +69,10 @@ class App: UIResponder, UIApplicationDelegate {
         rootTBC.delegate = self
         rootTBC.tabBar.unselectedItemTintColor = PaperColor.Gray
         rootTBC.tabBar.tintColor = PaperColor.Gray700
+        rootTBC.tabBar.itemWidth = 39
+        rootTBC.tabBar.itemPositioning = .centered
+        rootTBC.tabBar.itemSpacing = UIScreen.main.bounds.width/2
+        
         
         let homeNC = ASNavigationController(rootViewController: HomeViewController())
         homeNC.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
@@ -65,12 +81,14 @@ class App: UIResponder, UIApplicationDelegate {
         homeNC.tabBarItem.selectedImage = image.withRenderingMode(.alwaysOriginal)
 
         let settingsNC = ASNavigationController(rootViewController: SettingsViewController())
-        settingsNC.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
+        settingsNC.tabBarItem.imageInsets = UIEdgeInsets(top: 18, left: 0, bottom: -18, right: 0)
         settingsNC.tabBarItem.image = UIImage.fontAwesomeIcon(name: .ellipsisH, textColor: PaperColor.Gray, size: CGSize(width: 25, height: 25))
                 
         rootTBC.addChildViewController(homeNC, narrowSideController: FiltersViewController())
         rootTBC.addChildViewController(settingsNC)
-
+        
+        rootTBC.view.addSubview(basketButton)
+        
         return rootTBC
     }
 
