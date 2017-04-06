@@ -49,7 +49,7 @@ class LocalityCellNode: ASCellNode {
     }
 
     private func setupImageNode(_ locality: Locality) {
-        imageNode.defaultImage = UIImage(color: PaperColor.Gray300, size: Constants.CellLayout.CoatOfArmsImageSize)
+        imageNode.defaultImage = UIImage(color: PaperColor.Gray300, size: Constants.LocalityCellLayout.CoatOfArmsImageSize)
 
         if let url = locality.coatOfArmsUrl {
             imageNode.url = URL(string: url)
@@ -61,7 +61,7 @@ class LocalityCellNode: ASCellNode {
         stack.justifyContent = .start
         stack.alignItems = .center
 
-        imageNode.style.preferredSize = Constants.CellLayout.CoatOfArmsImageSize
+        imageNode.style.preferredSize = Constants.LocalityCellLayout.CoatOfArmsImageSize
         let imageNodeInsets = UIEdgeInsets(top: 0, left: 64, bottom: 0, right: 16)
         let imageNodeLayoutSpec = ASInsetLayoutSpec(insets: imageNodeInsets, child: imageNode)
 

@@ -6,7 +6,7 @@
 import Foundation
 import AsyncDisplayKit
 
-protocol CategoriesMosaicCollectionViewLayoutDelegate: ASCollectionDelegate {
+protocol ProductsMosaicCollectionViewLayoutDelegate: ASCollectionDelegate {
     func collectionView(_ collectionView: UICollectionView, heightForPhotoAtIndexPath indexPath: IndexPath,
                         withWidth width: CGFloat) -> CGFloat
     
@@ -14,12 +14,15 @@ protocol CategoriesMosaicCollectionViewLayoutDelegate: ASCollectionDelegate {
                         withWidth width: CGFloat) -> CGFloat
     
     func collectionView(_ collectionView: UICollectionView, heightForSubtitleAtIndexPath indexPath: IndexPath,
-                        withWidth width: CGFloat) -> CGFloat    
+                        withWidth width: CGFloat) -> CGFloat
+    
+    func collectionView(_ collectionView: UICollectionView, heightForPriceAtIndexPath indexPath: IndexPath,
+                        withWidth width: CGFloat) -> CGFloat
 }
 
-class CategoriesMosaicCollectionViewLayout: UICollectionViewFlowLayout {
-    var delegate: CategoriesMosaicCollectionViewLayoutDelegate!
-
+class ProductsMosaicCollectionViewLayout: UICollectionViewFlowLayout {
+    var delegate: ProductsMosaicCollectionViewLayoutDelegate!
+    
     var numberOfColumns = 2
     var cellPadding: CGFloat = 0
     var _cache = [UICollectionViewLayoutAttributes]()
@@ -31,13 +34,13 @@ class CategoriesMosaicCollectionViewLayout: UICollectionViewFlowLayout {
         guard let collectionView = collectionView else {
             return 0
         }
-
+        
         return collectionView.bounds.width - (_contentInsetLeft + _contentInsetRight)
     }
-
+    
     override func prepare() {
         super.prepare()
-
+        
         guard _cache.isEmpty else {
             return
         }
@@ -48,13 +51,13 @@ class CategoriesMosaicCollectionViewLayout: UICollectionViewFlowLayout {
         guard let dataSource = collectionView.dataSource else {
             return
         }
-
+        
         let columnWidth = _contentWidth / CGFloat(numberOfColumns)
         var xOffsets = [CGFloat]()
         for column in 0..<numberOfColumns {
             xOffsets.append(CGFloat(column) * columnWidth + _contentInsetLeft)
         }
-
+        
         var columnIdx = 0
         var yOffsets = [CGFloat](repeating: 0, count: numberOfColumns)
         let width = columnWidth - cellPadding * 2
@@ -63,21 +66,23 @@ class CategoriesMosaicCollectionViewLayout: UICollectionViewFlowLayout {
             let indexPath = IndexPath(item: idx, section: 0)
             
             let photoHeight = delegate.collectionView(collectionView,
-                    heightForPhotoAtIndexPath: indexPath, withWidth: width)
+                                                      heightForPhotoAtIndexPath: indexPath, withWidth: width)
             let titleHeight = delegate.collectionView(collectionView,
-                    heightForTitleAtIndexPath: indexPath, withWidth: width)
+                                                      heightForTitleAtIndexPath: indexPath, withWidth: width)
             let subtitleHeight = delegate.collectionView(collectionView,
-                    heightForSubtitleAtIndexPath: indexPath, withWidth: width)
-            
-            let height = cellPadding + photoHeight + titleHeight + subtitleHeight + cellPadding
+                                                         heightForSubtitleAtIndexPath: indexPath, withWidth: width)
+            let priceHeight = delegate.collectionView(collectionView,
+                    heightForPriceAtIndexPath: indexPath, withWidth: width)
+
+            let height = cellPadding + photoHeight + titleHeight + subtitleHeight + priceHeight + cellPadding
             let frame = CGRect(x: xOffsets[columnIdx], y: yOffsets[columnIdx], width: columnWidth, height: height)
             let insetFrame = frame.insetBy(dx: cellPadding, dy: cellPadding)
-
-
+            
+            
             let attributes = UICollectionViewLayoutAttributes(forCellWith: indexPath)
             attributes.frame = insetFrame
             _cache.append(attributes)
-
+            
             _contentHeight = max(_contentHeight, frame.maxY)
             yOffsets[columnIdx] = yOffsets[columnIdx] + height
 
@@ -97,11 +102,11 @@ class CategoriesMosaicCollectionViewLayout: UICollectionViewFlowLayout {
 
         return result
     }
-
+    
     override var collectionViewContentSize: CGSize {
         return CGSize(width: _contentWidth, height: _contentHeight)
     }
-
+    
     override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
         return _cache.filter{ $0.frame.intersects(rect) }
     }

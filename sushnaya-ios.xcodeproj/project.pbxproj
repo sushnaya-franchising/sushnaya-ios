@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		19BB41C75FD373B9B905B51D /* ProductCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19BB48AFDFEC94CCC6894936 /* ProductCellNode.swift */; };
 		19BB485CFD3BF7ECAE14EC5E /* CategoriesMosaicCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19BB4E7419EC6262ACB49B2B /* CategoriesMosaicCollectionViewLayout.swift */; };
 		2E63727D1E803945009EE5B8 /* TermsOfUse.html in Resources */ = {isa = PBXBuildFile; fileRef = 2E63727C1E803945009EE5B8 /* TermsOfUse.html */; };
 		2E7BCA681E7B087500B6FEE6 /* intro_video.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 2E7BCA671E7B087500B6FEE6 /* intro_video.mp4 */; };
@@ -68,10 +69,13 @@
 		2E926E4F1E8E551600070538 /* Global.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E926E431E8E551600070538 /* Global.swift */; };
 		2E926E501E8E551600070538 /* UIImageExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E926E441E8E551600070538 /* UIImageExt.swift */; };
 		2E94CC671E7963E800C51D58 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2E94CC661E7963E800C51D58 /* Assets.xcassets */; };
+		2E9A77CC1E9503AF0042BBE9 /* ProductsMosaicCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9A77CB1E9503AF0042BBE9 /* ProductsMosaicCollectionViewLayout.swift */; };
+		2E9A77CE1E962A8D0042BBE9 /* Filter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9A77CD1E962A8D0042BBE9 /* Filter.swift */; };
 		95D281D1D25122E284D8AC09 /* Pods_sushnaya_ios.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 489991CA68AC90F346EF30BE /* Pods_sushnaya_ios.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		19BB48AFDFEC94CCC6894936 /* ProductCellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductCellNode.swift; sourceTree = "<group>"; };
 		19BB4E7419EC6262ACB49B2B /* CategoriesMosaicCollectionViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategoriesMosaicCollectionViewLayout.swift; sourceTree = "<group>"; };
 		2E63727C1E803945009EE5B8 /* TermsOfUse.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = TermsOfUse.html; sourceTree = "<group>"; };
 		2E7BCA671E7B087500B6FEE6 /* intro_video.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = intro_video.mp4; sourceTree = "<group>"; };
@@ -137,6 +141,8 @@
 		2E94CC661E7963E800C51D58 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2E94CC6B1E7963E800C51D58 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2E94CC741E79D0E100C51D58 /* sushnaya-ios.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = "sushnaya-ios.playground"; sourceTree = "<group>"; };
+		2E9A77CB1E9503AF0042BBE9 /* ProductsMosaicCollectionViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductsMosaicCollectionViewLayout.swift; sourceTree = "<group>"; };
+		2E9A77CD1E962A8D0042BBE9 /* Filter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Filter.swift; sourceTree = "<group>"; };
 		489991CA68AC90F346EF30BE /* Pods_sushnaya_ios.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_sushnaya_ios.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		874AE31D3C8DF2CCC6C39B8E /* Pods-sushnaya-ios.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sushnaya-ios.debug.xcconfig"; path = "Pods/Target Support Files/Pods-sushnaya-ios/Pods-sushnaya-ios.debug.xcconfig"; sourceTree = "<group>"; };
 		9654AE38439284722DBBACD9 /* Pods-sushnaya-ios.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sushnaya-ios.release.xcconfig"; path = "Pods/Target Support Files/Pods-sushnaya-ios/Pods-sushnaya-ios.release.xcconfig"; sourceTree = "<group>"; };
@@ -162,6 +168,7 @@
 				2E926E311E8E54F200070538 /* Menu.swift */,
 				2E926E321E8E54F200070538 /* MenuCategory.swift */,
 				2E926E331E8E54F200070538 /* Product.swift */,
+				2E9A77CD1E962A8D0042BBE9 /* Filter.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -288,6 +295,8 @@
 				2E926E2C1E8E54E800070538 /* LocalitiesNode.swift */,
 				2E80ACE91E8FAC9B00D0DBCF /* CategorySmallCellNode.swift */,
 				2E80ACE71E8EDFA600D0DBCF /* CategoryCellNode.swift */,
+				2E9A77CB1E9503AF0042BBE9 /* ProductsMosaicCollectionViewLayout.swift */,
+				19BB48AFDFEC94CCC6894936 /* ProductCellNode.swift */,
 			);
 			name = App;
 			sourceTree = "<group>";
@@ -514,6 +523,7 @@
 				2E926E381E8E54F200070538 /* Product.swift in Sources */,
 				2E926E501E8E551600070538 /* UIImageExt.swift in Sources */,
 				2E926DF91E8E53E100070538 /* UpdateLocalityEvent.swift in Sources */,
+				2E9A77CC1E9503AF0042BBE9 /* ProductsMosaicCollectionViewLayout.swift in Sources */,
 				2E926DE31E8E53D100070538 /* UserSession.swift in Sources */,
 				2E926E491E8E551600070538 /* UIViewControllerExt.swift in Sources */,
 				2E926E0A1E8E540000070538 /* CategoriesViewController.swift in Sources */,
@@ -539,12 +549,14 @@
 				2E926E1F1E8E546A00070538 /* PhoneNumberNode.swift in Sources */,
 				2E926E451E8E551600070538 /* CGPointExt.swift in Sources */,
 				2E926E341E8E54F200070538 /* User.swift in Sources */,
+				2E9A77CE1E962A8D0042BBE9 /* Filter.swift in Sources */,
 				2E926DF21E8E53E100070538 /* TermsOfUseUpdatedEvent.swift in Sources */,
 				2E926E4B1E8E551600070538 /* CGSizeExt.swift in Sources */,
 				2E926DE41E8E53D100070538 /* Authentication.swift in Sources */,
 				2E926DF61E8E53E100070538 /* ConnectionDidCloseAPIChatEvent.swift in Sources */,
 				2E926E4F1E8E551600070538 /* Global.swift in Sources */,
 				19BB485CFD3BF7ECAE14EC5E /* CategoriesMosaicCollectionViewLayout.swift in Sources */,
+				19BB41C75FD373B9B905B51D /* ProductCellNode.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
