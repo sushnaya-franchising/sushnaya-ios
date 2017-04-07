@@ -114,11 +114,17 @@ extension POPSpringAnimation {
             .create()
     }
     
+    static func viewBackground(toValue to: UIColor, fromValue from: UIColor? = nil) -> POPSpringAnimation {
+        return POPSpringAnimationBuilder(forProperty: kPOPViewBackgroundColor)
+            .setToValue(to)
+            .setFromValue(from)                        
+            .create()
+    }
     
     class POPSpringAnimationBuilder {
         fileprivate var forProperty: String
-        fileprivate var toValue: NSValue?
-        fileprivate var fromValue: NSValue?
+        fileprivate var toValue: Any?
+        fileprivate var fromValue: Any?
         fileprivate var bounciness: CGFloat?
         fileprivate var velocity: NSValue?
         
@@ -126,12 +132,12 @@ extension POPSpringAnimation {
             self.forProperty = forProperty
         }
         
-        func setToValue(_ toValue: NSValue?) -> POPSpringAnimationBuilder {
+        func setToValue(_ toValue: Any?) -> POPSpringAnimationBuilder {
             self.toValue = toValue
             return self
         }
         
-        func setFromValue(_ fromValue: NSValue?) -> POPSpringAnimationBuilder {
+        func setFromValue(_ fromValue: Any?) -> POPSpringAnimationBuilder {
             self.fromValue = fromValue
             return self
         }
