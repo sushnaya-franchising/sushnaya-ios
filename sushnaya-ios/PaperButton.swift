@@ -28,6 +28,7 @@ open class PaperButton: UIButton {
     static let InitialScale:Point = (1, 1)
     static let DefaultElevation = PaperElevation.z1
     
+    // todo: use another property to change elevantion. currently elevation is being decreased if button is dragged.
     open override var isHighlighted:Bool {
         didSet {
             if isHighlighted != oldValue {

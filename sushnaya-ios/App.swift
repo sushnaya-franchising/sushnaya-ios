@@ -25,23 +25,32 @@ class App: UIResponder, UIApplicationDelegate {
     private let apiChat = APIChat()
 
     private var apiChatRestartDelay = 1
+    
+    private lazy var cartVC: CartViewController = {
+        return CartViewController()
+    }()
 
     // todo: refactor basket button creation
-    lazy var basketButton:PaperButton = {
-        let basketButtonSize = CGSize(width: 66, height: 66)
-        let basketButtonOrigin = CGPoint(x: UIScreen.main.bounds.width/2 - basketButtonSize.width/2, y: UIScreen.main.bounds.height - (basketButtonSize.height + 5))
-        let basketButtonFrame = CGRect(origin: basketButtonOrigin, size: basketButtonSize)
-        let basketButton = PaperButton(frame: basketButtonFrame)
-        basketButton.cornerRadius = 33
-        basketButton.backgroundColor = PaperColor.Gray100
-        basketButton.icon = UIImage.fontAwesomeIcon(name: .shoppingBasket, textColor: PaperColor.Gray, size: CGSize(width: 25, height: 25))
-        return basketButton
+    lazy var shoppingButton:ShoppingButton = {
+        let button = ShoppingButton()
+        let screenBounds = UIScreen.main.bounds
+        let buttonOrigin = CGPoint(x: screenBounds.width/2 - button.size/2, y: screenBounds.height - (button.size + 5))
+        let buttonFrame = CGRect(origin: buttonOrigin, size: button.frame.size)
+        button.frame = buttonFrame
+        
+        button.addTarget(self, action: #selector(presentCartViewController), for: .touchUpInside)
+        
+        return button
     }()
+    
+    func presentCartViewController() {
+        window?.rootViewController?.present(cartVC, animated: true, completion: nil)
+    }
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         setupWindow()
-        registerEventHandlers()
-
+        registerEventHandlers()                
+        
         return true
     }
 
@@ -65,14 +74,14 @@ class App: UIResponder, UIApplicationDelegate {
     }
 
     private func createDefaultRootViewController() -> UIViewController {
-        let rootTBC = PaperFoldTabBarController()
+        let rootTBC = PaperFoldTabBarController()// todo: hide all appearence config in PaperFoldTabBarController and rename this controller to RootController 
         rootTBC.delegate = self
         rootTBC.tabBar.unselectedItemTintColor = PaperColor.Gray
         rootTBC.tabBar.tintColor = PaperColor.Gray700
         rootTBC.tabBar.itemWidth = 39
         rootTBC.tabBar.itemPositioning = .centered
         rootTBC.tabBar.itemSpacing = UIScreen.main.bounds.width/2
-        
+        rootTBC.tabBar.backgroundImage = drawTabBarImage(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: UIScreen.main.bounds.width, height: 71)))
         
         let homeNC = ASNavigationController(rootViewController: HomeViewController())
         homeNC.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
@@ -87,7 +96,7 @@ class App: UIResponder, UIApplicationDelegate {
         rootTBC.addChildViewController(homeNC, narrowSideController: FiltersViewController())
         rootTBC.addChildViewController(settingsNC)
         
-        rootTBC.view.addSubview(basketButton)
+        rootTBC.view.addSubview(shoppingButton)
         
         return rootTBC
     }

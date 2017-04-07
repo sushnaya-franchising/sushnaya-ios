@@ -9,23 +9,68 @@ import AsyncDisplayKit
 
 typealias EventBus = SwiftEventBus
 
-func ImageNodePrecompositedCornerModification(cornerRadius: CGFloat) -> ((UIImage) -> UIImage){
-    return{ (image:UIImage) -> UIImage in
-            let rect = CGRect(origin: CGPoint.zero, size: image.size)
+func ImageNodePrecompositedCornerModification(cornerRadius: CGFloat) -> ((UIImage) -> UIImage) {
+    return { (image: UIImage) -> UIImage in
+        let rect = CGRect(origin: CGPoint.zero, size: image.size)
 
-            UIGraphicsBeginImageContextWithOptions(image.size, false, UIScreen.main.scale)
+        UIGraphicsBeginImageContextWithOptions(image.size, false, UIScreen.main.scale)
 
-            UIBezierPath.init(roundedRect: rect, cornerRadius: cornerRadius).addClip()
-            image.draw(in: rect)
-            let modifiedImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIBezierPath.init(roundedRect: rect, cornerRadius: cornerRadius).addClip()
+        image.draw(in: rect)
+        let modifiedImage = UIGraphicsGetImageFromCurrentImageContext()
 
-            UIGraphicsEndImageContext()
+        UIGraphicsEndImageContext()
 
-            return modifiedImage!
-        }
+        return modifiedImage!
+    }
 }
 
-func fireFakeChangeLoalitiesProposal () {
+func drawTabBarImage(frame: CGRect = CGRect(x: 0, y: 0, width: 375, height: 71)) -> UIImage? {
+    UIGraphicsBeginImageContextWithOptions(frame.size, false, 0)
+    //// General Declarations
+    let context = UIGraphicsGetCurrentContext()!
+    // This non-generic function dramatically improves compilation times of complex expressions.
+    func fastFloor(_ x: CGFloat) -> CGFloat {
+        return floor(x)
+    }
+
+    //// Color Declarations
+    let color = UIColor(red: 0.961, green: 0.961, blue: 0.961, alpha: 0.9)
+
+    //// Shadow Declarations
+    let shadow = NSShadow()
+    shadow.shadowColor = UIColor.black.withAlphaComponent(0.7)
+    shadow.shadowOffset = CGSize(width: 0, height: 0)
+    shadow.shadowBlurRadius = 1.5
+
+    //// Subframes
+    let frameForCircle = CGRect(x: frame.minX + fastFloor((frame.width - 72) * 0.49835 + 0.5), y: frame.minY + frame.height - 71, width: 72, height: 35)
+
+    //// Bezier Drawing
+    let bezierPath = UIBezierPath()
+    bezierPath.move(to: CGPoint(x: frameForCircle.minX + 63.84, y: frameForCircle.maxY - 13))
+    bezierPath.addLine(to: CGPoint(x: frame.maxX, y: frame.maxY - 49))
+    bezierPath.addLine(to: CGPoint(x: frame.maxX, y: frame.maxY))
+    bezierPath.addLine(to: CGPoint(x: frame.minX, y: frame.maxY))
+    bezierPath.addLine(to: CGPoint(x: frame.minX, y: frame.maxY - 49))
+    bezierPath.addLine(to: CGPoint(x: frameForCircle.minX + 10.16, y: frameForCircle.maxY - 13))
+    bezierPath.addCurve(to: CGPoint(x: frameForCircle.minX + 37, y: frameForCircle.maxY - 31), controlPoint1: CGPoint(x: frameForCircle.minX + 14.49, y: frameForCircle.maxY - 23.56), controlPoint2: CGPoint(x: frameForCircle.minX + 24.88, y: frameForCircle.maxY - 31))
+    bezierPath.addCurve(to: CGPoint(x: frameForCircle.minX + 63.84, y: frameForCircle.maxY - 13), controlPoint1: CGPoint(x: frameForCircle.minX + 49.12, y: frameForCircle.maxY - 31), controlPoint2: CGPoint(x: frameForCircle.minX + 59.51, y: frameForCircle.maxY - 23.56))
+    bezierPath.close()
+    context.saveGState()
+    context.setShadow(offset: shadow.shadowOffset, blur: shadow.shadowBlurRadius, color: (shadow.shadowColor as! UIColor).cgColor)
+    color.setFill()
+    bezierPath.fill()
+    context.restoreGState()
+
+    let resultImage = UIGraphicsGetImageFromCurrentImageContext()
+
+    UIGraphicsEndImageContext()
+
+    return resultImage
+}
+
+func fireFakeChangeLoalitiesProposal() {
     ChangeLocalityProposalEvent.fire(localities: [
 
             Locality(location: CLLocation(latitude: 56.838607, longitude: 60.605514), name: "Екатеринбург", description: "Свердловская область, Россия",

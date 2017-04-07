@@ -9,6 +9,8 @@
 import Foundation
 import AsyncDisplayKit
 import FontAwesome_swift
+import pop
+import PaperFold
 
 class HomeViewController: ASViewController<ASDisplayNode> {
 
@@ -22,6 +24,7 @@ class HomeViewController: ASViewController<ASDisplayNode> {
     var products: [Product]?
 
     var _collectionNode: ASCollectionNode!
+    var _selectedProductIndexPath: IndexPath?
 
     convenience init() {
         self.init(node: ASDisplayNode())
@@ -34,6 +37,8 @@ class HomeViewController: ASViewController<ASDisplayNode> {
             return ASInsetLayoutSpec(insets: UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0), child: self._collectionNode)
         }
 
+        app.shoppingButton.delegate = self
+        
         initFakeData()
     }
 
@@ -160,4 +165,51 @@ extension HomeViewController: ProductsMosaicLayoutDelegate {
                 priceLabelInsets.top + priceLabelInsets.bottom + cellInsets.bottom
     }
 
+}
+
+extension HomeViewController: ShoppingButtonDelegate {
+    func shoppingButton(_ shoppingButton: ShoppingButton, didPanAtPoint origin: CGPoint) {
+        let buttonCenter = CGPoint(x: origin.x + shoppingButton.frame.width/2,
+                                   y: origin.y + shoppingButton.frame.height/2)
+        
+        guard buttonCenter.y < node.bounds.height - 49 else {
+            deselectCell(_selectedProductIndexPath)
+            return
+        }
+        
+        let contentOffsetY = _collectionNode.view.contentOffset.y        
+        let searchCellPoint = CGPoint(x: buttonCenter.x,
+                                      y: buttonCenter.y + contentOffsetY)
+        
+        guard let indexPath = _collectionNode.indexPathForItem(at: searchCellPoint) else {
+            deselectCell(_selectedProductIndexPath)
+            return
+        }
+        
+        guard indexPath != _selectedProductIndexPath else {
+            return
+        }
+        
+        selectCell(indexPath)
+        deselectCell(_selectedProductIndexPath)
+        _selectedProductIndexPath = indexPath
+    }
+    
+    func selectCell(_ indexPath: IndexPath) {
+        let cell = _collectionNode.nodeForItem(at: indexPath) as! ProductCellNode
+        cell.pop_removeAllAnimations()
+        cell.backgroundColor = Constants.ProductCellLayout.SelectedBackgroundColor
+    }
+    
+    func deselectCell(_ indexPath: IndexPath?) {
+        if let indexPath = indexPath {
+            let selectedProductCell = _collectionNode.nodeForItem(at: indexPath) as! ProductCellNode
+            
+            let backgroundAnimation = POPSpringAnimation.viewBackground(toValue: Constants.ProductCellLayout.BackgroundColor)
+            
+            selectedProductCell.pop_add(backgroundAnimation, forKey: "unhighlight")
+            
+            _selectedProductIndexPath = nil
+        }
+    }
 }
