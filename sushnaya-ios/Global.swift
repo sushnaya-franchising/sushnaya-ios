@@ -25,50 +25,23 @@ func ImageNodePrecompositedCornerModification(cornerRadius: CGFloat) -> ((UIImag
     }
 }
 
-func drawTabBarImage(frame: CGRect = CGRect(x: 0, y: 0, width: 375, height: 71)) -> UIImage? {
+func drawTabBarImage(frame: CGRect = CGRect(x: 0, y: 0, width: 375, height: 49)) -> UIImage? {
     UIGraphicsBeginImageContextWithOptions(frame.size, false, 0)
-    //// General Declarations
-    let context = UIGraphicsGetCurrentContext()!
-    // This non-generic function dramatically improves compilation times of complex expressions.
-    func fastFloor(_ x: CGFloat) -> CGFloat {
-        return floor(x)
-    }
-
     //// Color Declarations
-    let color = UIColor(red: 0.961, green: 0.961, blue: 0.961, alpha: 0.9)
-
-    //// Shadow Declarations
-    let shadow = NSShadow()
-    shadow.shadowColor = UIColor.black.withAlphaComponent(0.7)
-    shadow.shadowOffset = CGSize(width: 0, height: 0)
-    shadow.shadowBlurRadius = 1.5
-
-    //// Subframes
-    let frameForCircle = CGRect(x: frame.minX + fastFloor((frame.width - 72) * 0.49835 + 0.5), y: frame.minY + frame.height - 71, width: 72, height: 35)
-
-    //// Bezier Drawing
-    let bezierPath = UIBezierPath()
-    bezierPath.move(to: CGPoint(x: frameForCircle.minX + 63.84, y: frameForCircle.maxY - 13))
-    bezierPath.addLine(to: CGPoint(x: frame.maxX, y: frame.maxY - 49))
-    bezierPath.addLine(to: CGPoint(x: frame.maxX, y: frame.maxY))
-    bezierPath.addLine(to: CGPoint(x: frame.minX, y: frame.maxY))
-    bezierPath.addLine(to: CGPoint(x: frame.minX, y: frame.maxY - 49))
-    bezierPath.addLine(to: CGPoint(x: frameForCircle.minX + 10.16, y: frameForCircle.maxY - 13))
-    bezierPath.addCurve(to: CGPoint(x: frameForCircle.minX + 37, y: frameForCircle.maxY - 31), controlPoint1: CGPoint(x: frameForCircle.minX + 14.49, y: frameForCircle.maxY - 23.56), controlPoint2: CGPoint(x: frameForCircle.minX + 24.88, y: frameForCircle.maxY - 31))
-    bezierPath.addCurve(to: CGPoint(x: frameForCircle.minX + 63.84, y: frameForCircle.maxY - 13), controlPoint1: CGPoint(x: frameForCircle.minX + 49.12, y: frameForCircle.maxY - 31), controlPoint2: CGPoint(x: frameForCircle.minX + 59.51, y: frameForCircle.maxY - 23.56))
-    bezierPath.close()
-    context.saveGState()
-    context.setShadow(offset: shadow.shadowOffset, blur: shadow.shadowBlurRadius, color: (shadow.shadowColor as! UIColor).cgColor)
-    color.setFill()
-    bezierPath.fill()
-    context.restoreGState()
-
+    let backgroundColor = UIColor(red: 1.000, green: 1.000, blue: 1.000, alpha: 0.980)
+    
+    //// Rectangle Drawing
+    let rectanglePath = UIBezierPath(rect: CGRect(x: frame.minX, y: frame.minY, width: frame.width, height: frame.height))
+    backgroundColor.setFill()
+    rectanglePath.fill()
+    
     let resultImage = UIGraphicsGetImageFromCurrentImageContext()
-
+    
     UIGraphicsEndImageContext()
-
+    
     return resultImage
 }
+
 
 func fireFakeChangeLoalitiesProposal() {
     ChangeLocalityProposalEvent.fire(localities: [

@@ -8,7 +8,8 @@
 
 import Foundation
 
-
 class Cart: NSObject {
     
+    var sumPrice = Price(value: 399, currencyLocale: "ru_RU")
+
 }

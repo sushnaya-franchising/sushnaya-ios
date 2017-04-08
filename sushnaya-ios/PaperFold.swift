@@ -15,51 +15,6 @@ protocol PaperFoldAsyncView {
     var onViewUpdated: (() -> ())? { get set }
 }
 
-class PaperFoldTabBarController: ASTabBarController {
-
-    static let NarrowSideControllerWidth = CGFloat(96)
-
-    private lazy var paperFoldNCs: [PaperFoldNavigationController] = []
-
-    func setPaperFoldState(isFolded: Bool, animated: Bool) {
-        paperFoldNCs.forEach {
-            $0.setPaperFoldState(isFolded: isFolded, animated: animated)
-        }
-    }
-
-    func addChildViewController(_ childController: UIViewController, narrowSideController: UIViewController) {
-        let narrowNC = PaperFoldNavigationController(rootViewController: childController)
-        narrowNC.setLeftViewController(leftViewController: narrowSideController, width: PaperFoldTabBarController.NarrowSideControllerWidth)
-        narrowNC.tabBarItem = childController.tabBarItem
-        paperFoldNCs.append(narrowNC)
-
-        self.addChildViewController(narrowNC)
-        retakeScreenshotIfAsyncView(narrowSideController, navigationController: narrowNC)
-    }
-
-    private func retakeScreenshotIfAsyncView(_ vc: UIViewController, navigationController: PaperFoldNavigationController) {
-        if var asyncView = (vc as? PaperFoldAsyncView) {
-            asyncView.onViewUpdated = navigationController.retakeScreenShot
-        }
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()                
-    }
-    
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-        // DIRTY HACK TO HIDE TAB BAR TOP BORDER
-        if tabBar.subviews.count > tabBar.items!.count {
-            tabBar.subviews[0].subviews[1].isHidden = true
-        }
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-    }
-}
-
 class PaperFoldNavigationController: ASNavigationController, PaperFoldViewDelegate {
     private var paperFoldView: PaperFoldView!
     private var rootViewController: UIViewController!
