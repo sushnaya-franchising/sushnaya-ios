@@ -35,13 +35,11 @@ class HomeViewController: ASViewController<ASDisplayNode> {
         self.node.backgroundColor = PaperColor.White
         self.node.layoutSpecBlock = { [unowned self] _ in
             return ASInsetLayoutSpec(insets: UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0), child: self._collectionNode)
-        }
-
-        app.shoppingButton.delegate = self                
+        }                        
         
         initFakeData()
-    }
-
+    }    
+    
     private func setupCollectionNode() {
         let layout = ProductsMosaicLayout()
         layout.delegate = self
@@ -165,59 +163,4 @@ extension HomeViewController: ProductsMosaicLayoutDelegate {
                 priceLabelInsets.top + priceLabelInsets.bottom + cellInsets.bottom
     }
 
-}
-
-extension HomeViewController: ShoppingButtonDelegate {
-    func shoppingButton(_ shoppingButton: ShoppingButton, didPanAtPoint origin: CGPoint, withVelocity velocity: CGPoint) {
-        // todo: use ray to find cell to select
-        let buttonCenter = CGPoint(x: origin.x + shoppingButton.frame.width/2,
-                                   y: origin.y + shoppingButton.frame.height/2)
-        
-        guard buttonCenter.y < node.bounds.height - 49 else {
-            deselectCell(_selectedProductIndexPath)
-            return
-        }
-        
-        let contentOffsetY = _collectionNode.view.contentOffset.y        
-        let searchCellPoint = CGPoint(x: buttonCenter.x,
-                                      y: buttonCenter.y + contentOffsetY)
-        
-        guard let indexPath = _collectionNode.indexPathForItem(at: searchCellPoint) else {
-            deselectCell(_selectedProductIndexPath)
-            return
-        }
-        
-        guard indexPath != _selectedProductIndexPath else {
-            return
-        }
-        
-        selectCell(indexPath)
-        deselectCell(_selectedProductIndexPath)
-        _selectedProductIndexPath = indexPath
-    }
-    
-    func shoppingButton(_ shoppingButton: ShoppingButton, didEndPanAtPoint origin: CGPoint) {
-        deselectCell(_selectedProductIndexPath)
-        // todo: play sound if button is above a product cell
-        AudioServicesPlaySystemSound(1123)
-        // todo: add to cart button
-    }
-    
-    func selectCell(_ indexPath: IndexPath) {
-        let cell = _collectionNode.nodeForItem(at: indexPath) as! ProductCellNode
-        cell.pop_removeAllAnimations()
-        cell.backgroundColor = Constants.ProductCellLayout.SelectedBackgroundColor
-    }
-    
-    func deselectCell(_ indexPath: IndexPath?) {
-        if let indexPath = indexPath {
-            let selectedProductCell = _collectionNode.nodeForItem(at: indexPath) as! ProductCellNode
-            
-            let backgroundAnimation = POPSpringAnimation.viewBackground(toValue: Constants.ProductCellLayout.BackgroundColor)
-            
-            selectedProductCell.pop_add(backgroundAnimation, forKey: "unhighlight")
-            
-            _selectedProductIndexPath = nil
-        }
-    }
 }

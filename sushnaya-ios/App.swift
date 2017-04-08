@@ -20,32 +20,11 @@ class App: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-    let userSession = UserSession()
+    var userSession = UserSession()
 
     private let apiChat = APIChat()
 
-    private var apiChatRestartDelay = 1
-    
-    // todo: refactor basket button creation
-    lazy var shoppingButton:ShoppingButton = {
-        let button = ShoppingButton()
-        let screenBounds = UIScreen.main.bounds
-        let buttonOrigin = CGPoint(x: screenBounds.width/2 - button.size/2, y: screenBounds.height - (button.size + 8))
-        let buttonFrame = CGRect(origin: buttonOrigin, size: button.frame.size)
-        button.frame = buttonFrame
-        
-        button.addTarget(self, action: #selector(presentCartViewController), for: .touchUpInside)
-        
-        return button
-    }()
-    
-    func presentCartViewController() {
-        let cartVC = CartViewController()
-        cartVC.transitioningDelegate = self
-        cartVC.modalPresentationStyle = .custom
-        
-        window?.rootViewController?.present(cartVC, animated: true, completion: nil)
-    }
+    private var apiChatRestartDelay = 1        
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         setupWindow()
@@ -74,14 +53,14 @@ class App: UIResponder, UIApplicationDelegate {
     }
 
     private func createDefaultRootViewController() -> UIViewController {
-        let rootTBC = PaperFoldTabBarController()// todo: hide all appearence config in PaperFoldTabBarController and rename this controller to RootController 
+        let rootTBC = MainController()
         rootTBC.delegate = self
         rootTBC.tabBar.unselectedItemTintColor = PaperColor.Gray
-        rootTBC.tabBar.tintColor = PaperColor.Gray700
+        rootTBC.tabBar.tintColor = PaperColor.Gray800
         rootTBC.tabBar.itemWidth = 39
         rootTBC.tabBar.itemPositioning = .centered
         rootTBC.tabBar.itemSpacing = UIScreen.main.bounds.width/2
-        rootTBC.tabBar.backgroundImage = drawTabBarImage(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: UIScreen.main.bounds.width, height: 71)))
+        rootTBC.tabBar.backgroundImage = drawTabBarImage()
         
         let homeNC = ASNavigationController(rootViewController: HomeViewController())
         homeNC.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
@@ -90,14 +69,12 @@ class App: UIResponder, UIApplicationDelegate {
         homeNC.tabBarItem.selectedImage = image.withRenderingMode(.alwaysOriginal)
 
         let settingsNC = ASNavigationController(rootViewController: SettingsViewController())
-        settingsNC.tabBarItem.imageInsets = UIEdgeInsets(top: 18, left: 0, bottom: -18, right: 0)
-        settingsNC.tabBarItem.image = UIImage.fontAwesomeIcon(name: .ellipsisH, textColor: PaperColor.Gray, size: CGSize(width: 25, height: 25))
+        settingsNC.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
+        settingsNC.tabBarItem.image = UIImage.fontAwesomeIcon(name: .ellipsisH, textColor: PaperColor.Gray400, size: CGSize(width: 32, height: 32))
                 
         rootTBC.addChildViewController(homeNC, narrowSideController: FiltersViewController())
         rootTBC.addChildViewController(settingsNC)
-        
-        rootTBC.view.addSubview(shoppingButton)
-        
+
         return rootTBC
     }
 
@@ -250,17 +227,6 @@ class App: UIResponder, UIApplicationDelegate {
 
 extension App: UITabBarControllerDelegate {
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
-        (tabBarController as! PaperFoldTabBarController).setPaperFoldState(isFolded: true, animated: true)
+        (tabBarController as! MainController).setPaperFoldState(isFolded: true, animated: true)
     }
 }
-
-extension App: UIViewControllerTransitioningDelegate {
-    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return CartPresentingAnimationController()
-    }
-    
-    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return CartDismissingAnimationController()
-    }
-}
-
