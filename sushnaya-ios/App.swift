@@ -26,15 +26,11 @@ class App: UIResponder, UIApplicationDelegate {
 
     private var apiChatRestartDelay = 1
     
-    private lazy var cartVC: CartViewController = {
-        return CartViewController()
-    }()
-
     // todo: refactor basket button creation
     lazy var shoppingButton:ShoppingButton = {
         let button = ShoppingButton()
         let screenBounds = UIScreen.main.bounds
-        let buttonOrigin = CGPoint(x: screenBounds.width/2 - button.size/2, y: screenBounds.height - (button.size + 5))
+        let buttonOrigin = CGPoint(x: screenBounds.width/2 - button.size/2, y: screenBounds.height - (button.size + 8))
         let buttonFrame = CGRect(origin: buttonOrigin, size: button.frame.size)
         button.frame = buttonFrame
         
@@ -44,6 +40,10 @@ class App: UIResponder, UIApplicationDelegate {
     }()
     
     func presentCartViewController() {
+        let cartVC = CartViewController()
+        cartVC.transitioningDelegate = self
+        cartVC.modalPresentationStyle = .custom
+        
         window?.rootViewController?.present(cartVC, animated: true, completion: nil)
     }
     
@@ -253,3 +253,14 @@ extension App: UITabBarControllerDelegate {
         (tabBarController as! PaperFoldTabBarController).setPaperFoldState(isFolded: true, animated: true)
     }
 }
+
+extension App: UIViewControllerTransitioningDelegate {
+    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return CartPresentingAnimationController()
+    }
+    
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return CartDismissingAnimationController()
+    }
+}
+

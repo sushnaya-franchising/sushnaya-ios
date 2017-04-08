@@ -10,7 +10,9 @@ import Foundation
 import pop
 
 protocol ShoppingButtonDelegate {
-    func shoppingButton(_ shoppingButton: ShoppingButton, didPanAtPoint origin: CGPoint)
+    func shoppingButton(_ shoppingButton: ShoppingButton, didPanAtPoint origin: CGPoint, withVelocity velocity: CGPoint)
+    
+    func shoppingButton(_ shoppingButton: ShoppingButton, didEndPanAtPoint origin: CGPoint)
 }
 
 class ShoppingButton: PaperButton {
@@ -24,11 +26,9 @@ class ShoppingButton: PaperButton {
     
     var delegate: ShoppingButtonDelegate?
     
-    // MARK: Initialization
+    private var _centerBeforeGesture: CGPoint!
     
-    convenience init() {
-        self.init(frame: CGRect.zero)
-    }
+    // MARK: Initialization
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -48,7 +48,7 @@ class ShoppingButton: PaperButton {
         backgroundColor = PaperColor.Gray100
         icon = createShoppingBasketImage()
         
-        isExclusiveTouch = true        
+        isExclusiveTouch = true
         
         let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(_didPanGesture(_:)))
         addGestureRecognizer(panGestureRecognizer)
@@ -74,20 +74,22 @@ class ShoppingButton: PaperButton {
             
         case .changed:
             didPanGesture(recognizer)
+            delegate?.shoppingButton(self, didPanAtPoint: recognizer.view!.frame.origin, withVelocity: recognizer.velocity(in: superview))
             
         case .ended:
             didEndPanGesture?()
+            delegate?.shoppingButton(self, didEndPanAtPoint: recognizer.view!.frame.origin)
             
         default: break
         }
     }
     
-    private var draggedView: UIView!
-    private var draggedViewCenterBeforeGesture: CGPoint!
-    
     private func didBeginPanGesture(_ recognizer: UIPanGestureRecognizer) {
-        draggedView = recognizer.view!
-        draggedViewCenterBeforeGesture = draggedView.center
+        if _centerBeforeGesture == nil {
+            _centerBeforeGesture = self.center
+        }
+        
+        self.pop_removeAnimation(forKey: "restorePosition")
     }
     
     private func didPanGesture(_ recognizer: UIPanGestureRecognizer) {
@@ -106,14 +108,12 @@ class ShoppingButton: PaperButton {
         let origin = CGPoint(x: x, y: y)
         
         view.frame = CGRect(origin: origin, size: frame.size)
-        
-        delegate?.shoppingButton(self, didPanAtPoint: origin)
     }
     
     private func restoreDraggedViewPosition() {
         let positionAnimation = POPSpringAnimation.viewCenter(
-                toValue: draggedViewCenterBeforeGesture.asPoint, velocity: (8,8))
+                toValue: _centerBeforeGesture.asPoint, velocity: (8,8))
             
-        draggedView.pop_add(positionAnimation, forKey: "restorePosition")
+        self.pop_add(positionAnimation, forKey: "restorePosition")
     }
 }
