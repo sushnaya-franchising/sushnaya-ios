@@ -12,7 +12,7 @@ typealias debounce = Debouncer
 
 class Debouncer {
     private weak var timer: Timer?
-    private var callback: (() -> ())
+    var callback: (() -> ())
     private var delay: Double
     private var onCancel: (() -> ())?
     

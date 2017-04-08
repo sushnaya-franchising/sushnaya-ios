@@ -37,7 +37,7 @@ class HomeViewController: ASViewController<ASDisplayNode> {
             return ASInsetLayoutSpec(insets: UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0), child: self._collectionNode)
         }
 
-        app.shoppingButton.delegate = self
+        app.shoppingButton.delegate = self                
         
         initFakeData()
     }
@@ -168,7 +168,8 @@ extension HomeViewController: ProductsMosaicLayoutDelegate {
 }
 
 extension HomeViewController: ShoppingButtonDelegate {
-    func shoppingButton(_ shoppingButton: ShoppingButton, didPanAtPoint origin: CGPoint) {
+    func shoppingButton(_ shoppingButton: ShoppingButton, didPanAtPoint origin: CGPoint, withVelocity velocity: CGPoint) {
+        // todo: use ray to find cell to select
         let buttonCenter = CGPoint(x: origin.x + shoppingButton.frame.width/2,
                                    y: origin.y + shoppingButton.frame.height/2)
         
@@ -193,6 +194,13 @@ extension HomeViewController: ShoppingButtonDelegate {
         selectCell(indexPath)
         deselectCell(_selectedProductIndexPath)
         _selectedProductIndexPath = indexPath
+    }
+    
+    func shoppingButton(_ shoppingButton: ShoppingButton, didEndPanAtPoint origin: CGPoint) {
+        deselectCell(_selectedProductIndexPath)
+        // todo: play sound if button is above a product cell
+        AudioServicesPlaySystemSound(1123)
+        // todo: add to cart button
     }
     
     func selectCell(_ indexPath: IndexPath) {

@@ -34,6 +34,8 @@ class UserSession: NSObject {
         }
     }        
     
+    let cart = Cart()
+    
     override init() {
         super.init()
         
