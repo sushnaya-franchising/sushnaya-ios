@@ -17,9 +17,14 @@ class HomeViewController: ASViewController<ASDisplayNode> {
     let cellInsets = Constants.ProductCellLayout.CellInsets
     let titleLabelInsets = Constants.ProductCellLayout.TitleLabelInsets
     let subtitleLabelInsets = Constants.ProductCellLayout.SubtitleLabelInsets
-    let priceLabelInsets = Constants.ProductCellLayout.PriceLabelInsets
+    let pricingInsets = Constants.ProductCellLayout.PricingInsets
+    let modifierInsets = Constants.ProductCellLayout.ModifierTextInsets
+    let priceButtonInsets = Constants.ProductCellLayout.PriceButtonContentInsets
     let titleStringAttrs = Constants.ProductCellLayout.TitleStringAttributes
     let subtitleStringAttrs = Constants.ProductCellLayout.SubtitleStringAttributes
+    let priceStringAttrs = Constants.ProductCellLayout.PriceStringAttributes
+    let priceWithModifierStringAttrs = Constants.ProductCellLayout.PriceWithModifierStringAttributes
+    let modifierStringAttrs = Constants.ProductCellLayout.PriceModifierStringAttributes
 
     var products: [Product]?
 
@@ -56,7 +61,18 @@ class HomeViewController: ASViewController<ASDisplayNode> {
             let subtitle = "Пикантный насыщенный вкус идеально подходит для зимней погоды"
             let photoUrl = "product_\(idx)"
             let photoSize = UIImage(named: photoUrl)?.size
-            let product = Product(title: title, price: 499.99, currencyLocale: "ru_RU", subtitle: subtitle, photoUrl: photoUrl, photoSize: photoSize)
+            var pricing = [Price] ()
+
+            if idx % 2 == 0 {
+                pricing.append(Price(value: 240, currencyLocale: "ru_RU"))
+
+            } else {
+                pricing.append(Price(value: 120, currencyLocale: "ru_RU", modifierName: "3 шт."))
+                pricing.append(Price(value: 240, currencyLocale: "ru_RU", modifierName: "6 шт."))
+                pricing.append(Price(value: 360, currencyLocale: "ru_RU", modifierName: "9 шт."))
+            }
+
+            let product = Product(title: title, pricing: pricing, subtitle: subtitle, photoUrl: photoUrl, photoSize: photoSize)
 
             products?.append(product)
         }
@@ -97,6 +113,13 @@ class HomeViewController: ASViewController<ASDisplayNode> {
     }
 }
 
+extension HomeViewController: ProductCellNodeDelegate {
+    func productCellNode(_ node: ProductCellNode, didSelectProduct product: Product, withPrice price: Price) {
+        print("+ \(product.title) \(price.formattedValue)")
+        // todo: fire add to cart event
+    }
+}
+
 extension HomeViewController: ASCollectionDataSource, ASCollectionDelegate {
     func collectionNode(_ collectionNode: ASCollectionNode, numberOfItemsInSection section: Int) -> Int {
         return products?.count ?? 0
@@ -106,14 +129,17 @@ extension HomeViewController: ASCollectionDataSource, ASCollectionDelegate {
         return 1
     }
 
-
-    func collectionNode(_ collectionNode: ASCollectionNode, nodeForItemAt indexPath: IndexPath) -> ASCellNode {
+    func collectionNode(_ collectionNode: ASCollectionNode, nodeBlockForItemAt indexPath: IndexPath) -> ASCellNodeBlock {
         guard let product = products?[indexPath.row] else {
-            return ASCellNode()
+            return { ASCellNode() }
         }
-
-        return ProductCellNode(product: product)
-    }        
+        
+        return { [unowned self] _ in
+            let cellNode = ProductCellNode(product: product)
+            cellNode.delegate = self
+            return cellNode
+        }
+    }
 }
 
 extension HomeViewController: ProductsMosaicLayoutDelegate {
@@ -152,15 +178,39 @@ extension HomeViewController: ProductsMosaicLayoutDelegate {
                 subtitleLabelInsets.top + subtitleLabelInsets.bottom
     }
 
-    func collectionView(_ collectionView: UICollectionView, heightForPriceAtIndexPath indexPath: IndexPath, withWidth width: CGFloat) -> CGFloat {
-        guard let price = products?[indexPath.item].formattedPrice else {
-            return cellInsets.bottom
+    func collectionView(_ collectionView: UICollectionView, heightForPricingAtIndexPath indexPath: IndexPath, withWidth width: CGFloat) -> CGFloat {
+        let pricing = products![indexPath.item].pricing
+        
+        let maxWidth = width - (cellInsets.left + cellInsets.right + pricingInsets.left + pricingInsets.right)
+        var height = pricingInsets.top + pricingInsets.bottom
+        var rowWidth: CGFloat = 0
+        var rowHeight: CGFloat = 0
+        
+        for price in pricing {
+            var modifierLabelSize = CGSize.zero
+            
+            if let modifierName = price.modifierName {
+                let modifierStringSize = modifierName.boundingRect(attributes: modifierStringAttrs)
+                modifierLabelSize = CGSize(width: modifierStringSize.width + modifierInsets.left + modifierInsets.right,
+                                      height: modifierStringSize.height + modifierInsets.top + modifierInsets.bottom)
+            }
+
+            let priceStringSize = price.formattedValue.boundingRect(attributes: priceStringAttrs)
+            let priceButtonSize = CGSize(width: priceStringSize.width + priceButtonInsets.left + priceButtonInsets.right,
+                                         height: priceStringSize.height + priceButtonInsets.top + priceButtonInsets.bottom)
+            
+            rowWidth = rowWidth + modifierLabelSize.width + priceButtonSize.width +
+                (rowWidth == 0 ? 0: Constants.ProductCellLayout.PricingNodeSpacing)
+            rowHeight = (modifierLabelSize.height > priceButtonSize.height ?
+                modifierLabelSize.height: priceButtonSize.height)
+            
+            if rowWidth > maxWidth {
+                rowWidth = 0
+                height = height + rowHeight
+            }
         }
-
-        let maxWidth = width - (cellInsets.left + cellInsets.right + priceLabelInsets.left + priceLabelInsets.right)
-
-        return price.computeHeight(attributes: titleStringAttrs, width: maxWidth) +
-                priceLabelInsets.top + priceLabelInsets.bottom + cellInsets.bottom
+        height = height + rowHeight
+        
+        return height + cellInsets.bottom
     }
-
 }

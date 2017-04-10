@@ -7,7 +7,7 @@ import Foundation
 
 class Price {
     var value: CGFloat
-    var modifier: String?
+    var modifierName: String?
     var currencyLocale: String
     
     var formattedValue: String {
@@ -19,9 +19,9 @@ class Price {
         return formatter.string(from: value.asNSNumber)!
     }
 
-    init(value: CGFloat, currencyLocale: String, modifier: String? = nil) {
+    init(value: CGFloat, currencyLocale: String, modifierName: String? = nil) {
         self.value = value
-        self.modifier = modifier
+        self.modifierName = modifierName
         self.currencyLocale = currencyLocale
     }
 }

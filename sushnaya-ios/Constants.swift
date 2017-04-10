@@ -35,6 +35,7 @@ struct Constants {
 
         static let BackgroundColor = PaperColor.White
         static let SelectedBackgroundColor = PaperColor.Gray300
+        static let PriceButtonBackgroundColor = PaperColor.Gray300
 
         static let ImageCornerRadius:CGFloat = 15
 
@@ -43,18 +44,35 @@ struct Constants {
                 NSFontAttributeName: UIFont.boldSystemFont(ofSize: 14)
         ]
 
-        static let PriceStringAttributes = [
-                NSForegroundColorAttributeName: PaperColor.Gray800,
-                NSFontAttributeName: UIFont.boldSystemFont(ofSize: 14)
-        ]
-
         static let SubtitleStringAttributes = [
-                NSForegroundColorAttributeName: PaperColor.Gray600,
-                NSFontAttributeName: UIFont.systemFont(ofSize: 12)
+            NSForegroundColorAttributeName: PaperColor.Gray600,
+            NSFontAttributeName: UIFont.systemFont(ofSize: 12)
+        ]
+        
+        static let PriceStringAttributes = [
+            NSForegroundColorAttributeName: PaperColor.Gray800,
+            NSFontAttributeName: UIFont.boldSystemFont(ofSize: 14)
         ]
 
-        static let TitleLabelInsets = UIEdgeInsets(top: 8, left: 5, bottom: 0, right: 5)
-        static let PriceLabelInsets = UIEdgeInsets(top: 4, left: 5, bottom: 0, right: 5)
-        static let SubtitleLabelInsets = UIEdgeInsets(top: 4, left: 5, bottom: 0, right: 5)
+        static let PriceWithModifierStringAttributes = [
+            NSForegroundColorAttributeName: PaperColor.Gray800,
+            NSFontAttributeName: UIFont.boldSystemFont(ofSize: 14)
+        ]
+        
+        static let PriceModifierStringAttributes = [
+            NSForegroundColorAttributeName: PaperColor.Gray800,
+            NSFontAttributeName: UIFont.boldSystemFont(ofSize: 12)
+        ]                
+        
+        static let TitleLabelInsets = UIEdgeInsets(top: 8, left: 0, bottom: 0, right: 0)
+        static let SubtitleLabelInsets = UIEdgeInsets(top: 4, left: 0, bottom: 0, right: 0)
+        static let PricingInsets = UIEdgeInsets(top: 8, left: 0, bottom: 0, right: 0)
+        
+        static let PricingRowSpacing:CGFloat = 4
+        static let PricingNodeSpacing:CGFloat = 4
+        
+        static let PriceButtonContentInsets = UIEdgeInsets(top: 2, left: 3, bottom: 2, right: 3)
+        static let PriceButtonHitTestSlop = UIEdgeInsets(top: -13, left: -5, bottom: -13, right: -5)
+        static let ModifierTextInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 3)
     }
 }

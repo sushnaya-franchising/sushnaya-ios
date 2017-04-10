@@ -44,6 +44,7 @@ class CartButton: ASControlNode {
     }
     
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
+        hitTestSlop = UIEdgeInsets(top: -15, left: -6, bottom: -6, right: -6)
         priceBadgeNode.textContainerInset = UIEdgeInsets(top: 2, left: 4, bottom: 2, right: 4)
         priceBadgeNode.style.layoutPosition = CGPoint(x: 18, y: -15)
         

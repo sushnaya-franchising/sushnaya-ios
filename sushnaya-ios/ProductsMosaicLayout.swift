@@ -16,7 +16,7 @@ protocol ProductsMosaicLayoutDelegate: ASCollectionDelegate {
     func collectionView(_ collectionView: UICollectionView, heightForSubtitleAtIndexPath indexPath: IndexPath,
                         withWidth width: CGFloat) -> CGFloat
     
-    func collectionView(_ collectionView: UICollectionView, heightForPriceAtIndexPath indexPath: IndexPath,
+    func collectionView(_ collectionView: UICollectionView, heightForPricingAtIndexPath indexPath: IndexPath,
                         withWidth width: CGFloat) -> CGFloat
 }
 
@@ -72,7 +72,7 @@ class ProductsMosaicLayout: UICollectionViewFlowLayout {
             let subtitleHeight = delegate.collectionView(collectionView,
                                                          heightForSubtitleAtIndexPath: indexPath, withWidth: width)
             let priceHeight = delegate.collectionView(collectionView,
-                    heightForPriceAtIndexPath: indexPath, withWidth: width)
+                    heightForPricingAtIndexPath: indexPath, withWidth: width)
 
             let height = cellPadding + photoHeight + titleHeight + subtitleHeight + priceHeight + cellPadding
             let frame = CGRect(x: xOffsets[columnIdx], y: yOffsets[columnIdx], width: columnWidth, height: height)
