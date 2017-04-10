@@ -29,8 +29,6 @@ class CartViewController: ASViewController<ASDisplayNode> {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        
     }
     
     func close() {
