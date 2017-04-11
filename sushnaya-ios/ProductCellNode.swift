@@ -1,5 +1,6 @@
 import UIKit
 import AsyncDisplayKit
+import pop
 
 protocol ProductCellNodeDelegate {
     func productCellNode(_ node: ProductCellNode, didSelectProduct product: Product, withPrice price: Price)
@@ -48,8 +49,29 @@ class ProductCellNode: ASCellNode {
         if let url = product.photoUrl {
             //    imageNode.url = URL(string: url)
             imageNode.image = UIImage(named: url)
+            imageNode.addTarget(self, action: #selector(didTouchDownRepeatImage), forControlEvents: .touchDownRepeat)
         }
         // todo: setup gray color placeholder image if no image provided
+    }
+    
+    func didTouchDownRepeatImage() {
+        if let price = product.highestPrice {
+            delegate?.productCellNode(self, didSelectProduct: product, withPrice: price)
+            
+            animateFlash()
+        }
+    }
+    
+    private func animateFlash() {
+        AudioServicesPlaySystemSound(1156)
+        
+        let alphaAnimation = POPBasicAnimation(propertyNamed: kPOPViewAlpha)
+        alphaAnimation?.fromValue = 0.1
+        alphaAnimation?.toValue = 1
+        alphaAnimation?.duration = 1
+        
+        imageNode.pop_removeAllAnimations()
+        imageNode.pop_add(alphaAnimation, forKey: "alpha")
     }
     
     private func setupTitleLabel() {
@@ -116,44 +138,16 @@ class ProductCellNode: ASCellNode {
         return ASInsetLayoutSpec(insets: Constants.ProductCellLayout.SubtitleLabelInsets, child: subtitleLabel)
     }
     
-    // todo: wait for the asyncdisplaykit flex wrap support and then remove this hack
     private func layoutSpecForPricing(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        func createRow() -> ASStackLayoutSpec {
-            let row = ASStackLayoutSpec.horizontal()
-            row.spacing = Constants.ProductCellLayout.PricingNodeSpacing
-            return row
+        let layout = ASStackLayoutSpec.vertical()
+        layout.spacing = Constants.ProductCellLayout.PricingRowSpacing
+
+        priceNodes.forEach{
+            $0.style.flexGrow = 1.0
+            layout.children?.append($0)
         }
         
-        let column = ASStackLayoutSpec.vertical()
-        column.spacing = Constants.ProductCellLayout.PricingRowSpacing
-        
-        var row = createRow()
-        row.justifyContent = priceNodes.count < 3 ? .end: .start
-        
-        let maxWidth = constrainedSize.max.width - (
-            Constants.ProductCellLayout.PricingInsets.left +
-            Constants.ProductCellLayout.PricingInsets.right +
-            Constants.ProductCellLayout.CellInsets.left +
-            Constants.ProductCellLayout.CellInsets.right
-        )
-        var width:CGFloat = 0
-        
-        for node in priceNodes {            
-            let size = node.calculateSizeThatFits(constrainedSize.max)
-            width = width + size.width + (width == 0 ? 0: Constants.ProductCellLayout.PricingNodeSpacing)
-            
-            if width > maxWidth {
-                column.children?.append(row)
-                width = 0
-                row = createRow()
-            }
-            
-            row.children?.append(node)
-        }
-        
-        column.children?.append(row)
-        
-        return ASInsetLayoutSpec(insets: Constants.ProductCellLayout.PricingInsets, child: column)
+        return ASInsetLayoutSpec(insets: Constants.ProductCellLayout.PricingInsets, child: layout)
     }
 }
 

@@ -19,7 +19,8 @@ class HomeViewController: ASViewController<ASDisplayNode> {
     let subtitleLabelInsets = Constants.ProductCellLayout.SubtitleLabelInsets
     let pricingInsets = Constants.ProductCellLayout.PricingInsets
     let modifierInsets = Constants.ProductCellLayout.ModifierTextInsets
-    let priceButtonInsets = Constants.ProductCellLayout.PriceButtonContentInsets
+    let priceButtonInsets = Constants.ProductCellLayout.PriceButtonInsets
+    let priceButtonContentInsets = Constants.ProductCellLayout.PriceButtonContentInsets
     let titleStringAttrs = Constants.ProductCellLayout.TitleStringAttributes
     let subtitleStringAttrs = Constants.ProductCellLayout.SubtitleStringAttributes
     let priceStringAttrs = Constants.ProductCellLayout.PriceStringAttributes
@@ -115,8 +116,7 @@ class HomeViewController: ASViewController<ASDisplayNode> {
 
 extension HomeViewController: ProductCellNodeDelegate {
     func productCellNode(_ node: ProductCellNode, didSelectProduct product: Product, withPrice price: Price) {
-        print("+ \(product.title) \(price.formattedValue)")
-        // todo: fire add to cart event
+        app.userSession.cart.push(product: product, withPrice: price)
     }
 }
 
@@ -177,40 +177,31 @@ extension HomeViewController: ProductsMosaicLayoutDelegate {
         return subtitle.computeHeight(attributes: subtitleStringAttrs, width: maxWidth) +
                 subtitleLabelInsets.top + subtitleLabelInsets.bottom
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, heightForPricingAtIndexPath indexPath: IndexPath, withWidth width: CGFloat) -> CGFloat {
         let pricing = products![indexPath.item].pricing
         
         let maxWidth = width - (cellInsets.left + cellInsets.right + pricingInsets.left + pricingInsets.right)
-        var height = pricingInsets.top + pricingInsets.bottom
-        var rowWidth: CGFloat = 0
+        var height:CGFloat = 0
         var rowHeight: CGFloat = 0
         
         for price in pricing {
-            var modifierLabelSize = CGSize.zero
+            let priceStringSize = price.formattedValue.boundingRect(attributes: priceStringAttrs, width: maxWidth)
+            let priceButtonSize = CGSize(width: priceStringSize.width + priceButtonContentInsets.left + priceButtonContentInsets.right + priceButtonInsets.left + priceButtonInsets.right,
+                                         height: priceStringSize.height + priceButtonContentInsets.top + priceButtonContentInsets.bottom + priceButtonInsets.top + priceButtonInsets.bottom)
             
+            var modifierLabelHeight:CGFloat = 0
             if let modifierName = price.modifierName {
-                let modifierStringSize = modifierName.boundingRect(attributes: modifierStringAttrs)
-                modifierLabelSize = CGSize(width: modifierStringSize.width + modifierInsets.left + modifierInsets.right,
-                                      height: modifierStringSize.height + modifierInsets.top + modifierInsets.bottom)
+                let modifierStringHeight = modifierName.computeHeight(attributes: modifierStringAttrs, width: maxWidth - priceButtonSize.width)
+                modifierLabelHeight = modifierInsets.top + modifierStringHeight + modifierInsets.bottom
             }
-
-            let priceStringSize = price.formattedValue.boundingRect(attributes: priceStringAttrs)
-            let priceButtonSize = CGSize(width: priceStringSize.width + priceButtonInsets.left + priceButtonInsets.right,
-                                         height: priceStringSize.height + priceButtonInsets.top + priceButtonInsets.bottom)
             
-            rowWidth = rowWidth + modifierLabelSize.width + priceButtonSize.width +
-                (rowWidth == 0 ? 0: Constants.ProductCellLayout.PricingNodeSpacing)
-            rowHeight = (modifierLabelSize.height > priceButtonSize.height ?
-                modifierLabelSize.height: priceButtonSize.height)
+            rowHeight = (modifierLabelHeight > priceButtonSize.height ?
+                modifierLabelHeight: priceButtonSize.height)
             
-            if rowWidth > maxWidth {
-                rowWidth = 0
-                height = height + rowHeight
-            }
+            height = height + rowHeight + (height == 0 ? 0 : Constants.ProductCellLayout.PricingRowSpacing)
         }
-        height = height + rowHeight
         
-        return height + cellInsets.bottom
+        return pricingInsets.top + height + pricingInsets.bottom + cellInsets.bottom
     }
 }

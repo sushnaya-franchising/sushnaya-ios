@@ -8,6 +8,8 @@
 
 import Foundation
 import AsyncDisplayKit
+import AVFoundation
+import pop
 
 protocol PriceNodeDelegate {
     func priceNode(_ node: PriceNode, didTouchPrice price: Price)
@@ -61,47 +63,84 @@ class PriceNode: ASDisplayNode {
         
         priceButton.cornerRadius = 5
         priceButton.clipsToBounds = true
+        priceButton.addTarget(self, action: #selector(scalePriceToBig), forControlEvents: [.touchDown, .touchDragInside])
         priceButton.addTarget(self, action: #selector(didTouchUpInsidePriceButton), forControlEvents: .touchUpInside)
+        priceButton.addTarget(self, action: #selector(scalePriceToDefault), forControlEvents: [.touchDragOutside, .touchCancel])
     }
     
     func didTouchUpInsidePriceButton() {
         delegate?.priceNode(self, didTouchPrice: price)
-        print(price.formattedValue)
+        
+        animateExplosion()
     }
     
-    override func calculateSizeThatFits(_ constrainedSize: CGSize) -> CGSize {
-        var modifierCalculatedSize = CGSize.zero
+    func scalePriceToBig() {
+        let scaleAnimation = POPBasicAnimation(propertyNamed: kPOPViewScaleXY)
+        scaleAnimation?.toValue = NSValue.init(cgSize: CGSize(width: 1.2, height: 1.2))
+        scaleAnimation?.duration = 0.3
+        priceButton.pop_add(scaleAnimation, forKey: "scaleToSmall")
+    }
+    
+    func scalePriceToDefault() {
+        let scaleAnimation = POPBasicAnimation(propertyNamed: kPOPViewScaleXY)
+        scaleAnimation?.toValue = NSValue.init(cgSize: CGSize(width: 1, height: 1))
+        priceButton.pop_add(scaleAnimation, forKey: "scaleToDefault")
+    }
+    
+    private func animateExplosion() {
+        let scaleAnimation = POPDecayAnimation(propertyNamed: kPOPViewScaleXY)
+        scaleAnimation?.velocity = NSValue.init(cgPoint: CGPoint(x: 25, y: 25))
+        
+        let alphaAnimation = POPBasicAnimation(propertyNamed: kPOPViewAlpha)
+        alphaAnimation?.toValue = 0
+        alphaAnimation?.duration = 0.07
+        alphaAnimation?.completionBlock = { [unowned self] _ in
+            self.animateBirth()
+        }
+        
+        AudioServicesPlaySystemSound(1156)
+        self.priceButton.pop_removeAllAnimations()
+        priceButton.pop_add(scaleAnimation, forKey: "scaleOut")
+        priceButton.pop_add(alphaAnimation, forKey: "fadeOut")
+    }
+    
+    private func animateBirth() {
+        let scaleAnimation = POPSpringAnimation(propertyNamed: kPOPViewScaleXY)
+        scaleAnimation?.fromValue = NSValue.init(cgSize: CGSize(width: 0.5, height: 0.5))
+        scaleAnimation?.toValue = NSValue.init(cgSize: CGSize(width: 1, height: 1))
+        scaleAnimation?.springBounciness = 6
+        scaleAnimation?.springSpeed = 6
+        
+        let alphaAnimation = POPBasicAnimation(propertyNamed: kPOPViewAlpha)
+        alphaAnimation?.toValue = 1
+        alphaAnimation?.duration = 0.1
+        
+        self.priceButton.pop_removeAllAnimations()
+        priceButton.pop_add(alphaAnimation, forKey: "fadeIn")
+        priceButton.pop_add(scaleAnimation, forKey: "scaleIn")
+    }
+    
+    override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
+        let layout = ASStackLayoutSpec.horizontal()
+        layout.alignItems = .center
         
         if let modifierLabel = modifierLabel {
             modifierLabel.textContainerInset = Constants.ProductCellLayout.ModifierTextInsets
-            modifierLabel.layoutThatFits(ASSizeRange(min: CGSize.zero, max: constrainedSize))
-            modifierCalculatedSize = modifierLabel.calculatedSize
+            modifierLabel.style.flexShrink = 1.0
+            layout.children?.append(modifierLabel)
         }
+        
+        let spacer = ASLayoutSpec()
+        spacer.style.flexGrow = 1.0
+        layout.children?.append(spacer)
         
         priceButton.contentEdgeInsets = Constants.ProductCellLayout.PriceButtonContentInsets
-        priceButton.hitTestSlop = Constants.ProductCellLayout.PriceButtonHitTestSlop
-        priceButton.layoutThatFits(ASSizeRange(min: CGSize.zero, max: constrainedSize))
+        priceButton.hitTestSlop = UIEdgeInsets(top: -Constants.ProductCellLayout.PriceButtonHitTestSlopPadding, left: 0,
+                                               bottom: -Constants.ProductCellLayout.PriceButtonHitTestSlopPadding, right: 0)
+        let priceButtonLayout = ASInsetLayoutSpec(insets: Constants.ProductCellLayout.PriceButtonInsets, child: priceButton)
         
-        return CGSize(width: modifierCalculatedSize.width + priceButton.calculatedSize.width,
-                      height: priceButton.calculatedSize.height)
-    }
-    
-    override func layout() {
-        super.layout()
+        layout.children?.append(priceButtonLayout)
         
-        if let modifierLabel = modifierLabel {
-            let modifierTitleSize = modifierLabel.calculatedSize
-            let priceTitleSize = priceButton.calculatedSize
-            let modifierTitleY = (priceTitleSize.height - modifierTitleSize.height)/2
-            modifierLabel.frame = CGRect(x: 0, y: modifierTitleY, width: modifierTitleSize.width, height: modifierTitleSize.height)
-            priceButton.frame = CGRect(x: modifierTitleSize.width, y: 0, width: priceTitleSize.width, height: priceTitleSize.height)
-            
-        } else {
-            let priceTitleSize = priceButton.calculatedSize
-            let priceLayoutHeight = priceTitleSize.height
-            let priceLayoutWidth = priceTitleSize.width
-            
-            priceButton.frame = CGRect(x: 0, y: 0, width: priceLayoutWidth, height: priceLayoutHeight)
-        }
-    }
+        return layout
+    }    
 }
