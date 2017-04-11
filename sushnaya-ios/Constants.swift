@@ -9,6 +9,13 @@ import UIKit
 struct Constants {
     static let GoldenRatio = CGFloat(1.61803398875)
     
+    static let CartButtonDragDistanceToPopCartItem: CGFloat = 5
+    
+    static let CartButtonBadgeStringAttributes = [
+        NSForegroundColorAttributeName: PaperColor.Gray900,
+        NSFontAttributeName: UIFont.boldSystemFont(ofSize: 12)
+    ]
+    
     struct LocalityCellLayout {
         static let CoatOfArmsImageSize = CGSize(width: 32, height: 32)
         static let ImageCornerRadius:CGFloat = 10
@@ -31,7 +38,7 @@ struct Constants {
     }
     
     struct ProductCellLayout {
-        static let CellInsets = UIEdgeInsets(top: 6, left: 6, bottom: 16, right: 6)
+        static let CellInsets = UIEdgeInsets(top: 6, left: 6, bottom: 12, right: 6)
 
         static let BackgroundColor = PaperColor.White
         static let SelectedBackgroundColor = PaperColor.Gray300
@@ -39,9 +46,12 @@ struct Constants {
 
         static let ImageCornerRadius:CGFloat = 15
 
+        static let TitleFontSize:CGFloat = 14
+        static let SubtitleFontSize:CGFloat = 12
+        
         static let TitleStringAttributes = [
                 NSForegroundColorAttributeName: PaperColor.Gray800,
-                NSFontAttributeName: UIFont.boldSystemFont(ofSize: 14)
+                NSFontAttributeName: UIFont.boldSystemFont(ofSize: TitleFontSize)
         ]
 
         static let SubtitleStringAttributes = [
@@ -66,13 +76,14 @@ struct Constants {
         
         static let TitleLabelInsets = UIEdgeInsets(top: 8, left: 0, bottom: 0, right: 0)
         static let SubtitleLabelInsets = UIEdgeInsets(top: 4, left: 0, bottom: 0, right: 0)
-        static let PricingInsets = UIEdgeInsets(top: 8, left: 0, bottom: 0, right: 0)
+        static let PricingInsets = UIEdgeInsets(top: 8, left: 8, bottom: 0, right: 0)
         
-        static let PricingRowSpacing:CGFloat = 4
-        static let PricingNodeSpacing:CGFloat = 4
+        static let PricingRowSpacing: CGFloat = 0
+        static let PricingNodeSpacing: CGFloat = 4
         
-        static let PriceButtonContentInsets = UIEdgeInsets(top: 2, left: 3, bottom: 2, right: 3)
-        static let PriceButtonHitTestSlop = UIEdgeInsets(top: -13, left: -5, bottom: -13, right: -5)
-        static let ModifierTextInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 3)
+        static let PriceButtonInsets = UIEdgeInsets(top: 4, left: 8, bottom: 4, right: 8)
+        static let PriceButtonContentInsets = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
+        static let PriceButtonHitTestSlopPadding = (44.0 - (14 + PriceButtonContentInsets.top + PriceButtonContentInsets.bottom))/2.0
+        static let ModifierTextInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     }
 }

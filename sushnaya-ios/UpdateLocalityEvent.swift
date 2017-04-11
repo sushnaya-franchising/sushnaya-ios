@@ -9,7 +9,7 @@
 import Foundation
 import SwiftEventBus
 
-struct ChangeLocalityEvent {
+struct ChangeLocalityEvent: Event {
     static var name: String = "\(ChangeLocalityEvent.self)"
     
     var locality: Locality

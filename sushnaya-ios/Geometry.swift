@@ -8,6 +8,16 @@
 
 import Foundation
 
+
+extension UIView {
+    func translate(translation: CGPoint) {
+        let x = frame.origin.x + translation.x
+        let y = frame.origin.y + translation.y
+        
+        frame = CGRect(origin: CGPoint(x: x, y: y), size: frame.size)
+    }
+}
+
 extension CGRect {
     func originForCenteredRectWithSize(size: CGSize) -> CGPoint {
         let x = midX - CGFloat(size.width / 2)

@@ -56,6 +56,10 @@ extension String {
         return ceil(rect.height)
     }
     
+    func boundingRect(attributes: [String: Any]?, width: CGFloat) -> CGRect {
+        return NSString(string: self).boundingRect(with: CGSize(width: width, height: CGFloat(MAXFLOAT)), options: .usesLineFragmentOrigin, attributes: attributes, context: nil)
+    }
+    
     func boundingRect(attributes: [String: Any]?) -> CGRect {
         return NSString(string: self).boundingRect(with: CGSize(width: CGFloat(MAXFLOAT), height: CGFloat(MAXFLOAT)), options: .usesLineFragmentOrigin, attributes: attributes, context: nil)
     }

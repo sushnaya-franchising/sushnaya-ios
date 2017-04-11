@@ -15,6 +15,20 @@ class Product {
     var photoSize: CGSize?
     var pricing: [Price]
 
+    var highestPrice: Price? {
+        var result: Price?
+        var highestValue: CGFloat = 0
+        
+        pricing.forEach {
+            if $0.value >= highestValue {
+                highestValue = $0.value
+                result = $0
+            }
+        }
+        
+        return result
+    }
+    
     convenience init(title: String, pricing: [Price]) {
         self.init(title: title, pricing: pricing, subtitle: nil, photoUrl: nil, photoSize: nil)
     }
@@ -26,4 +40,6 @@ class Product {
         self.photoUrl = photoUrl
         self.photoSize = photoSize
     }
+    
+    
 }
