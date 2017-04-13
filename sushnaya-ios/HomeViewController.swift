@@ -88,7 +88,7 @@ class HomeViewController: ASViewController<ASDisplayNode> {
         super.viewDidLoad()
 
         _collectionNode.view.isScrollEnabled = true
-        _collectionNode.view.showsVerticalScrollIndicator = false
+        _collectionNode.view.showsVerticalScrollIndicator = false                
     }
 
     override func viewWillLayoutSubviews() {

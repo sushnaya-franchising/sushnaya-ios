@@ -38,10 +38,10 @@ class CartPresentingAnimationController: NSObject, UIViewControllerAnimatedTrans
             transitionContext.completeTransition(true)
         }
         
-        let alphaAnimation = POPBasicAnimation(propertyNamed: kPOPViewAlpha)
-        alphaAnimation?.toValue = 0.5
-    
-        fromView.pop_add(alphaAnimation, forKey: "alphaAnimation")
+        let fromViewAlphaAnimation = POPBasicAnimation(propertyNamed: kPOPViewAlpha)
+        fromViewAlphaAnimation?.toValue = 0.6
+        
         toView.layer.pop_add(positionAnimation, forKey: "positionAnimation")
+        fromView.pop_add(fromViewAlphaAnimation, forKey: "alphaAnimation")
     }
 }

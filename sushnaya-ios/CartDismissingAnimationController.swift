@@ -22,9 +22,9 @@ class CartDismissingAnimationController: NSObject, UIViewControllerAnimatedTrans
         
         guard let fromView = transitionContext.viewController(forKey: .from)?.view else { return }
         
-        let closeAnimation = POPBasicAnimation(propertyNamed: kPOPLayerPositionY)
-        closeAnimation?.toValue = fromView.layer.position.y * 3
-        closeAnimation?.completionBlock = { _ in
+        let positionAnimation = POPBasicAnimation(propertyNamed: kPOPLayerPositionY)
+        positionAnimation?.toValue = fromView.layer.position.y * 3
+        positionAnimation?.completionBlock = { _ in
             transitionContext.completeTransition(true)
         }
         
@@ -32,6 +32,6 @@ class CartDismissingAnimationController: NSObject, UIViewControllerAnimatedTrans
         alphaAnimation?.toValue = 1
         
         toView.pop_add(alphaAnimation, forKey: "alphaAnimation")
-        fromView.layer.pop_add(closeAnimation, forKey: "closeAnimation")
+        fromView.layer.pop_add(positionAnimation, forKey: "positionAnimation")
     }
 }

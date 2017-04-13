@@ -11,27 +11,43 @@ import AsyncDisplayKit
 
 class CartViewController: ASViewController<ASDisplayNode> {
     
-    let button = ASButtonNode()
+    var _cartNode: CartNode!
+    
+    var cart: Cart {
+        return app.userSession.cart
+    }
     
     convenience init() {
         self.init(node: ASDisplayNode())
         
-        node.backgroundColor = PaperColor.Gray200
+        setupCartNode()
         
-        button.setAttributedTitle(NSAttributedString.attributedString(string: "Close", fontSize: 17, color: PaperColor.Gray800), for: .normal)
-        button.addTarget(self, action: #selector(close), forControlEvents: .touchUpInside)
-        
-        node.automaticallyManagesSubnodes = true
-        node.layoutSpecBlock = { [unowned self] _ in
-            return ASCenterLayoutSpec(centeringOptions: .XY, sizingOptions: [], child: self.button)
+        self.node.automaticallyManagesSubnodes = true
+        self.node.layoutSpecBlock = { [unowned self] _ in
+            return ASWrapperLayoutSpec(layoutElement: self._cartNode)
         }
+    }
+    
+    private func setupCartNode() {
+        _cartNode = CartNode(cart: cart)
+        _cartNode.delegate = self
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
     }
     
-    func close() {
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(true)
+    }
+}
+
+extension CartViewController: CartNodeDelegate {
+    func cartNodeDidTouchUpInsideCloseButton() {
         self.dismiss(animated: true, completion: nil)
     }
 }

@@ -21,7 +21,6 @@ class PaperFoldNavigationController: ASNavigationController, PaperFoldViewDelega
     private var leftViewController: UIViewController?
     private var updateScreenShotDelayed: Debouncer!
 
-
     func setPaperFoldState(isFolded: Bool, animated: Bool) {
         if isFolded {
             self.paperFoldView.setPaperFoldState(PaperFoldStateDefault, animated: animated)

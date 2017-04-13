@@ -57,37 +57,36 @@ class CartButton: ASControlNode {
             return
         }
         
-        let scaleAnimation = POPSpringAnimation(propertyNamed: kPOPViewScaleXY)
-        scaleAnimation?.fromValue = NSValue.init(cgSize: CGSize(width: 0.9, height: 0.9))
-        scaleAnimation?.toValue = NSValue.init(cgSize: CGSize(width: 1, height: 1))
-        scaleAnimation?.springBounciness = 20
+        let animation = POPSpringAnimation(propertyNamed: kPOPViewScaleXY)
+        animation?.fromValue = NSValue.init(cgSize: CGSize(width: 0.9, height: 0.9))
+        animation?.toValue = NSValue.init(cgSize: CGSize(width: 1, height: 1))
+        animation?.springBounciness = 20
         
         priceBadgeNode.pop_removeAllAnimations()
-        priceBadgeNode.pop_add(scaleAnimation, forKey: "scale")
+        priceBadgeNode.pop_add(animation, forKey: "scale")
     }
     
     private func animatePriceDisappearing() {
-        let positionAnimation = POPSpringAnimation(propertyNamed: kPOPViewScaleXY)
-        positionAnimation?.toValue = NSValue.init(cgSize: CGSize(width: 0, height: 0))
-        positionAnimation?.springBounciness = 10
-        positionAnimation?.springSpeed = 10
-        positionAnimation?.completionBlock = { [unowned self] _ in
+        let animation = POPBasicAnimation(propertyNamed: kPOPViewScaleXY)
+        animation?.toValue = NSValue.init(cgSize: CGSize(width: 0, height: 0))
+        animation?.duration = 0.2
+        animation?.completionBlock = { [unowned self] _ in
             self.priceBadgeNode.isHidden = true
         }
         
         priceBadgeNode.pop_removeAllAnimations()
-        priceBadgeNode.pop_add(positionAnimation, forKey: "scale")
+        priceBadgeNode.pop_add(animation, forKey: "scale")
     }
     
     private func animatePriceAppearing() {
-        let positionAnimation = POPBasicAnimation(propertyNamed: kPOPViewScaleXY)
-        positionAnimation?.fromValue = NSValue.init(cgSize: CGSize(width: 0, height: 0))
-        positionAnimation?.toValue = NSValue.init(cgSize: CGSize(width: 1, height: 1))
-        positionAnimation?.duration = 0.5
+        let animation = POPSpringAnimation(propertyNamed: kPOPViewScaleXY)
+        animation?.fromValue = NSValue.init(cgSize: CGSize(width: 0, height: 0))
+        animation?.toValue = NSValue.init(cgSize: CGSize(width: 1, height: 1))
+        animation?.springBounciness = 10
         
         priceBadgeNode.pop_removeAllAnimations()
+        priceBadgeNode.pop_add(animation, forKey: "scale")
         priceBadgeNode.isHidden = false
-        priceBadgeNode.pop_add(positionAnimation, forKey: "scale")
     }
     
     private func setupNodes() {
