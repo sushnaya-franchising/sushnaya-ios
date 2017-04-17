@@ -8,6 +8,7 @@
 
 import Foundation
 import AsyncDisplayKit
+import FontAwesome_swift
 
 class CartToolBarNode: ASDisplayNode {
     
@@ -15,6 +16,7 @@ class CartToolBarNode: ASDisplayNode {
     
     let sumTextNode = ASTextNode()
     let deliveryButton = ASButtonNode()
+    let changeOrderTypeButton = ASButtonNode()
     let recommendationsTitleNode = ASTextNode()
     private(set) var recommendationsCollection: ASCollectionNode!
     
@@ -82,6 +84,7 @@ class CartToolBarNode: ASDisplayNode {
     private func setupNodes() {
         setupSumTextNode()
         setupDeliveryButton()
+        setupChangeOrderTypeButton()
         setupRecommendationsTitleNode()
         setupRecommendationsCollectionNode()
     }
@@ -94,6 +97,15 @@ class CartToolBarNode: ASDisplayNode {
         let title = NSAttributedString(string: "Доставить", attributes: Constants.CartLayout.DeliveryButtonTitileStringAttributes)
         deliveryButton.setAttributedTitle(title, for: .normal)
         deliveryButton.backgroundColor = Constants.CartLayout.DeliveryButtonBackgroundColor
+    }
+    
+    private func setupChangeOrderTypeButton() {
+        let title = NSAttributedString(string: String.fontAwesomeIcon(name: .ellipsisH), attributes: [
+            NSFontAttributeName: UIFont.fontAwesome(ofSize: 16),
+            NSForegroundColorAttributeName: PaperColor.Gray800
+        ])
+        changeOrderTypeButton.setAttributedTitle(title, for: .normal)
+        changeOrderTypeButton.backgroundColor = Constants.CartLayout.DeliveryButtonBackgroundColor
     }
     
     private func setupRecommendationsCollectionNode() {
@@ -117,28 +129,71 @@ class CartToolBarNode: ASDisplayNode {
     override func didLoad() {
         super.didLoad()
         
-        deliveryButton.cornerRadius = 5
+        deliveryButton.cornerRadius = 10
         deliveryButton.clipsToBounds = true
+        
+        changeOrderTypeButton.cornerRadius = 10
+        changeOrderTypeButton.clipsToBounds = true
         
         recommendationsCollection.view.contentInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
     }
     
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        let sumTextNodeLayout = ASInsetLayoutSpec(insets: UIEdgeInsets(top: 16, left: 0, bottom: 16, right: 56), child: sumTextNode)
-        sumTextNodeLayout.style.alignSelf = .end
-        
-        deliveryButton.style.preferredSize = CGSize(width: constrainedSize.max.width, height: 44)
-        let deliveryButtonLayout = ASInsetLayoutSpec(insets: UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16), child: deliveryButton)
-        
-        let recommendationsTitleLayout = ASInsetLayoutSpec(insets: UIEdgeInsets(top: 10, left: 16, bottom: 10, right: 0),
-                                                           child: recommendationsTitleNode)
-        recommendationsTitleLayout.style.alignSelf = .start
+        let sumTextNodeLayout = sumLayoutSpecThatFits(constrainedSize)
+        let deliveryButtonLayout = deliveryButtonLayoutSpecThatFits(constrainedSize)
+        let recommendationsTitleLayout = recommendationsTitlLayoutSpecThatFits(constrainedSize)
         
         recommendationsCollection.style.preferredSize = CGSize(width: constrainedSize.max.width, height: biggestCellHeight)
         
         let layout = ASStackLayoutSpec.vertical()        
         layout.alignItems = .center
-        layout.children = [recommendationsTitleLayout, recommendationsCollection, sumTextNodeLayout, deliveryButtonLayout]
+        layout.children = [recommendationsTitleLayout, recommendationsCollection,
+                           sumTextNodeLayout, deliveryButtonLayout]
+        return layout
+    }
+    
+    private func sumLayoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
+        let layout = ASInsetLayoutSpec(insets: UIEdgeInsets(top: 16, left: 0, bottom: 16, right: 56), child: sumTextNode)
+        layout.style.alignSelf = .end
+        
+        return layout
+    }
+    
+    private func deliveryButtonLayoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
+        let substrate = substrateLayout()
+        
+        changeOrderTypeButton.style.preferredSize = CGSize(width: 44, height: 44)
+        deliveryButton.style.preferredSize = CGSize(width: constrainedSize.max.width, height: 44)
+        
+        let insets = UIEdgeInsets(top: 0, left: CGFloat.infinity, bottom: 0, right: 0)
+        let substrateInsetLayout = ASInsetLayoutSpec(insets: insets, child: substrate)
+        let substrateOverDeliveryButton = ASOverlayLayoutSpec(child: deliveryButton, overlay: substrateInsetLayout)
+        
+        let changeOrderTypeButtonInsetLayout = ASInsetLayoutSpec(insets: insets, child: changeOrderTypeButton)
+        let changeOrderTypeButtonOverDeliveryButton = ASOverlayLayoutSpec(child: substrateOverDeliveryButton,
+                                                                          overlay: changeOrderTypeButtonInsetLayout)
+        
+        return ASInsetLayoutSpec(insets: UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16),
+                                 child: changeOrderTypeButtonOverDeliveryButton)
+    }
+    
+    private func substrateLayout() -> ASLayoutSpec {
+        let substrate = ASDisplayNode()
+        substrate.backgroundColor = PaperColor.White
+        substrate.style.preferredSize = CGSize(width: 45, height: 44)
+        
+        let colorSubstrate = ASDisplayNode()
+        colorSubstrate.backgroundColor = changeOrderTypeButton.backgroundColor
+        colorSubstrate.style.preferredSize = CGSize(width: 22, height: 44)
+        
+        return ASOverlayLayoutSpec(child: substrate, overlay: ASInsetLayoutSpec(
+            insets: UIEdgeInsets(top: 0, left: 1, bottom: 0, right: 22), child: colorSubstrate))
+    }
+    
+    private func recommendationsTitlLayoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
+        let layout = ASInsetLayoutSpec(insets: UIEdgeInsets(top: 16, left: 16, bottom: 10, right: 0),
+                                                           child: recommendationsTitleNode)
+        layout.style.alignSelf = .start
         
         return layout
     }
