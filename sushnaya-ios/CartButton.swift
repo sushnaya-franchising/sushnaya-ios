@@ -11,12 +11,11 @@ import AsyncDisplayKit
 import FontAwesome_swift
 import pop
 
-// todo: fix restore initial position
 class CartButton: ASControlNode {
     
     let iconNode = ASImageNode()
     let priceBadgeNode = ASTextNode()
-    private var centerBeforeGesture: CGPoint!
+    private var originalX: CGFloat!
     let cart: Cart
     
     init(cart: Cart) {
@@ -79,6 +78,7 @@ class CartButton: ASControlNode {
         priceBadgeNode.pop_add(animation, forKey: "scale")
     }
     
+    
     private func animatePriceAppearing() {
         let animation = POPSpringAnimation(propertyNamed: kPOPViewScaleXY)
         animation?.fromValue = NSValue.init(cgSize: CGSize(width: 0, height: 0))
@@ -123,13 +123,13 @@ class CartButton: ASControlNode {
         switch recognizer.state {
         case .began:
             self.view.pop_removeAllAnimations()
-            initCenterBegoreGesture(recognizer)
+            ensureOriginalX()
             
         case .changed:
             translate(recognizer)
             
         case .ended:
-            if centerBeforeGesture.x - self.view.center.x >= Constants.CartButtonDragDistanceToPopCartItem {
+            if originalX - self.view.frame.origin.x >= Constants.CartButtonDragDistanceToPopCartItem {
                 popCartItem()
             }
             restoreOriginalPosition(recognizer)
@@ -145,20 +145,22 @@ class CartButton: ASControlNode {
         }
     }
     
-    private func initCenterBegoreGesture(_ recognizer: UIPanGestureRecognizer) {
-        if centerBeforeGesture == nil {
-            centerBeforeGesture = recognizer.view?.center
+    @discardableResult private func ensureOriginalX() -> CGFloat {
+        if originalX == nil {
+            originalX = self.frame.origin.x
         }
+        
+        return originalX
     }
     
     private func translate(_ recognizer: UIPanGestureRecognizer) {
         let translation = recognizer.translation(in: self.view)
         
-        guard self.view.center.x + translation.x <= centerBeforeGesture.x else {
+        guard self.view.frame.origin.x + translation.x <= originalX else {
             return
         }
         
-        let curDistance = centerBeforeGesture.x - self.view.center.x
+        let curDistance = originalX - self.view.frame.origin.x
         let translateX = translation.x < 0 && curDistance > Constants.CartButtonDragDistanceToPopCartItem ?
             (translation.x * Constants.CartButtonDragDistanceToPopCartItem)/curDistance : translation.x
         
@@ -167,23 +169,48 @@ class CartButton: ASControlNode {
     }
     
     private func restoreOriginalPosition(_ recognizer: UIPanGestureRecognizer) {
-        guard self.view.center != centerBeforeGesture else {
+        guard self.frame.origin.x != originalX else {
             return
         }
 
         let translation = recognizer.translation(in: self.view)
         let velocity = recognizer.velocity(in: self.view)
-        let curDistance = centerBeforeGesture.x - self.view.center.x
+        let curDistance = originalX - self.view.frame.origin.x
         let velocityX = translation.x < 0 && curDistance > Constants.CartButtonDragDistanceToPopCartItem ?
             (velocity.x * Constants.CartButtonDragDistanceToPopCartItem)/curDistance : velocity.x
         
-        let positionAnimation = POPSpringAnimation(propertyNamed: kPOPViewCenter)
-        positionAnimation?.toValue = centerBeforeGesture
-        positionAnimation?.velocity = NSValue.init(cgPoint: CGPoint(x: velocityX, y: 0))
-        positionAnimation?.springBounciness = 10
+        restoreOriginalPosition(velocityX: velocityX)
+    }
+    
+    private func restoreOriginalPosition(velocityX: CGFloat = 0) {
+        guard self.frame.origin.x != originalX else {
+            return
+        }
         
-        self.pop_removeAllAnimations()
+        let positionAnimation = POPSpringAnimation()
+        positionAnimation.property = POPAnimatableProperty.property(withName: "originX", initializer: propertyInitializer) as! POPAnimatableProperty
+        positionAnimation.toValue = ensureOriginalX()
+        positionAnimation.velocity = velocityX
+        positionAnimation.springBounciness = 10
+        
+        self.view.pop_removeAllAnimations()
         self.view.pop_add(positionAnimation, forKey: "restoreOriginalPosition")
+    }        
+    
+    func propertyInitializer(prop: POPMutableAnimatableProperty!) {
+        prop.readBlock = { obj, values in
+            if let view = obj as? UIView {
+                values?[0] = view.frame.origin.x
+            }
+        }
+        
+        prop.writeBlock = { obj, values in
+            if let x = values?[0],
+                let view = obj as? UIView {
+                
+                view.frame = CGRect(x: x, y: view.frame.origin.y, width: view.frame.width, height: view.frame.height)
+            }
+        }
     }
     
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
