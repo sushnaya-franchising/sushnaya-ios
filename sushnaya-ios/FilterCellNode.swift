@@ -32,7 +32,7 @@ class FilterCellNode: ASCellNode {
         }
     }
     
-    init(filter: Filter) {
+    init(filter: CellData) {
         super.init()
         
         self.automaticallyManagesSubnodes = true
@@ -42,15 +42,25 @@ class FilterCellNode: ASCellNode {
         setupNodes(filter)
     }
     
-    private func setupNodes(_ filter: Filter) {
+    private func setupNodes(_ filter: CellData) {
         setupImageNode(filter)
         setupTitleLabel(filter)
     }
     
-    private func setupImageNode(_ filter: Filter) {
+    private func setupImageNode(_ filter: CellData) {
         //imageNode.defaultImage = UIImage(color: PaperColor.Gray300, size: Constants.CellLayout.CoatOfArmsImageSize)
         
-        if let url = filter.imageUrl {
+        if let image = filter.image {
+            let size = image.size
+            if size.width < Constants.FilterCellLayout.ImageSize.width ||
+                size.height < Constants.FilterCellLayout.ImageSize.height {
+                imageNode.backgroundColor = PaperColor.Gray300
+                imageNode.contentMode = .center
+            }
+            
+            imageNode.image = image
+        
+        } else if let url = filter.imageUrl {
         //    imageNode.url = URL(string: url)
             imageNode.image = UIImage(named: url)
         }
@@ -63,16 +73,18 @@ class FilterCellNode: ASCellNode {
         imageNode.clipsToBounds = true
     }
     
-    private func setupTitleLabel(_ filter: Filter) {
+    private func setupTitleLabel(_ filter: CellData) {
         titleLabel.attributedText = NSAttributedString(string: filter.title, attributes: Constants.FilterCellLayout.TitleStringAttributes)
     }
 
-    override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
+    override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec { 
         let stack = ASStackLayoutSpec.vertical()
         stack.alignItems = .center
         stack.justifyContent = .start
         
         imageNode.style.preferredSize = Constants.FilterCellLayout.ImageSize
+        
+        titleLabel.style.maxWidth = ASDimension(unit: .points, value: Constants.FilterCellLayout.ImageSize.width)
         
         stack.children = [
                 imageNode,

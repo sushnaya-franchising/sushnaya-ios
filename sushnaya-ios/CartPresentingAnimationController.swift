@@ -24,7 +24,7 @@ class CartPresentingAnimationController: NSObject, UIViewControllerAnimatedTrans
         guard let toView = transitionContext.viewController(forKey: .to)?.view else { return }
         toView.frame = CGRect(x: 0, y: 0,
                                width: transitionContext.containerView.bounds.width,
-                               height: transitionContext.containerView.bounds.height + 32)
+                               height: transitionContext.containerView.bounds.height)
         
         let p = CGPoint(x: transitionContext.containerView.center.x, y: transitionContext.containerView.center.y * 3)
         toView.center = p

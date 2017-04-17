@@ -16,17 +16,17 @@ class FiltersViewController: ASViewController<ASDisplayNode>, PaperFoldAsyncView
     let titleStringAttrs = Constants.FilterCellLayout.TitleStringAttributes
     let imageSize = Constants.FilterCellLayout.ImageSize
 
-    lazy var filters: [FilterByCategory]? = {
+    lazy var filters: [CellData]? = {
         let categories = [
             MenuCategory(title:"Пицца", subtitle: nil, photoUrl: "category_s_0", photoSize: UIImage(named: "category_s_0")?.size),
             MenuCategory(title:"Роллы", subtitle: nil, photoUrl: "category_s_1", photoSize: UIImage(named: "category_s_1")?.size),
             MenuCategory(title:"Супы", subtitle: nil, photoUrl: "category_s_2", photoSize: UIImage(named: "category_s_2")?.size),
-            MenuCategory(title:"Салаты", subtitle: nil, photoUrl: "category_s_3", photoSize: UIImage(named: "category_s_3")?.size),
             MenuCategory(title:"Пельмени", subtitle: nil, photoUrl: "category_s_4", photoSize: UIImage(named: "category_s_4")?.size),
+            MenuCategory(title:"Салаты", subtitle: nil, photoUrl: "category_s_3", photoSize: UIImage(named: "category_s_3")?.size),
             MenuCategory(title:"Напитки", subtitle: nil, photoUrl: "category_s_5", photoSize: UIImage(named: "category_s_5")?.size)
         ]
         
-        return categories.map{ FilterByCategory($0) }
+        return categories.map{ CategoryCellData($0) }
     }()
     
     var _collectionNode: ASCollectionNode!

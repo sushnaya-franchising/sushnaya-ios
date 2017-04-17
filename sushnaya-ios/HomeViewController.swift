@@ -57,23 +57,42 @@ class HomeViewController: ASViewController<ASDisplayNode> {
 
     private func initFakeData() {
         products = []
+        let titles = [
+            "C беконом и авокадо",
+            "Белый самурай",
+            "С креветками и авокадо",
+            "Четыре сыра",
+            "Пепперони",
+            "С грибами"
+        ]
+        let subtitles = [
+            "Бекон, авокадо, рис, нори",
+            "Креветка, кунжут, рис, нори, сыр филадельфия",
+            "Авокадо, креветка, сыр филадельфия, нори",
+            "Сыр дор блю, пармезан, моцарелла, копченый сыр",
+            "Салями, моцарелла",
+            "Грибы, моцарелла, томаты"
+        ]
+        let categories = ["Роллы", "Пицца"]
         for idx in 0..<6 {
-            let title = "Роллы с беконом и авокадо"
-            let subtitle = "Пикантный насыщенный вкус идеально подходит для зимней погоды"
             let photoUrl = "product_\(idx)"
             let photoSize = UIImage(named: photoUrl)?.size
             var pricing = [Price] ()
-
-            if idx % 2 == 0 {
-                pricing.append(Price(value: 240, currencyLocale: "ru_RU"))
-
-            } else {
+            var category: MenuCategory!
+            
+            if idx < 3 {
                 pricing.append(Price(value: 120, currencyLocale: "ru_RU", modifierName: "3 шт."))
                 pricing.append(Price(value: 240, currencyLocale: "ru_RU", modifierName: "6 шт."))
                 pricing.append(Price(value: 360, currencyLocale: "ru_RU", modifierName: "9 шт."))
+                
+            } else {
+                pricing.append(Price(value: 240, currencyLocale: "ru_RU"))
             }
+            
+            category = MenuCategory(title: categories[idx < 3 ? 0 : 1])
 
-            let product = Product(title: title, pricing: pricing, subtitle: subtitle, photoUrl: photoUrl, photoSize: photoSize)
+            let product = Product(title: titles[idx], pricing: pricing, category: category,
+                                  subtitle: subtitles[idx], photoUrl: photoUrl, photoSize: photoSize)
 
             products?.append(product)
         }

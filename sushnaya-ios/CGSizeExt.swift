@@ -38,5 +38,14 @@ extension CGSize {
         
         return result
     }
+    
+    var hashValue: Int {
+        var result = 1
+        
+        result = 31 &* result &+ width.hashValue
+        result = 31 &* result &+ height.hashValue
+        
+        return result
+    }
 }
 

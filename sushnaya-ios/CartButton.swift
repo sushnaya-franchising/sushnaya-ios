@@ -11,6 +11,7 @@ import AsyncDisplayKit
 import FontAwesome_swift
 import pop
 
+// todo: fix restore initial position
 class CartButton: ASControlNode {
     
     let iconNode = ASImageNode()

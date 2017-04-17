@@ -8,18 +8,71 @@
 
 import Foundation
 
-class CartItem {
-    let product: Product
-    let price: Price
+class CartSection {
+    let title: String
+    let countedItems: [(CartItem, Int)]
     
-    init(product: Product, price: Price) {
-        self.product = product
-        self.price = price
+    fileprivate init(title: String, countedItems: [(CartItem, Int)]) {
+        self.title = title
+        self.countedItems = countedItems
     }
 }
 
+class CartItem: Hashable {
+    let product: Product
+    let price: Price
+    var dateAdded: Date
+    
+    fileprivate init(product: Product, price: Price, dateAdded: Date) {
+        self.product = product
+        self.price = price
+        self.dateAdded = dateAdded
+    }
+    
+    var hashValue: Int {
+        var result = 1
+        result = 31 &* result &+ product.hashValue
+        result = 31 &* result &+ price.hashValue
+        
+        return result
+    }
+}
+
+func ==(lhs: CartItem, rhs: CartItem) -> Bool {
+    if lhs === rhs {
+        return true
+    }
+    
+    return lhs.product == rhs.product &&
+        lhs.price == rhs.price
+}
+
 class Cart: NSObject {
-    private var items = [CartItem]()
+    fileprivate var items = [CartItem]()
+    
+    private var _cartSections: [CartSection]!
+    
+    var cartSections: [CartSection] {
+        if let cached = _cartSections {
+            return cached
+        }
+        
+        _cartSections = [CartSection]()
+        
+        for (categoryTitle, items) in groupItemsByCategoryTitle() {
+            let countedItems = countEqualItems(items).sorted { $0.0.dateAdded < $1.0.dateAdded }
+            
+            _cartSections.append(CartSection(title: categoryTitle, countedItems: countedItems))
+        }
+        
+        _cartSections = _cartSections!.sorted { $0.countedItems[0].0.dateAdded < $1.countedItems[0].0.dateAdded }
+        
+        return _cartSections
+    }
+    
+    var isEmpty:Bool {
+        return items.isEmpty
+    }
     
     var sum: Price {
         var sumValue: CGFloat = 0
@@ -37,11 +90,17 @@ class Cart: NSObject {
     }
     
     func push(product: Product, withPrice price: Price) {
-        push(cartItem: CartItem(product: product, price: price))
+        let existingItem = items.reversed().filter{ $0.product == product && $0.price == price }.first
+        
+        let dateAdded = existingItem?.dateAdded ?? Date()
+        
+        push(cartItem: CartItem(product: product, price: price, dateAdded: dateAdded))
     }
     
-    func push(cartItem: CartItem) {
+    private func push(cartItem: CartItem) {
         items.append(cartItem)
+        
+        _cartSections = nil
         
         DidAddToCart.fire(cart: self, cartItem: cartItem)
     }
@@ -51,8 +110,36 @@ class Cart: NSObject {
             return nil
         }
         
+        _cartSections = nil
+        
         DidRemoveFromCart.fire(cart: self, cartItem: cartItem)
         
         return (cartItem.product, cartItem.price)
+    }
+}
+
+extension Cart {
+    fileprivate func groupItemsByCategoryTitle() -> [String: [CartItem]] {
+        var itemsByCategoryTitle = [String: [CartItem]]()
+        for item in items {
+            let categoryTitle = item.product.categoryTitle
+            var categoryItems = itemsByCategoryTitle[categoryTitle] ?? [CartItem]()
+            
+            categoryItems.append(item)
+            
+            itemsByCategoryTitle[categoryTitle] = categoryItems
+        }
+
+        return itemsByCategoryTitle
+    }
+    
+    fileprivate func countEqualItems(_ items: [CartItem]) -> [(CartItem, Int)] {
+        var countedItems = [CartItem: Int]()
+        for item in items {
+            let count = (countedItems[item] ?? 0) + 1
+            countedItems[item] = count
+        }
+        
+        return countedItems.map{($0, $1)}
     }
 }

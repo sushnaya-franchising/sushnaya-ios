@@ -18,6 +18,8 @@ protocol PriceNodeDelegate {
 class PriceNode: ASDisplayNode {
     private(set) var modifierLabel: ASTextNode?
     private(set) var priceButton = ASButtonNode()
+    let checkIconNode = ASImageNode()
+    
     var delegate: PriceNodeDelegate?
     let price: Price
     
@@ -40,6 +42,7 @@ class PriceNode: ASDisplayNode {
     private func setupSubnodes() {
         setupModifierLabel()
         setupPriceButton()
+        setupCheckIcon()
     }
     
     private func setupModifierLabel() {
@@ -56,6 +59,11 @@ class PriceNode: ASDisplayNode {
             Constants.ProductCellLayout.PriceStringAttributes : Constants.ProductCellLayout.PriceWithModifierStringAttributes)
         priceButton.setAttributedTitle(title, for: .normal)
         priceButton.backgroundColor = Constants.ProductCellLayout.PriceButtonBackgroundColor
+    }
+    
+    private func setupCheckIcon() {
+        checkIconNode.image = UIImage.fontAwesomeIcon(name: .check, textColor: Constants.ProductCellLayout.CheckIconColor,
+                                                      size: Constants.ProductCellLayout.CheckIconSize)
     }
     
     override func didLoad() {
@@ -95,7 +103,9 @@ class PriceNode: ASDisplayNode {
         alphaAnimation?.toValue = 0
         alphaAnimation?.duration = 0.07
         alphaAnimation?.completionBlock = { [unowned self] _ in
-            self.animateBirth()
+            debounce(delay: 1.5) {
+                self.animateBirth()
+            }.apply()
         }
         
         AudioServicesPlaySystemSound(1156)
@@ -137,7 +147,10 @@ class PriceNode: ASDisplayNode {
         priceButton.contentEdgeInsets = Constants.ProductCellLayout.PriceButtonContentInsets
         priceButton.hitTestSlop = UIEdgeInsets(top: -Constants.ProductCellLayout.PriceButtonHitTestSlopPadding, left: 0,
                                                bottom: -Constants.ProductCellLayout.PriceButtonHitTestSlopPadding, right: 0)
-        let priceButtonLayout = ASInsetLayoutSpec(insets: Constants.ProductCellLayout.PriceButtonInsets, child: priceButton)
+        
+        let iconCenterLayout = ASCenterLayoutSpec(centeringOptions: .XY, sizingOptions: [], child: checkIconNode)
+        let priceWithIconBackgroundLayout = ASBackgroundLayoutSpec(child: priceButton, background: iconCenterLayout)
+        let priceButtonLayout = ASInsetLayoutSpec(insets: Constants.ProductCellLayout.PriceButtonInsets, child: priceWithIconBackgroundLayout)
         
         layout.children?.append(priceButtonLayout)
         

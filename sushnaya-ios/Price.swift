@@ -5,7 +5,7 @@
 
 import Foundation
 
-class Price {
+class Price: Hashable {
     var value: CGFloat
     var modifierName: String?
     var currencyLocale: String
@@ -24,4 +24,23 @@ class Price {
         self.modifierName = modifierName
         self.currencyLocale = currencyLocale
     }
+
+    var hashValue: Int {
+        var result = 1
+        result = 31 &* result &+ value.hashValue
+        result = 31 &* result &+ (modifierName?.hashValue ?? 0)
+        result = 31 &* result &+ currencyLocale.hashValue
+        
+        return result
+    }
+}
+
+func ==(lhs: Price, rhs: Price) -> Bool {
+    if lhs === rhs {
+        return true
+    }
+    
+    return lhs.value == rhs.value &&
+        lhs.modifierName == rhs.modifierName &&
+        lhs.currencyLocale == rhs.currencyLocale
 }

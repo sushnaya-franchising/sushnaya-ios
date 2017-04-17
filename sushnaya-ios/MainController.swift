@@ -30,7 +30,7 @@ class MainController: ASTabBarController {
     }
 
     private func addCartButtonViewAsynchronously(containerRect: CGRect) {
-        DispatchQueue.global(qos: .background).async {
+        DispatchQueue.global().async {
             let cartButtonNode = self.createCartButtonNode(containerRect: containerRect)
             
             DispatchQueue.main.async {

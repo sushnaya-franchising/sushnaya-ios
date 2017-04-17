@@ -9,6 +9,19 @@ import AsyncDisplayKit
 
 typealias EventBus = SwiftEventBus
 
+class HashValueUtil {
+    static func hashValue<T: Hashable>(of: [T?]) -> Int {
+        var result = 1
+        
+        for x in of {
+            result = 31 &* result &+ (x?.hashValue ?? 0)
+        }
+        
+        return result
+    }
+
+}
+
 func ImageNodePrecompositedCornerModification(cornerRadius: CGFloat) -> ((UIImage) -> UIImage) {
     return { (image: UIImage) -> UIImage in
         let rect = CGRect(origin: CGPoint.zero, size: image.size)

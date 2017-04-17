@@ -15,7 +15,7 @@ protocol CartNodeDelegate {
 }
 
 class CartNode: ASDisplayNode {
-    
+            
     let closeButton = ASButtonNode()
     let iconNode = ASImageNode()
     let cartContentNode: CartContentNode
@@ -48,7 +48,7 @@ class CartNode: ASDisplayNode {
         backLayout.alignItems = .center
         
         let backPusher = ASLayoutSpec()
-        backPusher.style.height = ASDimension(unit: .points, value: 24)
+        backPusher.style.height = ASDimension(unit: .points, value: 16)
         
         iconNode.style.preferredSize = iconNode.image!.size
         
@@ -61,11 +61,15 @@ class CartNode: ASDisplayNode {
     
     private func frontLayoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let frontLayout = ASStackLayoutSpec.vertical()
+        frontLayout.style.preferredSize = constrainedSize.max
         
         let frontPusher = ASLayoutSpec()
-        frontPusher.style.height = ASDimension(unit: .points, value: 78)
+        let frontPusherHeight: CGFloat = 70
+        frontPusher.style.height = ASDimension(unit: .points, value: frontPusherHeight)
         
-        let contentLayout = contentLayoutSpecThatFits(constrainedSize)
+        let contentSize = CGSize(width: constrainedSize.max.width,
+                                 height: constrainedSize.max.height - frontPusherHeight)
+        let contentLayout = contentLayoutSpecThatFits(ASSizeRange(min: contentSize, max: contentSize))
         
         frontLayout.children = [frontPusher, contentLayout]
         
@@ -73,12 +77,8 @@ class CartNode: ASDisplayNode {
     }
     
     private func contentLayoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        let contentLayout = ASStackLayoutSpec.vertical()
-        contentLayout.style.flexGrow = 1.0
-        cartContentNode.style.flexGrow = 1.0
+        cartContentNode.style.preferredSize = constrainedSize.max
         
-        contentLayout.children = [cartContentNode]
-        
-        return contentLayout
+        return ASWrapperLayoutSpec(layoutElement: cartContentNode)
     }
 }

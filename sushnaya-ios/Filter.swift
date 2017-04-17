@@ -8,28 +8,52 @@
 
 import Foundation
 
-protocol Filter {
-    var title: String { get }
-    var imageSize: CGSize? { get }
-    var imageUrl: String? { get }
+class CellData {
+    var title: String
+    var imageSize: CGSize?
+    var imageUrl: String?
+    var image: UIImage?
+    
+    init(title: String) {
+        self.title = title
+    }
 }
 
-class FilterByCategory: Filter {
-    var title: String {
-        return category.title
+class CategoryCellData: CellData {
+    override var title: String {
+        set {
+            category.title = newValue
+        }
+        
+        get {
+            return category.title
+        }
     }
 
-    var imageSize: CGSize? {
-        return category.photoSize
+    override var imageSize: CGSize? {
+        set {
+            category.photoSize = newValue
+        }
+        
+        get{
+            return category.photoSize
+        }
     }
 
-    var imageUrl: String? {
-        return category.photoUrl
+    override var imageUrl: String? {
+        set {
+            category.photoUrl = newValue
+        }
+        
+        get {
+            return category.photoUrl
+        }
     }
-
+    
     let category: MenuCategory
 
     init(_ category: MenuCategory) {
         self.category = category
+        super.init(title: category.title)
     }
 }
