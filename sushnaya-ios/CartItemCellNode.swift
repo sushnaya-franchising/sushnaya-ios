@@ -12,29 +12,55 @@ import FontAwesome_swift
 
 class CartItemCellNode: ASCellNode {
     
-    let cartItem: CartItem
-    var count: Int {
-        didSet {
-            if oldValue != count {
-                updateCountNodeText(count)
-            }
-        }
-    }
-    
     let countNode = ASTextNode()
     let titleNode = ASTextNode()
     private(set) var priceModifierNameNode: ASTextNode?
     let priceNode = ASTextNode()
     let optionsButtonNode = ASButtonNode()
     
-    init(cartItem: CartItem, count: Int) {
-        self.cartItem = cartItem
-        self.count = count
+    let product: Product
+    let price: Price
+    var cartItems: [CartItem]
+    
+    init(cartItems: [CartItem]) {
+        self.cartItems = cartItems
+        self.product = cartItems[0].product
+        self.price = cartItems[0].price
         super.init()
-        
         automaticallyManagesSubnodes = true
-        
         setupNodes()
+        registerEventHandlers()
+    }
+    
+    deinit {
+        EventBus.unregister(self)
+    }
+    
+    private func registerEventHandlers() {
+        EventBus.onMainThread(self, name: DidAddToCartEvent.name) { [unowned self] (notification) in
+            guard let event = notification.object as? DidAddToCartEvent else {
+                return
+            }
+            
+            if event.cartItem.product == self.product && event.cartItem.price == self.price {
+                self.cartItems.append(event.cartItem)
+                self.updateCountNodeText(self.cartItems.count)
+            }
+        }
+        
+        EventBus.onMainThread(self, name: DidRemoveFromCartEvent.name) { [unowned self] (notification) in
+            guard let event = notification.object as? DidRemoveFromCartEvent else {
+                return
+            }
+            
+            if event.cartItem.product == self.product && event.cartItem.price == self.price {
+                for idx in self.cartItems.indices where self.cartItems[idx].id == event.cartItem.id {
+                    self.cartItems.remove(at: idx)
+                    break
+                }                
+                self.updateCountNodeText(self.cartItems.count)
+            }
+        }
     }
     
     private func setupNodes() {
@@ -46,26 +72,26 @@ class CartItemCellNode: ASCellNode {
     }
     
     private func setupCountNode() {
-        updateCountNodeText(count)
+        updateCountNodeText(cartItems.count)
     }
     
     private func updateCountNodeText(_ count: Int) {
-        countNode.attributedText = NSAttributedString(string: "\(count)",
+        countNode.attributedText = NSAttributedString(string: "\(cartItems.count)",
             attributes: Constants.CartLayout.ItemCountStringAttributes)
     }
     
     private func setupTitleNode() {
-        titleNode.attributedText = NSAttributedString(string: cartItem.product.title.uppercased(),
+        titleNode.attributedText = NSAttributedString(string: product.title.uppercased(),
                                                       attributes: Constants.CartLayout.ItemTitleStringAttributes)
     }
     
     private func setupPriceNode() {
-        priceNode.attributedText = NSAttributedString(string: cartItem.price.formattedValue,
+        priceNode.attributedText = NSAttributedString(string: price.formattedValue,
                                                       attributes: Constants.CartLayout.ItemPriceStringAttributes)
     }
     
     private func setupPriceModifierNameNode() {
-        if let modifierName = cartItem.price.modifierName {
+        if let modifierName = price.modifierName {
             priceModifierNameNode = ASTextNode()
             priceModifierNameNode!.attributedText = NSAttributedString(string: "(\(modifierName))",
                                                       attributes: Constants.CartLayout.ItemPriceModifierNameStringAttributes)
@@ -88,35 +114,37 @@ class CartItemCellNode: ASCellNode {
         self.view.addGestureRecognizer(recognizer)
     }
     
-    var _gestureStartPoint:CGPoint!
+    var _checkpoint:CGPoint!
     var _shouldRecognize = true
     
     func didPanGesture(_ recognizer: UIPanGestureRecognizer) {
         switch recognizer.state {
         case .began:
-            _gestureStartPoint = recognizer.location(in: self.view.superview)
+            _checkpoint = recognizer.location(in: self.view.superview)
             
         case .changed:
-            let translation = recognizer.translation(in: self.view.superview)
-            
-            guard abs(translation.y) < 16 else {
-                _shouldRecognize = false
-                return
-            }
-            
             guard _shouldRecognize else {
                 return
             }
             
             let point = recognizer.location(in: self.view.superview)
+            let distance = point.x - _checkpoint.x
             
-            self.updateCountNodeText(Int(max(self.count + Int((point.x - _gestureStartPoint.x)/32), 0)))
+            guard abs(distance) > 30 else {
+                return
+            }
+            
+            if distance < 0 {
+                RemoveFromCartEvent.fire(product: product, withPrice: price)
+                
+            } else {
+                AddToCartEvent.fire(product: product, withPrice: price)
+            }
+                
+            _checkpoint = point
             
         case .ended:
-            if _shouldRecognize {
-                let point = recognizer.location(in: self.view)
-                self.count = Int(max(self.count + Int((point.x - _gestureStartPoint.x)/32), 0))
-            }
+            // todo: remove from cart if needed
             
             _shouldRecognize = true
             

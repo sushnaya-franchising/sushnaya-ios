@@ -16,3 +16,6 @@ target 'sushnaya-ios' do
     pod 'AsyncDisplayKit'
     pod 'PaperFold'
 end
+
+#target 'sushnaya-ios-tests', :exclusive => true do
+#end

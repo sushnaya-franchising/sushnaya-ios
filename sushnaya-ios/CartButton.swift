@@ -132,7 +132,7 @@ class CartButton: ASControlNode {
             
         case .ended:
             if originalX - self.view.frame.origin.x >= Constants.CartButtonDragDistanceToPopCartItem {
-                PopCartItemEvent.fire()
+                RemoveFromCartEvent.fire()
             }
             restoreOriginalPosition(recognizer)
             

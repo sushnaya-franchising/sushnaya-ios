@@ -47,6 +47,10 @@ class Product: Hashable {
         self.category = category
     }
     
+    public var description: String {
+        return title
+    }
+    
     var hashValue: Int {
         var result = 1
         result = 31 &* result &+ title.hashValue

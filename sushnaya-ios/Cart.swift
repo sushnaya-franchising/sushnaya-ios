@@ -11,20 +11,36 @@ import AVFoundation
 
 class CartSection {
     let title: String
-    let countedItems: [(CartItem, Int)]
+    // todo: make it functional and immutable
+    var items = [[CartItem]]()
     
-    fileprivate init(title: String, countedItems: [(CartItem, Int)]) {
+    fileprivate init(title: String) {
         self.title = title
-        self.countedItems = countedItems
+    }
+    
+    func appendCartItem(cartItem: CartItem) {
+        if var (idx, row) = findRow(cartItem: cartItem) {
+            row.append(cartItem)
+            items[idx] = row
+        
+        } else {
+            items.append([cartItem])
+        }
+    }
+    
+    private func findRow(cartItem: CartItem) -> (Int, [CartItem])? {
+        return items.enumerated().filter({(_, item) in item[0].product == cartItem.product && item[0].price == cartItem.price}).first
     }
 }
 
 class CartItem: Hashable {
+    let id: Int
     let product: Product
     let price: Price
-    var dateAdded: Date
+    let dateAdded: Date
     
-    fileprivate init(product: Product, price: Price, dateAdded: Date) {
+    fileprivate init(id: Int, product: Product, price: Price, dateAdded: Date) {
+        self.id = id
         self.product = product
         self.price = price
         self.dateAdded = dateAdded
@@ -32,6 +48,7 @@ class CartItem: Hashable {
     
     var hashValue: Int {
         var result = 1
+        result = 31 &* id &+ id.hashValue
         result = 31 &* result &+ product.hashValue
         result = 31 &* result &+ price.hashValue
         
@@ -44,32 +61,15 @@ func ==(lhs: CartItem, rhs: CartItem) -> Bool {
         return true
     }
     
-    return lhs.product == rhs.product &&
+    return lhs.id == rhs.id &&
+        lhs.product == rhs.product &&
         lhs.price == rhs.price
 }
 
 class Cart: NSObject {
+    
+    var _counter:Int = 0
     fileprivate var items = [CartItem]()
-    
-    private var _cartSections: [CartSection]!
-    
-    var cartSections: [CartSection] {
-        if let cached = _cartSections {
-            return cached
-        }
-        
-        _cartSections = [CartSection]()
-        
-        for (categoryTitle, items) in groupItemsByCategoryTitle() {
-            let countedItems = countEqualItems(items).sorted { $0.0.dateAdded < $1.0.dateAdded }
-            
-            _cartSections.append(CartSection(title: categoryTitle, countedItems: countedItems))
-        }
-        
-        _cartSections = _cartSections!.sorted { $0.countedItems[0].0.dateAdded < $1.countedItems[0].0.dateAdded }
-        
-        return _cartSections
-    }
     
     var isEmpty:Bool {
         return items.isEmpty
@@ -90,6 +90,30 @@ class Cart: NSObject {
         return Price(value: sumValue, currencyLocale: currencyLocale)
     }
     
+    private var _cartSections: [CartSection]!
+    
+    var cartSections: [CartSection] {
+        if let cached = _cartSections {
+            return cached
+        }
+        
+        _cartSections = [CartSection]()
+        
+        for item in items {
+            if let section = _cartSections.filter({s in s.title == item.product.categoryTitle}).first {
+                section.appendCartItem(cartItem: item)
+            
+            } else {
+                let section = CartSection(title: item.product.categoryTitle)
+                section.appendCartItem(cartItem: item)
+                _cartSections.append(section)
+            }
+        }
+        
+        return _cartSections
+    }
+
+    
     override init() {
         super.init()
         registerEventHandlers()
@@ -102,18 +126,19 @@ class Cart: NSObject {
     private func registerEventHandlers() {
         EventBus.onMainThread(self, name: AddToCartEvent.name) { [unowned self] (notification) in
             if let event = (notification.object as? AddToCartEvent) {
-                self.push(product: event.product, withPrice: event.price)
+                self.add(product: event.product, withPrice: event.price)
             }
         }
         
         EventBus.onMainThread(self, name: RemoveFromCartEvent.name) { [unowned self] (notification) in
-            if let event = (notification.object as? RemoveFromCartEvent) {
-                self.remove(product: event.product, withPrice: event.price)
+            if let event = (notification.object as? RemoveFromCartEvent),
+                let product = event.product, let price = event.price {
+                
+                self.remove(product: product, withPrice: price)
+                
+            } else {
+                self.remove()
             }
-        }
-        
-        EventBus.onMainThread(self, name: PopCartItemEvent.name) { [unowned self] _ in
-            self.pop()
         }
         
         EventBus.onMainThread(self, name: DidAddToCartEvent.name) { _ in
@@ -124,63 +149,44 @@ class Cart: NSObject {
             AudioServicesPlaySystemSound(1155)
         }
     }
-
     
-    private func push(product: Product, withPrice price: Price) {
+    func add(product: Product, withPrice price: Price) {
         let existingItem = items.reversed().filter{ $0.product == product && $0.price == price }.first
         
         let dateAdded = existingItem?.dateAdded ?? Date()
         
-        push(cartItem: CartItem(product: product, price: price, dateAdded: dateAdded))
+        add(cartItem: CartItem(id: _counter, product: product, price: price, dateAdded: dateAdded))
+        
+        _counter = _counter + 1
     }
     
-    private func push(cartItem: CartItem) {
+    private func add(cartItem: CartItem) {
         items.append(cartItem)
         
         _cartSections = nil
         
         DidAddToCartEvent.fire(cart: self, cartItem: cartItem)
     }
-    
-    @discardableResult private func pop() -> (Product, Price)? {
+
+    func remove() {
         guard let cartItem = items.popLast() else {
-            return nil
+            return
         }
         
         _cartSections = nil
         
         DidRemoveFromCartEvent.fire(cart: self, cartItem: cartItem)
-        
-        return (cartItem.product, cartItem.price)
     }
     
-    private func remove(product: Product, withPrice price: Price) {
-        // todo: implement
-    }
-}
-
-extension Cart {
-    fileprivate func groupItemsByCategoryTitle() -> [String: [CartItem]] {
-        var itemsByCategoryTitle = [String: [CartItem]]()
-        for item in items {
-            let categoryTitle = item.product.categoryTitle
-            var categoryItems = itemsByCategoryTitle[categoryTitle] ?? [CartItem]()
+    func remove(product: Product, withPrice price: Price) {
+        for idx in items.indices.reversed() where items[idx].product == product && items[idx].price == price {
+            let cartItem = items.remove(at: idx)
             
-            categoryItems.append(item)
+            _cartSections = nil
             
-            itemsByCategoryTitle[categoryTitle] = categoryItems
+            DidRemoveFromCartEvent.fire(cart: self, cartItem: cartItem)
+            
+            break
         }
-
-        return itemsByCategoryTitle
-    }
-    
-    fileprivate func countEqualItems(_ items: [CartItem]) -> [(CartItem, Int)] {
-        var countedItems = [CartItem: Int]()
-        for item in items {
-            let count = (countedItems[item] ?? 0) + 1
-            countedItems[item] = count
-        }
-        
-        return countedItems.map{($0, $1)}
     }
 }

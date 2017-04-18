@@ -115,7 +115,7 @@ extension CartContentNode: ASTableDelegate, ASTableDataSource, UIGestureRecogniz
     }
     
     func tableNode(_ tableNode: ASTableNode, numberOfRowsInSection section: Int) -> Int {
-        return cart.cartSections[section].countedItems.count
+        return cart.cartSections[section].items.count
     }
         
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -133,10 +133,10 @@ extension CartContentNode: ASTableDelegate, ASTableDataSource, UIGestureRecogniz
     
     func tableNode(_ tableNode: ASTableNode, nodeBlockForRowAt indexPath: IndexPath) -> ASCellNodeBlock {
         let section = cart.cartSections[indexPath.section]
-        let (cartItem, count) = section.countedItems[indexPath.row]
-        
+        let cartItems = section.items[indexPath.row]
+
         return {
-            CartItemCellNode(cartItem: cartItem, count: count)
+            CartItemCellNode(cartItems: cartItems)
         }
-    }        
+    }
 }

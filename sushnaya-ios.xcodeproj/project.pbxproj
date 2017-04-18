@@ -19,7 +19,7 @@
 		2E2FF1261EA65845006B9321 /* DataStructure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2FF1251EA65845006B9321 /* DataStructure.swift */; };
 		2E2FF1281EA65963006B9321 /* AddToCartEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2FF1271EA65963006B9321 /* AddToCartEvent.swift */; };
 		2E2FF12A1EA659FC006B9321 /* RemoveFromCartEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2FF1291EA659FC006B9321 /* RemoveFromCartEvent.swift */; };
-		2E2FF12C1EA65CA2006B9321 /* PopCartItemEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2FF12B1EA65CA2006B9321 /* PopCartItemEvent.swift */; };
+		2E2FF1371EA693BA006B9321 /* CartTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2FF1361EA693BA006B9321 /* CartTest.swift */; };
 		2E48F2791E98EB5000DCBBC6 /* Cart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E48F2781E98EB5000DCBBC6 /* Cart.swift */; };
 		2E48F27B1E99475000DCBBC6 /* CartButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E48F27A1E99475000DCBBC6 /* CartButton.swift */; };
 		2E48F27D1E99660E00DCBBC6 /* Geometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E48F27C1E99660E00DCBBC6 /* Geometry.swift */; };
@@ -92,6 +92,16 @@
 		95D281D1D25122E284D8AC09 /* Pods_sushnaya_ios.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 489991CA68AC90F346EF30BE /* Pods_sushnaya_ios.framework */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		2E2FF1391EA693BA006B9321 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2E94CC541E7963E700C51D58 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2E94CC5B1E7963E800C51D58;
+			remoteInfo = "sushnaya-ios";
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		19BB450AEB4CA2BA6CF573BC /* Price.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Price.swift; sourceTree = "<group>"; };
 		19BB48AFDFEC94CCC6894936 /* ProductCellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductCellNode.swift; sourceTree = "<group>"; };
@@ -105,7 +115,9 @@
 		2E2FF1251EA65845006B9321 /* DataStructure.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStructure.swift; sourceTree = "<group>"; };
 		2E2FF1271EA65963006B9321 /* AddToCartEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddToCartEvent.swift; sourceTree = "<group>"; };
 		2E2FF1291EA659FC006B9321 /* RemoveFromCartEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoveFromCartEvent.swift; sourceTree = "<group>"; };
-		2E2FF12B1EA65CA2006B9321 /* PopCartItemEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PopCartItemEvent.swift; sourceTree = "<group>"; };
+		2E2FF1341EA693BA006B9321 /* sushnaya-ios-tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "sushnaya-ios-tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2E2FF1361EA693BA006B9321 /* CartTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartTest.swift; sourceTree = "<group>"; };
+		2E2FF1381EA693BA006B9321 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2E48F2781E98EB5000DCBBC6 /* Cart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cart.swift; sourceTree = "<group>"; };
 		2E48F27A1E99475000DCBBC6 /* CartButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CartButton.swift; sourceTree = "<group>"; };
 		2E48F27C1E99660E00DCBBC6 /* Geometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Geometry.swift; sourceTree = "<group>"; };
@@ -185,6 +197,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		2E2FF1311EA693BA006B9321 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		2E94CC591E7963E800C51D58 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -271,6 +290,15 @@
 			name = Locality;
 			sourceTree = "<group>";
 		};
+		2E2FF1351EA693BA006B9321 /* sushnaya-ios-tests */ = {
+			isa = PBXGroup;
+			children = (
+				2E2FF1361EA693BA006B9321 /* CartTest.swift */,
+				2E2FF1381EA693BA006B9321 /* Info.plist */,
+			);
+			path = "sushnaya-ios-tests";
+			sourceTree = "<group>";
+		};
 		2E3F729E1E846D4000EAE05C /* App */ = {
 			isa = PBXGroup;
 			children = (
@@ -301,7 +329,6 @@
 				2E64933F1E9D129B00375F33 /* DidRemoveFromCartEvent.swift */,
 				2E2FF1271EA65963006B9321 /* AddToCartEvent.swift */,
 				2E2FF1291EA659FC006B9321 /* RemoveFromCartEvent.swift */,
-				2E2FF12B1EA65CA2006B9321 /* PopCartItemEvent.swift */,
 			);
 			name = Event;
 			sourceTree = "<group>";
@@ -390,6 +417,7 @@
 			children = (
 				2E94CC741E79D0E100C51D58 /* sushnaya-ios.playground */,
 				2E94CC5E1E7963E800C51D58 /* sushnaya-ios */,
+				2E2FF1351EA693BA006B9321 /* sushnaya-ios-tests */,
 				2E94CC5D1E7963E800C51D58 /* Products */,
 				B0F2287120B9E009A9972AA9 /* Pods */,
 				A3F9701793BE3119A8FC1600 /* Frameworks */,
@@ -400,6 +428,7 @@
 			isa = PBXGroup;
 			children = (
 				2E94CC5C1E7963E800C51D58 /* sushnaya-ios.app */,
+				2E2FF1341EA693BA006B9321 /* sushnaya-ios-tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -454,6 +483,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		2E2FF1331EA693BA006B9321 /* sushnaya-ios-tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2E2FF13B1EA693BA006B9321 /* Build configuration list for PBXNativeTarget "sushnaya-ios-tests" */;
+			buildPhases = (
+				2E2FF1301EA693BA006B9321 /* Sources */,
+				2E2FF1311EA693BA006B9321 /* Frameworks */,
+				2E2FF1321EA693BA006B9321 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				2E2FF13A1EA693BA006B9321 /* PBXTargetDependency */,
+			);
+			name = "sushnaya-ios-tests";
+			productName = "sushnaya-ios-tests";
+			productReference = 2E2FF1341EA693BA006B9321 /* sushnaya-ios-tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		2E94CC5B1E7963E800C51D58 /* sushnaya-ios */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2E94CC6E1E7963E800C51D58 /* Build configuration list for PBXNativeTarget "sushnaya-ios" */;
@@ -481,10 +528,16 @@
 		2E94CC541E7963E700C51D58 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0820;
+				LastSwiftUpdateCheck = 0830;
 				LastUpgradeCheck = 0820;
 				ORGANIZATIONNAME = "igor kurilenko";
 				TargetAttributes = {
+					2E2FF1331EA693BA006B9321 = {
+						CreatedOnToolsVersion = 8.3.1;
+						DevelopmentTeam = 634QEDY38N;
+						ProvisioningStyle = Automatic;
+						TestTargetID = 2E94CC5B1E7963E800C51D58;
+					};
 					2E94CC5B1E7963E800C51D58 = {
 						CreatedOnToolsVersion = 8.2.1;
 						DevelopmentTeam = 634QEDY38N;
@@ -507,11 +560,19 @@
 			projectRoot = "";
 			targets = (
 				2E94CC5B1E7963E800C51D58 /* sushnaya-ios */,
+				2E2FF1331EA693BA006B9321 /* sushnaya-ios-tests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		2E2FF1321EA693BA006B9321 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		2E94CC5A1E7963E800C51D58 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -589,6 +650,14 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		2E2FF1301EA693BA006B9321 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2E2FF1371EA693BA006B9321 /* CartTest.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		2E94CC581E7963E800C51D58 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -621,7 +690,6 @@
 				2E926DF31E8E53E100070538 /* OpeningConnectionAPIChatEvent.swift in Sources */,
 				2E926E2E1E8E54E800070538 /* LocalitiesNode.swift in Sources */,
 				2E926E181E8E546000070538 /* ButtonNode.swift in Sources */,
-				2E2FF12C1EA65CA2006B9321 /* PopCartItemEvent.swift in Sources */,
 				2E926E1D1E8E546A00070538 /* SignInNode.swift in Sources */,
 				2E926E381E8E54F200070538 /* Product.swift in Sources */,
 				2E2FF11E1EA122F0006B9321 /* CartItemCellNode.swift in Sources */,
@@ -674,7 +742,52 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		2E2FF13A1EA693BA006B9321 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2E94CC5B1E7963E800C51D58 /* sushnaya-ios */;
+			targetProxy = 2E2FF1391EA693BA006B9321 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		2E2FF13C1EA693BA006B9321 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 874AE31D3C8DF2CCC6C39B8E /* Pods-sushnaya-ios.debug.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 634QEDY38N;
+				INFOPLIST_FILE = "sushnaya-ios-tests/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.sushnaya.sushnaya-ios-tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "sushnaya-ios/Sushnaya-Bridging-Header.h";
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/sushnaya-ios.app/sushnaya-ios";
+			};
+			name = Debug;
+		};
+		2E2FF13D1EA693BA006B9321 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9654AE38439284722DBBACD9 /* Pods-sushnaya-ios.release.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				DEVELOPMENT_TEAM = 634QEDY38N;
+				INFOPLIST_FILE = "sushnaya-ios-tests/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.sushnaya.sushnaya-ios-tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "sushnaya-ios/Sushnaya-Bridging-Header.h";
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/sushnaya-ios.app/sushnaya-ios";
+			};
+			name = Release;
+		};
 		2E94CC6C1E7963E800C51D58 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -807,6 +920,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		2E2FF13B1EA693BA006B9321 /* Build configuration list for PBXNativeTarget "sushnaya-ios-tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2E2FF13C1EA693BA006B9321 /* Debug */,
+				2E2FF13D1EA693BA006B9321 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		2E94CC571E7963E700C51D58 /* Build configuration list for PBXProject "sushnaya-ios" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

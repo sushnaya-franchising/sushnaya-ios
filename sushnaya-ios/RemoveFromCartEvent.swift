@@ -11,8 +11,12 @@ import Foundation
 struct RemoveFromCartEvent: Event {
     static var name: String = "\(RemoveFromCartEvent.self)"
     
-    var product: Product
-    var price: Price
+    var product: Product?
+    var price: Price?
+    
+    static func fire() {
+        EventBus.post(RemoveFromCartEvent.name, sender: RemoveFromCartEvent(product: nil, price: nil))
+    }
     
     static func fire(product: Product, withPrice price: Price) {
         EventBus.post(RemoveFromCartEvent.name, sender: RemoveFromCartEvent(product: product, price: price))
