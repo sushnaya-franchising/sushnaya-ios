@@ -62,9 +62,7 @@ class ProductCellNode: ASCellNode {
         }
     }
     
-    private func animateFlash() {
-        AudioServicesPlaySystemSound(1156)
-        
+    private func animateFlash() {        
         let alphaAnimation = POPBasicAnimation(propertyNamed: kPOPViewAlpha)
         alphaAnimation?.fromValue = 0.1
         alphaAnimation?.toValue = 1

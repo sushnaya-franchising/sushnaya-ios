@@ -59,7 +59,7 @@ class CartContentNode: ASDisplayNode {
         cartItemsTableNode.view.isScrollEnabled = true
         cartItemsTableNode.view.showsHorizontalScrollIndicator = false
         cartItemsTableNode.view.showsVerticalScrollIndicator = false
-        cartItemsTableNode.view.separatorStyle = .none                
+        cartItemsTableNode.view.separatorStyle = .none
     }
     
     override func layout() {
@@ -109,7 +109,7 @@ class CartContentNode: ASDisplayNode {
     }
 }
 
-extension CartContentNode: ASTableDelegate, ASTableDataSource {
+extension CartContentNode: ASTableDelegate, ASTableDataSource, UIGestureRecognizerDelegate {
     func numberOfSections(in tableNode: ASTableNode) -> Int {
         return cart.cartSections.count
     }
@@ -138,5 +138,5 @@ extension CartContentNode: ASTableDelegate, ASTableDataSource {
         return {
             CartItemCellNode(cartItem: cartItem, count: count)
         }
-    }
+    }        
 }

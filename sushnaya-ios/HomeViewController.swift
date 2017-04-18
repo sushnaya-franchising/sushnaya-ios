@@ -135,7 +135,7 @@ class HomeViewController: ASViewController<ASDisplayNode> {
 
 extension HomeViewController: ProductCellNodeDelegate {
     func productCellNode(_ node: ProductCellNode, didSelectProduct product: Product, withPrice price: Price) {
-        app.userSession.cart.push(product: product, withPrice: price)
+        AddToCartEvent.fire(product: product, withPrice: price)
     }
 }
 

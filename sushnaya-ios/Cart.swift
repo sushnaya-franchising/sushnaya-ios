@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import AVFoundation
 
 class CartSection {
     let title: String
@@ -89,7 +90,43 @@ class Cart: NSObject {
         return Price(value: sumValue, currencyLocale: currencyLocale)
     }
     
-    func push(product: Product, withPrice price: Price) {
+    override init() {
+        super.init()
+        registerEventHandlers()
+    }
+    
+    deinit {
+        EventBus.unregister(self)
+    }
+    
+    private func registerEventHandlers() {
+        EventBus.onMainThread(self, name: AddToCartEvent.name) { [unowned self] (notification) in
+            if let event = (notification.object as? AddToCartEvent) {
+                self.push(product: event.product, withPrice: event.price)
+            }
+        }
+        
+        EventBus.onMainThread(self, name: RemoveFromCartEvent.name) { [unowned self] (notification) in
+            if let event = (notification.object as? RemoveFromCartEvent) {
+                self.remove(product: event.product, withPrice: event.price)
+            }
+        }
+        
+        EventBus.onMainThread(self, name: PopCartItemEvent.name) { [unowned self] _ in
+            self.pop()
+        }
+        
+        EventBus.onMainThread(self, name: DidAddToCartEvent.name) { _ in
+            AudioServicesPlaySystemSound(1156)
+        }
+        
+        EventBus.onMainThread(self, name: DidRemoveFromCartEvent.name) { _ in
+            AudioServicesPlaySystemSound(1155)
+        }
+    }
+
+    
+    private func push(product: Product, withPrice price: Price) {
         let existingItem = items.reversed().filter{ $0.product == product && $0.price == price }.first
         
         let dateAdded = existingItem?.dateAdded ?? Date()
@@ -102,19 +139,23 @@ class Cart: NSObject {
         
         _cartSections = nil
         
-        DidAddToCart.fire(cart: self, cartItem: cartItem)
+        DidAddToCartEvent.fire(cart: self, cartItem: cartItem)
     }
     
-    func pop() -> (Product, Price)? {
+    @discardableResult private func pop() -> (Product, Price)? {
         guard let cartItem = items.popLast() else {
             return nil
         }
         
         _cartSections = nil
         
-        DidRemoveFromCart.fire(cart: self, cartItem: cartItem)
+        DidRemoveFromCartEvent.fire(cart: self, cartItem: cartItem)
         
         return (cartItem.product, cartItem.price)
+    }
+    
+    private func remove(product: Product, withPrice price: Price) {
+        // todo: implement
     }
 }
 

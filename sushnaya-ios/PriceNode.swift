@@ -8,7 +8,6 @@
 
 import Foundation
 import AsyncDisplayKit
-import AVFoundation
 import pop
 
 protocol PriceNodeDelegate {
@@ -107,8 +106,7 @@ class PriceNode: ASDisplayNode {
                 self.animateBirth()
             }.apply()
         }
-        
-        AudioServicesPlaySystemSound(1156)
+                
         self.priceButton.pop_removeAllAnimations()
         priceButton.pop_add(scaleAnimation, forKey: "scaleOut")
         priceButton.pop_add(alphaAnimation, forKey: "fadeOut")

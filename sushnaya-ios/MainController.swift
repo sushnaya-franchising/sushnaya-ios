@@ -17,7 +17,7 @@ class MainController: ASTabBarController {
     private var cartButtonSetupStarted = false
 
     private func createCartButtonNode(containerRect: CGRect) -> CartButton {
-        let button = CartButton(cart: app.userSession.cart)
+        let button = CartButton()
         let layout = button.layoutThatFits(ASSizeRange(min: CGSize.zero, max: containerRect.size))
         
         let size = layout.size

@@ -13,7 +13,13 @@ import FontAwesome_swift
 class CartItemCellNode: ASCellNode {
     
     let cartItem: CartItem
-    let count: Int
+    var count: Int {
+        didSet {
+            if oldValue != count {
+                updateCountNodeText(count)
+            }
+        }
+    }
     
     let countNode = ASTextNode()
     let titleNode = ASTextNode()
@@ -40,6 +46,10 @@ class CartItemCellNode: ASCellNode {
     }
     
     private func setupCountNode() {
+        updateCountNodeText(count)
+    }
+    
+    private func updateCountNodeText(_ count: Int) {
         countNode.attributedText = NSAttributedString(string: "\(count)",
             attributes: Constants.CartLayout.ItemCountStringAttributes)
     }
@@ -68,6 +78,51 @@ class CartItemCellNode: ASCellNode {
                 NSForegroundColorAttributeName: PaperColor.Gray
             ])
         optionsButtonNode.setAttributedTitle(title, for: .normal)
+    }
+    
+    override func didLoad() {
+        super.didLoad()
+        
+        let recognizer = UIPanGestureRecognizer(target: self, action: #selector(didPanGesture(_:)))                
+        recognizer.delegate = self
+        self.view.addGestureRecognizer(recognizer)
+    }
+    
+    var _gestureStartPoint:CGPoint!
+    var _shouldRecognize = true
+    
+    func didPanGesture(_ recognizer: UIPanGestureRecognizer) {
+        switch recognizer.state {
+        case .began:
+            _gestureStartPoint = recognizer.location(in: self.view.superview)
+            
+        case .changed:
+            let translation = recognizer.translation(in: self.view.superview)
+            
+            guard abs(translation.y) < 16 else {
+                _shouldRecognize = false
+                return
+            }
+            
+            guard _shouldRecognize else {
+                return
+            }
+            
+            let point = recognizer.location(in: self.view.superview)
+            
+            self.updateCountNodeText(Int(max(self.count + Int((point.x - _gestureStartPoint.x)/32), 0)))
+            
+        case .ended:
+            if _shouldRecognize {
+                let point = recognizer.location(in: self.view)
+                self.count = Int(max(self.count + Int((point.x - _gestureStartPoint.x)/32), 0))
+            }
+            
+            _shouldRecognize = true
+            
+        default:
+            break
+        }
     }
     
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
@@ -120,5 +175,25 @@ class CartItemCellNode: ASCellNode {
         let layout = ASInsetLayoutSpec(insets: Constants.CartLayout.ItemPriceInsets, child: priceNode)
         
         return layout
+    }
+}
+
+extension CartItemCellNode: UIGestureRecognizerDelegate {
+    override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        guard let gestureRecognizer = gestureRecognizer as? UIPanGestureRecognizer else { return true }
+        
+        let velocity = gestureRecognizer.velocity(in: self.view)
+        
+        _shouldRecognize = abs(velocity.y) < abs(velocity.x)
+        
+        return true
+    }
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        guard let gestureRecognizer = gestureRecognizer as? UIPanGestureRecognizer else { return true }
+        
+        let velocity = gestureRecognizer.velocity(in: self.view)
+        
+        return abs(velocity.y) > abs(velocity.x)
     }
 }

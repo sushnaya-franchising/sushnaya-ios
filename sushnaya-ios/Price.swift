@@ -6,13 +6,16 @@
 import Foundation
 
 class Price: Hashable {
+    
+    static let zero = Price(value: 0, currencyLocale: "ru_RU")
+    
     var value: CGFloat
     var modifierName: String?
     var currencyLocale: String
     
     var formattedValue: String {
         let formatter = NumberFormatter()
-        formatter.locale = Locale(identifier: "ru_RU")
+        formatter.locale = Locale(identifier: currencyLocale)
         formatter.numberStyle = .currency
         formatter.minimumFractionDigits = 0
         formatter.maximumFractionDigits = 2

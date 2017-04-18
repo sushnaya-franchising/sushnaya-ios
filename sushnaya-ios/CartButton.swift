@@ -16,10 +16,8 @@ class CartButton: ASControlNode {
     let iconNode = ASImageNode()
     let priceBadgeNode = ASTextNode()
     private var originalX: CGFloat!
-    let cart: Cart
     
-    init(cart: Cart) {
-        self.cart = cart
+    override init() {
         super.init()
         automaticallyManagesSubnodes = true
         isExclusiveTouch = true
@@ -29,14 +27,18 @@ class CartButton: ASControlNode {
     }
     
     private func registerEventHandlers() {
-        EventBus.onMainThread(self, name: DidAddToCart.name) { [unowned self] _ in
-            self.animatePriceUpdate()
-            self.updatePriceBadgeText()
+        EventBus.onMainThread(self, name: DidAddToCartEvent.name) { [unowned self] (notification) in
+            let cart = (notification.object as! DidAddToCartEvent).cart
+            
+            self.animatePriceUpdate(sum: cart.sum)
+            self.updatePriceBadgeText(sum: cart.sum)
         }
         
-        EventBus.onMainThread(self, name: DidRemoveFromCart.name) { [unowned self] _ in
-            self.animatePriceUpdate()
-            self.updatePriceBadgeText()
+        EventBus.onMainThread(self, name: DidRemoveFromCartEvent.name) { [unowned self] (notification) in
+            let cart = (notification.object as! DidRemoveFromCartEvent).cart
+            
+            self.animatePriceUpdate(sum: cart.sum)
+            self.updatePriceBadgeText(sum: cart.sum)
         }
     }
     
@@ -44,8 +46,8 @@ class CartButton: ASControlNode {
         EventBus.unregister(self)
     }
     
-    private func animatePriceUpdate() {
-        let sum = cart.sum.value
+    private func animatePriceUpdate(sum: Price) {
+        let sum = sum.value
         
         guard sum != 0 else {
             animatePriceDisappearing()
@@ -100,15 +102,15 @@ class CartButton: ASControlNode {
     }
     
     private func setupPriceBadgeNode() {
-        updatePriceBadgeText()
+        updatePriceBadgeText(sum: Price.zero)
         priceBadgeNode.backgroundColor = PaperColor.Gray300
         priceBadgeNode.cornerRadius = 10
         priceBadgeNode.clipsToBounds = true
-        priceBadgeNode.isHidden = cart.sum.value == 0
+        priceBadgeNode.isHidden = true
     }
     
-    private func updatePriceBadgeText() {
-        priceBadgeNode.attributedText = NSAttributedString(string: cart.sum.formattedValue, attributes: Constants.CartButtonBadgeStringAttributes)
+    private func updatePriceBadgeText(sum: Price) {
+        priceBadgeNode.attributedText = NSAttributedString(string: sum.formattedValue, attributes: Constants.CartButtonBadgeStringAttributes)
     }
     
     override func didLoad() {
@@ -130,18 +132,12 @@ class CartButton: ASControlNode {
             
         case .ended:
             if originalX - self.view.frame.origin.x >= Constants.CartButtonDragDistanceToPopCartItem {
-                popCartItem()
+                PopCartItemEvent.fire()
             }
             restoreOriginalPosition(recognizer)
             
         default:
             restoreOriginalPosition(recognizer)
-        }
-    }
-    
-    private func popCartItem() {
-        if let _ = cart.pop() {
-            AudioServicesPlaySystemSound(1155)
         }
     }
     
