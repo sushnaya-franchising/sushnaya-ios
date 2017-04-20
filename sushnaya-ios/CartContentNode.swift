@@ -16,7 +16,7 @@ class CartContentNode: ASDisplayNode {
     let cart: Cart
     
     let headerNode = ASTextNode()
-    private(set) var emptyCartMessageNode: ASTextNode!
+    let emptyCartMessageNode = ASTextNode()
     let cartItemsTableNode = ASTableNode()
     let toolBarNode: CartToolBarNode
     
@@ -48,10 +48,7 @@ class CartContentNode: ASDisplayNode {
     }
     
     private func setupEmptyCartMessageNode() {
-        if cart.isEmpty {
-            emptyCartMessageNode = ASTextNode()
-            emptyCartMessageNode.attributedText = NSAttributedString(string: emptyCartMessage, attributes: Constants.CartLayout.EmptyCartStringAttributes)
-        }
+        emptyCartMessageNode.attributedText = NSAttributedString(string: emptyCartMessage, attributes: Constants.CartLayout.EmptyCartStringAttributes)
     }
     
     override func didLoad() {
@@ -114,7 +111,7 @@ extension CartContentNode: ASTableDelegate, ASTableDataSource, UIGestureRecogniz
         return cart.cartSections.count
     }
     
-    func tableNode(_ tableNode: ASTableNode, numberOfRowsInSection section: Int) -> Int {
+    func tableNode(_ tableNode: ASTableNode, numberOfRowsInSection section: Int) -> Int {        
         return cart.cartSections[section].items.count
     }
         
@@ -134,9 +131,10 @@ extension CartContentNode: ASTableDelegate, ASTableDataSource, UIGestureRecogniz
     func tableNode(_ tableNode: ASTableNode, nodeBlockForRowAt indexPath: IndexPath) -> ASCellNodeBlock {
         let section = cart.cartSections[indexPath.section]
         let cartItems = section.items[indexPath.row]
-
+        let cellContext = CartItemCellContext(table: cartItemsTableNode, cartItems: cartItems)
+        
         return {
-            CartItemCellNode(cartItems: cartItems)
+            CartItemCellNode(context: cellContext)
         }
     }
 }

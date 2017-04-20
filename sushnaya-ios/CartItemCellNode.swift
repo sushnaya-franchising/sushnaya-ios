@@ -9,6 +9,20 @@
 import Foundation
 import AsyncDisplayKit
 import FontAwesome_swift
+import pop
+
+struct CartItemCellContext {
+    var table: ASTableNode
+    var cartItems: [CartItem]
+    
+    var product: Product? {
+        return cartItems.isEmpty ? nil: cartItems[0].product
+    }
+    
+    var price: Price? {
+        return cartItems.isEmpty ? nil: cartItems[0].price
+    }
+}
 
 class CartItemCellNode: ASCellNode {
     
@@ -18,17 +32,29 @@ class CartItemCellNode: ASCellNode {
     let priceNode = ASTextNode()
     let optionsButtonNode = ASButtonNode()
     
-    let product: Product
-    let price: Price
-    var cartItems: [CartItem]
+    fileprivate var context: CartItemCellContext
+    fileprivate let product: Product
+    fileprivate let price: Price
     
-    init(cartItems: [CartItem]) {
-        self.cartItems = cartItems
-        self.product = cartItems[0].product
-        self.price = cartItems[0].price
+    fileprivate var _currenctGestureHandler: GestureHandler!
+    fileprivate var _defaultGestureHandler: GestureHandler!
+    fileprivate var _nopGestureHandler: GestureHandler!
+    
+    init(context: CartItemCellContext) {
+        self.context = context
+        self.product = context.product!
+        self.price = context.price!
+        
         super.init()
+        
+        _nopGestureHandler = NopGestureHandler()
+        _defaultGestureHandler = DefaultGestureHandler(node: self)
+        _currenctGestureHandler = _nopGestureHandler
+        
         automaticallyManagesSubnodes = true
+
         setupNodes()
+        
         registerEventHandlers()
     }
     
@@ -43,8 +69,10 @@ class CartItemCellNode: ASCellNode {
             }
             
             if event.cartItem.product == self.product && event.cartItem.price == self.price {
-                self.cartItems.append(event.cartItem)
-                self.updateCountNodeText(self.cartItems.count)
+                self.context.cartItems.append(event.cartItem)
+                self.animateCountUpdate()
+                self.animatePriceUpdate()
+                self.updateView()
             }
         }
         
@@ -54,11 +82,13 @@ class CartItemCellNode: ASCellNode {
             }
             
             if event.cartItem.product == self.product && event.cartItem.price == self.price {
-                for idx in self.cartItems.indices where self.cartItems[idx].id == event.cartItem.id {
-                    self.cartItems.remove(at: idx)
+                for idx in self.context.cartItems.indices where self.context.cartItems[idx].id == event.cartItem.id {
+                    self.context.cartItems.remove(at: idx)
                     break
-                }                
-                self.updateCountNodeText(self.cartItems.count)
+                }
+                self.animateCountUpdate()
+                self.animatePriceUpdate()
+                self.updateView()
             }
         }
     }
@@ -72,11 +102,27 @@ class CartItemCellNode: ASCellNode {
     }
     
     private func setupCountNode() {
-        updateCountNodeText(cartItems.count)
+        updateCountNodeText(count: self.context.cartItems.count)
     }
     
-    private func updateCountNodeText(_ count: Int) {
-        countNode.attributedText = NSAttributedString(string: "\(cartItems.count)",
+    private func updateView() {
+        updateCountNodeText(count: self.context.cartItems.count)
+        updatePriceNodeText()
+        
+        if self.context.cartItems.count == 0 {
+            if let indexPath = self.context.table.indexPath(for: self) {
+                if self.context.table.numberOfRows(inSection: indexPath.section) == 1 {
+                    self.context.table.deleteSections([indexPath.section], with: .left)
+                        
+                } else {
+                    self.context.table.deleteRows(at: [indexPath], with: .left)
+                }
+            }            
+        }
+    }
+    
+    fileprivate func updateCountNodeText(count: Int) {
+        countNode.attributedText = NSAttributedString(string: count == 0 ? "-" : count.description,
             attributes: Constants.CartLayout.ItemCountStringAttributes)
     }
     
@@ -86,7 +132,14 @@ class CartItemCellNode: ASCellNode {
     }
     
     private func setupPriceNode() {
-        priceNode.attributedText = NSAttributedString(string: price.formattedValue,
+        updatePriceNodeText()
+    }
+    
+    private func updatePriceNodeText() {
+        let zeroPrice = Price.zero(currencyLocale: price.currencyLocale, modifierName: price.modifierName)
+        let sum = self.context.cartItems.reduce(zeroPrice, {result, cartItem in  result + cartItem.price})
+        
+        priceNode.attributedText = NSAttributedString(string: sum.formattedValue,
                                                       attributes: Constants.CartLayout.ItemPriceStringAttributes)
     }
     
@@ -109,48 +162,33 @@ class CartItemCellNode: ASCellNode {
     override func didLoad() {
         super.didLoad()
         
-        let recognizer = UIPanGestureRecognizer(target: self, action: #selector(didPanGesture(_:)))                
+        let recognizer = UIPanGestureRecognizer(target: self, action: #selector(CartItemCellNode.didPanGesture(_:)))
         recognizer.delegate = self
         self.view.addGestureRecognizer(recognizer)
     }
     
-    var _checkpoint:CGPoint!
-    var _shouldRecognize = true
-    
     func didPanGesture(_ recognizer: UIPanGestureRecognizer) {
-        switch recognizer.state {
-        case .began:
-            _checkpoint = recognizer.location(in: self.view.superview)
-            
-        case .changed:
-            guard _shouldRecognize else {
-                return
-            }
-            
-            let point = recognizer.location(in: self.view.superview)
-            let distance = point.x - _checkpoint.x
-            
-            guard abs(distance) > 30 else {
-                return
-            }
-            
-            if distance < 0 {
-                RemoveFromCartEvent.fire(product: product, withPrice: price)
-                
-            } else {
-                AddToCartEvent.fire(product: product, withPrice: price)
-            }
-                
-            _checkpoint = point
-            
-        case .ended:
-            // todo: remove from cart if needed
-            
-            _shouldRecognize = true
-            
-        default:
-            break
-        }
+        _currenctGestureHandler.didPanGesture(recognizer)
+    }
+    
+    private func animateCountUpdate() {
+        let animation = POPSpringAnimation(propertyNamed: kPOPViewScaleXY)
+        animation?.fromValue = NSValue.init(cgSize: CGSize(width: 0.9, height: 0.9))
+        animation?.toValue = NSValue.init(cgSize: CGSize(width: 1, height: 1))
+        animation?.springBounciness = 20
+        
+        countNode.pop_removeAllAnimations()
+        countNode.pop_add(animation, forKey: "scale")
+    }
+    
+    private func animatePriceUpdate() {
+        let animation = POPSpringAnimation(propertyNamed: kPOPViewScaleXY)
+        animation?.fromValue = NSValue.init(cgSize: CGSize(width: 0.9, height: 0.9))
+        animation?.toValue = NSValue.init(cgSize: CGSize(width: 1, height: 1))
+        animation?.springBounciness = 20
+        
+        priceNode.pop_removeAllAnimations()
+        priceNode.pop_add(animation, forKey: "scale")
     }
     
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
@@ -158,7 +196,7 @@ class CartItemCellNode: ASCellNode {
         layout.alignItems = .start
         layout.justifyContent = .start
         
-        let countNodeLayout = ASInsetLayoutSpec(insets: Constants.CartLayout.ItemCountInsets, child: countNode)
+        let countNodeLayout = countLayoutSpecThatFits(constrainedSize)
         let titleNodeLayout = titleLayoutSpecThatFits(constrainedSize)
         let priceLayout = priceLayoutSpecThatFits(constrainedSize)
         
@@ -171,6 +209,12 @@ class CartItemCellNode: ASCellNode {
         layout.children = [countNodeLayout, titleNodeLayout, spacer, priceLayout, optionsButtonNode]
         
         return layout
+    }
+    
+    private func countLayoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
+        countNode.style.minWidth = ASDimension(unit: .points, value: 16)
+        
+        return ASInsetLayoutSpec(insets: Constants.CartLayout.ItemCountInsets, child: countNode)
     }
     
     private func titleLayoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
@@ -200,9 +244,9 @@ class CartItemCellNode: ASCellNode {
     }
     
     private func priceLayoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        let layout = ASInsetLayoutSpec(insets: Constants.CartLayout.ItemPriceInsets, child: priceNode)
+        priceNode.style.minWidth = ASDimension(unit: .points, value: 56)
         
-        return layout
+        return ASInsetLayoutSpec(insets: Constants.CartLayout.ItemPriceInsets, child: priceNode)
     }
 }
 
@@ -212,7 +256,7 @@ extension CartItemCellNode: UIGestureRecognizerDelegate {
         
         let velocity = gestureRecognizer.velocity(in: self.view)
         
-        _shouldRecognize = abs(velocity.y) < abs(velocity.x)
+        _currenctGestureHandler = abs(velocity.y) < abs(velocity.x) ? _defaultGestureHandler: _nopGestureHandler
         
         return true
     }
@@ -223,5 +267,106 @@ extension CartItemCellNode: UIGestureRecognizerDelegate {
         let velocity = gestureRecognizer.velocity(in: self.view)
         
         return abs(velocity.y) > abs(velocity.x)
+    }
+}
+
+fileprivate protocol GestureHandler {
+    func didPanGesture(_ recognizer: UIPanGestureRecognizer)
+}
+
+fileprivate class DefaultGestureHandler: GestureHandler {
+    private var node: CartItemCellNode
+    
+    private var checkpoint: CGPoint!
+    
+    private var didPanLeft: (() -> ())!
+    private var didPanRight: (() -> ())!
+    private var udpateCheckpoint:((CGPoint) -> ())!
+    private var didEnd: (() -> ())!
+    private var defaultDidPanLeft:(() -> ())!
+    private var defaultDidPanRight:(() -> ())!
+    private var defaultUpdateCheckpoint: ((CGPoint) -> ())!
+    
+    init(node: CartItemCellNode) {
+        self.node = node
+        
+        setDefaultState()
+    }
+    
+    private func setDefaultState() {
+        didPanLeft = { [unowned self] in
+            if self.node.context.cartItems.count == 1 {
+                self.node.updateCountNodeText(count: 0)
+                self.setWillRemoveState()
+                
+            } else {
+                RemoveFromCartEvent.fire(product: self.node.product, withPrice: self.node.price)
+            }
+        }
+        
+        didPanRight = { [unowned self] in
+            AddToCartEvent.fire(product: self.node.product, withPrice: self.node.price)
+        }
+        
+        udpateCheckpoint = {[unowned self] checkpoint in
+            self.checkpoint = checkpoint
+        }
+        
+        didEnd = {}
+    }
+    
+    private func setWillRemoveState() {
+        didPanLeft = {}
+        
+        didPanRight = { [unowned self] in
+            self.node.updateCountNodeText(count: 1)
+            self.setDefaultState()
+        }
+        
+        udpateCheckpoint = { checkpoint in
+            if checkpoint.x >= self.checkpoint.x + Constants.CartLayout.DistanceToChageCount {
+                self.checkpoint = checkpoint
+            }
+        }
+        
+        didEnd = { [unowned self] in
+            RemoveFromCartEvent.fire(product: self.node.product, withPrice: self.node.price)
+        }
+    }
+    
+    func didPanGesture(_ recognizer: UIPanGestureRecognizer) {
+        switch recognizer.state {
+        case .began:
+            checkpoint = recognizer.location(in: node.view.superview)
+            
+        case .changed:
+            let point = recognizer.location(in: node.view.superview)
+            let distance = point.x - checkpoint.x
+            
+            guard abs(distance) > Constants.CartLayout.DistanceToChageCount else {
+                return
+            }
+            
+            udpateCheckpoint(point)
+            
+            if distance < 0 {
+                didPanLeft()
+                
+            } else {
+                didPanRight()
+            }
+        
+        case .ended:
+            didEnd()
+            
+        default:
+            break
+        }
+    }
+}
+
+fileprivate class NopGestureHandler: GestureHandler {
+    func didPanGesture(_ recognizer: UIPanGestureRecognizer) {
+        // nop
     }
 }

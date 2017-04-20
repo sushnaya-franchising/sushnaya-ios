@@ -97,6 +97,8 @@ struct Constants {
     }
     
     struct CartLayout {
+        static let DistanceToChageCount:CGFloat = 30
+        
         static let backgroundColor = PaperColor.White
         
         static let SectionTitleBackgroundColor = PaperColor.White
@@ -127,15 +129,27 @@ struct Constants {
             NSFontAttributeName: UIFont.systemFont(ofSize: 12)
         ]
         
-        static let ItemPriceStringAttributes = [
-            NSForegroundColorAttributeName: PaperColor.Gray800,
-            NSFontAttributeName: UIFont.systemFont(ofSize: 12)
-        ]
+        static let ItemPriceStringAttributes:  [String: Any] = {
+            let paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.alignment = .center
+            
+            return [
+                NSForegroundColorAttributeName: PaperColor.Gray800,
+                NSFontAttributeName: UIFont.systemFont(ofSize: 12),
+                NSParagraphStyleAttributeName : paragraphStyle
+            ]
+        }()
         
-        static let ItemCountStringAttributes = [
-            NSForegroundColorAttributeName: PaperColor.Gray800,
-            NSFontAttributeName: UIFont.systemFont(ofSize: 12)
-        ]
+        static let ItemCountStringAttributes:  [String: Any] = {
+            let paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.alignment = .center
+            
+            return [
+                NSForegroundColorAttributeName: PaperColor.Gray800,
+                NSFontAttributeName: UIFont.systemFont(ofSize: 12),
+                NSParagraphStyleAttributeName : paragraphStyle
+            ]
+        }()
         
         static let ItemPriceModifierNameStringAttributes = [
             NSForegroundColorAttributeName: PaperColor.Gray,
@@ -144,7 +158,7 @@ struct Constants {
         
         static let SectionTitleInsets = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 0)
         static let SectionTitleHeight:CGFloat = 32
-        static let ItemCountInsets = UIEdgeInsets(top: 12, left: 24, bottom: 0, right: 16)
+        static let ItemCountInsets = UIEdgeInsets(top: 12, left: 16, bottom: 0, right: 16)
         static let ItemTitleInsets = UIEdgeInsets(top: 12, left: 0, bottom: 0, right: 16)
         static let ItemPriceInsets = UIEdgeInsets(top: 12, left: 0, bottom: 0, right: 0)
         

@@ -79,6 +79,17 @@ class CartToolBarNode: ASDisplayNode {
         backgroundColor = PaperColor.White.withAlphaComponent(0.93)
         
         setupNodes()
+        registerEventHandlers()
+    }
+    
+    private func registerEventHandlers() {
+        EventBus.onMainThread(self, name: DidAddToCartEvent.name) { [unowned self] _ in
+            self.updateSumNodeText()
+        }
+        
+        EventBus.onMainThread(self, name: DidRemoveFromCartEvent.name) { [unowned self] _ in
+            self.updateSumNodeText()
+        }
     }
     
     private func setupNodes() {
@@ -90,6 +101,10 @@ class CartToolBarNode: ASDisplayNode {
     }
     
     private func setupSumTextNode() {
+        updateSumNodeText()
+    }
+    
+    private func updateSumNodeText() {
         sumTextNode.attributedText = NSAttributedString.attributedString(string: "Сумма: \(cart.sum.formattedValue)", fontSize: 14, color: PaperColor.Gray800)
     }
     

@@ -102,7 +102,7 @@ class CartButton: ASControlNode {
     }
     
     private func setupPriceBadgeNode() {
-        updatePriceBadgeText(sum: Price.zero)
+        updatePriceBadgeText(sum: Price.zero(currencyLocale: "ru_RU", modifierName: nil))// todo: use currency locale from settings
         priceBadgeNode.backgroundColor = PaperColor.Gray300
         priceBadgeNode.cornerRadius = 10
         priceBadgeNode.clipsToBounds = true

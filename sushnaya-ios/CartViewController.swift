@@ -26,6 +26,16 @@ class CartViewController: ASViewController<ASDisplayNode> {
         self.node.layoutSpecBlock = { [unowned self] _ in
             return ASWrapperLayoutSpec(layoutElement: self._cartNode)
         }
+        
+        EventBus.onMainThread(self, name: DidRemoveFromCartEvent.name) { [unowned self] (notification) in
+            guard let event = (notification.object as? DidRemoveFromCartEvent) else {
+                return
+            }
+            
+            if event.cart.isEmpty {
+                self.dismiss(animated: true, completion: nil)
+            }
+        }
     }
     
     private func setupCartNode() {

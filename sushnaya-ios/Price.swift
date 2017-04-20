@@ -7,8 +7,6 @@ import Foundation
 
 class Price: Hashable {
     
-    static let zero = Price(value: 0, currencyLocale: "ru_RU")
-    
     var value: CGFloat
     var modifierName: String?
     var currencyLocale: String
@@ -36,6 +34,16 @@ class Price: Hashable {
         
         return result
     }
+    
+    static func zero(currencyLocale: String, modifierName: String?) -> Price {
+        return Price(value: 0, currencyLocale: currencyLocale, modifierName: modifierName)
+    }
+}
+
+func +(lhs: Price, rhs: Price) -> Price {
+    assert(lhs.currencyLocale == rhs.currencyLocale && lhs.modifierName == rhs.modifierName)
+    
+    return Price(value: lhs.value + rhs.value, currencyLocale: lhs.currencyLocale, modifierName: lhs.modifierName)
 }
 
 func ==(lhs: Price, rhs: Price) -> Bool {
