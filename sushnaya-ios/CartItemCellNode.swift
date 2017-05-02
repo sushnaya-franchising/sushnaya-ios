@@ -181,7 +181,7 @@ class CartItemCellNode: ASCellNode {
         
         optionsButtonNode.style.preferredSize = CGSize(width: 56, height: 40)
         
-        let spacer = ASDisplayNode()
+        let spacer = ASLayoutSpec()        
         spacer.style.maxSize = CGSize(width: 16, height: 32)
         spacer.style.flexGrow = 1.0
     
