@@ -15,6 +15,7 @@
 		19BB48C66E49E8F52632787E /* AddressDismissingAnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19BB4C01C949D75F48EF82CE /* AddressDismissingAnimationController.swift */; };
 		19BB4D0FBB206525B2AE5C2F /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19BB4EDE411E92ABDA1E1EDC /* UserSettings.swift */; };
 		19BB4E02540F209DC3D1930F /* AddressPresentingAnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19BB42DE297AD21F7ED15B94 /* AddressPresentingAnimationController.swift */; };
+		1D6565BCCCEE9612FD7CFA21 /* Pods_sushnaya_ios_tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7364172E21650F8281B034E /* Pods_sushnaya_ios_tests.framework */; };
 		2E2FF1141E9F8E03006B9321 /* CartNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2FF1131E9F8E03006B9321 /* CartNode.swift */; };
 		2E2FF1161E9FD0C1006B9321 /* CartContentNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2FF1151E9FD0C1006B9321 /* CartContentNode.swift */; };
 		2E2FF11E1EA122F0006B9321 /* CartItemCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2FF11D1EA122F0006B9321 /* CartItemCellNode.swift */; };
@@ -97,6 +98,10 @@
 		2E9A77D21E97AE560042BBE9 /* CartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9A77D11E97AE550042BBE9 /* CartViewController.swift */; };
 		2EB2992C1E98E2E400189D4B /* CartPresentingAnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EB2992B1E98E2E400189D4B /* CartPresentingAnimationController.swift */; };
 		2EB2992E1E98E2F400189D4B /* CartDismissingAnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EB2992D1E98E2F400189D4B /* CartDismissingAnimationController.swift */; };
+		2ED4C7001EB4978B00374132 /* YandexGeocoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED4C6FF1EB4978B00374132 /* YandexGeocoder.swift */; };
+		2ED4C7021EB4989B00374132 /* YandexGeocoderTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED4C7011EB4989B00374132 /* YandexGeocoderTest.swift */; };
+		2ED4C7041EB4B3F000374132 /* Address.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED4C7031EB4B3F000374132 /* Address.swift */; };
+		2ED4C7061EB60F4600374132 /* AddressMapCalloutNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED4C7051EB60F4600374132 /* AddressMapCalloutNode.swift */; };
 		95D281D1D25122E284D8AC09 /* Pods_sushnaya_ios.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 489991CA68AC90F346EF30BE /* Pods_sushnaya_ios.framework */; };
 /* End PBXBuildFile section */
 
@@ -111,6 +116,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		18CA98D1845D2B1E27697A15 /* Pods-sushnaya-ios-tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sushnaya-ios-tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-sushnaya-ios-tests/Pods-sushnaya-ios-tests.debug.xcconfig"; sourceTree = "<group>"; };
 		19BB42DE297AD21F7ED15B94 /* AddressPresentingAnimationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddressPresentingAnimationController.swift; sourceTree = "<group>"; };
 		19BB450AEB4CA2BA6CF573BC /* Price.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Price.swift; sourceTree = "<group>"; };
 		19BB48AFDFEC94CCC6894936 /* ProductCellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductCellNode.swift; sourceTree = "<group>"; };
@@ -208,7 +214,13 @@
 		2E9A77D11E97AE550042BBE9 /* CartViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CartViewController.swift; sourceTree = "<group>"; };
 		2EB2992B1E98E2E400189D4B /* CartPresentingAnimationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CartPresentingAnimationController.swift; sourceTree = "<group>"; };
 		2EB2992D1E98E2F400189D4B /* CartDismissingAnimationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CartDismissingAnimationController.swift; sourceTree = "<group>"; };
+		2ED4C6FF1EB4978B00374132 /* YandexGeocoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YandexGeocoder.swift; sourceTree = "<group>"; };
+		2ED4C7011EB4989B00374132 /* YandexGeocoderTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YandexGeocoderTest.swift; sourceTree = "<group>"; };
+		2ED4C7031EB4B3F000374132 /* Address.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Address.swift; sourceTree = "<group>"; };
+		2ED4C7051EB60F4600374132 /* AddressMapCalloutNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddressMapCalloutNode.swift; sourceTree = "<group>"; };
 		489991CA68AC90F346EF30BE /* Pods_sushnaya_ios.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_sushnaya_ios.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C2977A71B31E523EF33A32BB /* Pods-sushnaya-ios-tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sushnaya-ios-tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-sushnaya-ios-tests/Pods-sushnaya-ios-tests.release.xcconfig"; sourceTree = "<group>"; };
+		C7364172E21650F8281B034E /* Pods_sushnaya_ios_tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_sushnaya_ios_tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D65B6BE6D9773B62E60783D8 /* Pods-sushnaya-ios.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sushnaya-ios.release.xcconfig"; path = "Pods/Target Support Files/Pods-sushnaya-ios/Pods-sushnaya-ios.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -217,6 +229,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1D6565BCCCEE9612FD7CFA21 /* Pods_sushnaya_ios_tests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -251,6 +264,7 @@
 				2E926E331E8E54F200070538 /* Product.swift */,
 				2E48F2781E98EB5000DCBBC6 /* Cart.swift */,
 				19BB450AEB4CA2BA6CF573BC /* Price.swift */,
+				2ED4C7031EB4B3F000374132 /* Address.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -321,6 +335,7 @@
 			children = (
 				2E2FF1361EA693BA006B9321 /* CartTest.swift */,
 				2E2FF1381EA693BA006B9321 /* Info.plist */,
+				2ED4C7011EB4989B00374132 /* YandexGeocoderTest.swift */,
 			);
 			path = "sushnaya-ios-tests";
 			sourceTree = "<group>";
@@ -366,6 +381,7 @@
 				2E6AF3031EB3A32C00254D3B /* AddressMapNode.swift */,
 				2E6AF3051EB3A34000254D3B /* AddressFormNode.swift */,
 				2E6AF3071EB3AB5800254D3B /* AddressNavBarNode.swift */,
+				2ED4C7051EB60F4600374132 /* AddressMapCalloutNode.swift */,
 			);
 			name = Address;
 			sourceTree = "<group>";
@@ -373,6 +389,7 @@
 		2E72A3AC1E830A1B00548DBA /* Util */ = {
 			isa = PBXGroup;
 			children = (
+				2ED4C6FF1EB4978B00374132 /* YandexGeocoder.swift */,
 				2E926E391E8E551600070538 /* CGPointExt.swift */,
 				2E926E3A1E8E551600070538 /* Debouncer.swift */,
 				2E926E3B1E8E551600070538 /* UIColorExt.swift */,
@@ -515,6 +532,7 @@
 			isa = PBXGroup;
 			children = (
 				489991CA68AC90F346EF30BE /* Pods_sushnaya_ios.framework */,
+				C7364172E21650F8281B034E /* Pods_sushnaya_ios_tests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -524,6 +542,8 @@
 			children = (
 				205D12542FA776D8BA85ED3F /* Pods-sushnaya-ios.debug.xcconfig */,
 				D65B6BE6D9773B62E60783D8 /* Pods-sushnaya-ios.release.xcconfig */,
+				18CA98D1845D2B1E27697A15 /* Pods-sushnaya-ios-tests.debug.xcconfig */,
+				C2977A71B31E523EF33A32BB /* Pods-sushnaya-ios-tests.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -535,9 +555,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2E2FF13B1EA693BA006B9321 /* Build configuration list for PBXNativeTarget "sushnaya-ios-tests" */;
 			buildPhases = (
+				539B429E83B0313FF1B2B9BA /* [CP] Check Pods Manifest.lock */,
 				2E2FF1301EA693BA006B9321 /* Sources */,
 				2E2FF1311EA693BA006B9321 /* Frameworks */,
 				2E2FF1321EA693BA006B9321 /* Resources */,
+				6F6BBFAD1EA1F2636BDA7437 /* [CP] Embed Pods Frameworks */,
+				4C8BFAF6195F68C8EC140A84 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -650,6 +673,51 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Fabric/run\" d928ddcf780310e633532abb6b293291172339d8 40a74e0849687b842c32dbbfa84791257dad72dfb2f9ff4bfb0bc07b3a24c628";
 		};
+		4C8BFAF6195F68C8EC140A84 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-sushnaya-ios-tests/Pods-sushnaya-ios-tests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		539B429E83B0313FF1B2B9BA /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		6F6BBFAD1EA1F2636BDA7437 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-sushnaya-ios-tests/Pods-sushnaya-ios-tests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		9C65F56C7B4792BC8DE2DC82 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -702,6 +770,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2ED4C7021EB4989B00374132 /* YandexGeocoderTest.swift in Sources */,
 				2E2FF1371EA693BA006B9321 /* CartTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -739,6 +808,7 @@
 				2E926DE21E8E53D100070538 /* App.swift in Sources */,
 				2E926E4D1E8E551600070538 /* PopExt.swift in Sources */,
 				2E48F2791E98EB5000DCBBC6 /* Cart.swift in Sources */,
+				2ED4C7041EB4B3F000374132 /* Address.swift in Sources */,
 				2E926DF31E8E53E100070538 /* OpeningConnectionAPIChatEvent.swift in Sources */,
 				2E926E2E1E8E54E800070538 /* LocalitiesNode.swift in Sources */,
 				2E926E181E8E546000070538 /* ButtonNode.swift in Sources */,
@@ -754,12 +824,14 @@
 				2E926E141E8E544300070538 /* PaperElevation.swift in Sources */,
 				2E48F27F1E9AB27900DCBBC6 /* PriceNode.swift in Sources */,
 				2E926E461E8E551600070538 /* Debouncer.swift in Sources */,
+				2ED4C7001EB4978B00374132 /* YandexGeocoder.swift in Sources */,
 				2E926E4E1E8E551600070538 /* ASEditableTextNodeExt.swift in Sources */,
 				2E926E0B1E8E540000070538 /* FiltersViewController.swift in Sources */,
 				2E80ACEA1E8FAC9B00D0DBCF /* DefaultCellNode.swift in Sources */,
 				2E926DFE1E8E53F700070538 /* SignInViewController.swift in Sources */,
 				2E926DE51E8E53D100070538 /* APIChat.swift in Sources */,
 				2E926E371E8E54F200070538 /* MenuCategory.swift in Sources */,
+				2ED4C7061EB60F4600374132 /* AddressMapCalloutNode.swift in Sources */,
 				2E926E2A1E8E54CE00070538 /* Constants.swift in Sources */,
 				2E6AF3061EB3A34000254D3B /* AddressFormNode.swift in Sources */,
 				2E2FF1141E9F8E03006B9321 /* CartNode.swift in Sources */,
@@ -809,6 +881,7 @@
 /* Begin XCBuildConfiguration section */
 		2E2FF13C1EA693BA006B9321 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 18CA98D1845D2B1E27697A15 /* Pods-sushnaya-ios-tests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -819,7 +892,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.sushnaya.sushnaya-ios-tests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "sushnaya-ios/Sushnaya-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "sushnaya-ios/bridge-header.h";
 				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/sushnaya-ios.app/sushnaya-ios";
 			};
@@ -827,6 +900,7 @@
 		};
 		2E2FF13D1EA693BA006B9321 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C2977A71B31E523EF33A32BB /* Pods-sushnaya-ios-tests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -836,7 +910,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.sushnaya.sushnaya-ios-tests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "sushnaya-ios/Sushnaya-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "sushnaya-ios/bridge-header.h";
 				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/sushnaya-ios.app/sushnaya-ios";
 			};

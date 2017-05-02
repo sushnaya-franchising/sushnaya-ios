@@ -8,7 +8,6 @@
 
 import XCTest
 @testable import sushnaya_ios
-import PromiseKit
 
 class CartTest: XCTestCase {
     
@@ -54,16 +53,16 @@ class CartTest: XCTestCase {
         cart.add(product: product4, withPrice: product4.pricing[0])
         
         cart.remove()
-        XCTAssertTrue(cart.sections.count == 3)
+        XCTAssertTrue(cart.sectionsCount == 3)
         
         cart.remove()
-        XCTAssertTrue(cart.sections.count == 2)
+        XCTAssertTrue(cart.sectionsCount == 2)
         
         cart.remove()
-        XCTAssertTrue(cart.sections.count == 1)
+        XCTAssertTrue(cart.sectionsCount == 1)
         
         cart.remove()
-        XCTAssertTrue(cart.sections.isEmpty)
+        XCTAssertTrue(cart.sectionsCount == 0)
         
         XCTAssertTrue(cart.sum.value == 0)
     }

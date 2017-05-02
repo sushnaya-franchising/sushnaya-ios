@@ -13,7 +13,7 @@ class AddressViewController: ASViewController<ASDisplayNode> {
     fileprivate var mapNode: AddressMapNode!
     fileprivate var formNode: AddressFormNode!
     
-    fileprivate var mapDragDeboucer: Debouncer!
+    fileprivate var geocoding: Debouncer?
     
     convenience init() {
         self.init(node: ASDisplayNode())
@@ -46,8 +46,20 @@ class AddressViewController: ASViewController<ASDisplayNode> {
         self.mapNode = AddressMapNode()
         self.mapNode?.delegate = self
         
-        self.mapDragDeboucer = debounce (delay: 0.1) { [unowned self] in
-            print(self.mapNode!.centerCoordinate)
+        self.geocoding = debounce (delay: 0.1) { [unowned self] in
+            YandexGeocoder.requestAddress(coordinate: self.mapNode!.centerCoordinate).then{ address -> () in
+                guard let address = address else {
+                    self.mapNode.addressCalloutState = .addressIsUndefined
+                    return
+                }
+                
+                self.mapNode!.setCenter(coordinate: address.coordinate, animated: true)
+                self.mapNode.addressCalloutState = .addressIsDefined(address.displayName)
+                
+            }.catch { error in
+                print("Error: \(error)")
+                self.mapNode.addressCalloutState = .addressIsUndefined
+            }
         }
         
         self.pagerNode = ASPagerNode()
@@ -68,6 +80,11 @@ class AddressViewController: ASViewController<ASDisplayNode> {
         self.node.layoutSpecBlock = { [unowned self] _ in
             return ASOverlayLayoutSpec(child: self.formNode, overlay: self.navbarNode)
         }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        geocoding?.apply()
     }
 }
 
@@ -100,14 +117,21 @@ extension AddressViewController: ASPagerDataSource, ASPagerDelegate {
 }
 
 extension AddressViewController: AddressMapDelegate {
-    func addressMapWasDragged(_ node: AddressMapNode) {        
-        mapDragDeboucer.apply()
+    func addressMapWasDragged(_ node: AddressMapNode) {
+        node.addressCalloutState = .loading
+        geocoding?.apply()
     }
     
     func addressMapDidTapLocationButton(_ node: AddressMapNode) {
         CLLocationManager.promise().then {[unowned self] location -> () in
-            self.mapNode.setCenter(coordinate: location.coordinate, animated: true)
-        }.catch{ _ in
+            self.mapNode.setCenter(coordinate: location.coordinate, animated: false)
+            self.geocoding?.apply()
+        }.catch { _ in
         }
+    }
+    
+    func addressMap(_ node: AddressMapNode, gotTapAndHoldAt coordinate: CLLocationCoordinate2D) {
+        node.setCenter(coordinate: coordinate, animated: true)
+        node.addressCalloutState = .forceDeliveryPoint
     }
 }

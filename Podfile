@@ -16,5 +16,9 @@ target 'sushnaya-ios' do
     pod 'Texture', '2.2'
     pod 'PaperFold'    
     pod 'YandexMapKit'
-end
+    
+    target 'sushnaya-ios-tests' do
+        inherit! :search_paths
+    end
 
+end
