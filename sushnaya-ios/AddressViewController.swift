@@ -25,23 +25,23 @@ class AddressViewController: ASViewController<ASDisplayNode> {
     }
 
     private func setupNodes() {
-        guard CLLocationManager.locationServicesEnabled() else {
+//        guard CLLocationManager.locationServicesEnabled() else {
             setupNodesIfLocationServicesDisabled()
-            return
-        }
-        
-        switch CLLocationManager.authorizationStatus() {
-        case .authorizedAlways, .authorizedWhenInUse:
-            setupNodesIfLocationServicesEnabled()
-        default:
-            setupNodesIfLocationServicesDisabled()
-        }
-    }        
+//            return
+//        }
+//        
+//        switch CLLocationManager.authorizationStatus() {
+//        case .authorizedAlways, .authorizedWhenInUse:
+//            setupNodesIfLocationServicesEnabled()
+//        default:
+//            setupNodesIfLocationServicesDisabled()
+//        }
+    }
     
     private func setupNodesIfLocationServicesEnabled() {
         self.navbarNode.delegate = self
         
-        self.formNode = AddressFormNode()
+        self.formNode = AddressFormNode(locality: app.userSession.locality!)
         
         self.mapNode = AddressMapNode()
         self.mapNode?.delegate = self
@@ -57,7 +57,6 @@ class AddressViewController: ASViewController<ASDisplayNode> {
                 self.mapNode.addressCalloutState = .addressIsDefined(address.displayName)
                 
             }.catch { error in
-                print("Error: \(error)")
                 self.mapNode.addressCalloutState = .addressIsUndefined
             }
         }
@@ -75,7 +74,8 @@ class AddressViewController: ASViewController<ASDisplayNode> {
     private func setupNodesIfLocationServicesDisabled() {
         self.navbarNode.delegate = self
         self.navbarNode.isSegmentedControlHidden = true
-        self.formNode = AddressFormNode()
+        self.formNode = AddressFormNode(locality: app.userSession.locality!)
+        self.formNode.mapIsNotSupported = true
         
         self.node.layoutSpecBlock = { [unowned self] _ in
             return ASOverlayLayoutSpec(child: self.formNode, overlay: self.navbarNode)
@@ -123,6 +123,8 @@ extension AddressViewController: AddressMapDelegate {
     }
     
     func addressMapDidTapLocationButton(_ node: AddressMapNode) {
+        geocoding?.cancel()
+        
         CLLocationManager.promise().then {[unowned self] location -> () in
             self.mapNode.setCenter(coordinate: location.coordinate, animated: false)
             self.geocoding?.apply()
@@ -131,6 +133,8 @@ extension AddressViewController: AddressMapDelegate {
     }
     
     func addressMap(_ node: AddressMapNode, gotTapAndHoldAt coordinate: CLLocationCoordinate2D) {
+        geocoding?.cancel()
+        
         node.setCenter(coordinate: coordinate, animated: true)
         node.addressCalloutState = .forceDeliveryPoint
     }

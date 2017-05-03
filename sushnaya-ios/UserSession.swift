@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SwiftEventBus
 
 class UserSession: NSObject {
     var authToken:String? {
@@ -21,6 +22,10 @@ class UserSession: NSObject {
         }
     }
 
+    var locality: Locality? {
+        return userSettings.locality
+    }
+    
     let userSettings = UserSettings()
 
     let cart = Cart()
@@ -33,5 +38,6 @@ class UserSession: NSObject {
         
         // todo: query locality
 //        locality = ...
+        
     }
 }

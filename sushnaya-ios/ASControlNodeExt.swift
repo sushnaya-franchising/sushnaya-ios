@@ -9,22 +9,22 @@
 import Foundation
 import AsyncDisplayKit
 
-typealias ASButtonTargetClosure = (ASButtonNode) -> ()
+typealias TargetClosure = (ASControlNode) -> ()
 
 class ClosureWrapper: NSObject {
-    let closure: ASButtonTargetClosure
-    init(_ closure: @escaping ASButtonTargetClosure) {
+    let closure: TargetClosure
+    init(_ closure: @escaping TargetClosure) {
         self.closure = closure
     }
 }
 
-extension ASButtonNode {
+extension ASControlNode {
     
     private struct AssociatedKeys {
         static var targetClosure = "targetClosure"
     }
     
-    private var targetClosure: ASButtonTargetClosure? {
+    private var targetClosure: TargetClosure? {
         get {
             guard let closureWrapper = objc_getAssociatedObject(self, &AssociatedKeys.targetClosure) as? ClosureWrapper else { return nil }
             return closureWrapper.closure
@@ -35,9 +35,9 @@ extension ASButtonNode {
         }
     }
     
-    func addTargetClosure(closure: @escaping ASButtonTargetClosure) {
+    func addTargetClosure(closure: @escaping TargetClosure) {
         targetClosure = closure
-        addTarget(self, action: #selector(ASButtonNode.closureAction), forControlEvents: .touchUpInside)
+        addTarget(self, action: #selector(ASControlNode.closureAction), forControlEvents: .touchUpInside)
     }
     
     func closureAction() {

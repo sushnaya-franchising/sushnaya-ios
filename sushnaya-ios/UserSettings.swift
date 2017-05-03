@@ -4,9 +4,9 @@
 //
 
 import Foundation
+import SwiftEventBus
 
 class UserSettings {
-    // todo: create UserSettings and move this property there
     var locality: Locality? {
         didSet {
             // todo: persist locality
@@ -16,6 +16,24 @@ class UserSettings {
     var isLocalitySelected: Bool {
         get {
             return locality != nil
+        }
+    }
+    
+    init() {
+        bindEventHandlers()
+    }
+    
+    deinit {
+        EventBus.unregister(self)
+    }
+    
+    private func bindEventHandlers() {
+        EventBus.onMainThread(self, name: ChangeLocalityEvent.name) { [unowned self] notification in
+            guard let event = notification.object as? ChangeLocalityEvent else {
+                return
+            }
+            
+            self.locality = event.locality
         }
     }
 }

@@ -38,7 +38,7 @@
 		2E7BCA681E7B087500B6FEE6 /* intro_video.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 2E7BCA671E7B087500B6FEE6 /* intro_video.mp4 */; };
 		2E80ACEA1E8FAC9B00D0DBCF /* DefaultCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E80ACE91E8FAC9B00D0DBCF /* DefaultCellNode.swift */; };
 		2E9147011EB32DFC00E0D312 /* SegmentedControlNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9147001EB32DFC00E0D312 /* SegmentedControlNode.swift */; };
-		2E9147031EB3388400E0D312 /* ASButtonNodeExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9147021EB3388400E0D312 /* ASButtonNodeExt.swift */; };
+		2E9147031EB3388400E0D312 /* ASControlNodeExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9147021EB3388400E0D312 /* ASControlNodeExt.swift */; };
 		2E926DE21E8E53D100070538 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E926DDE1E8E53D100070538 /* App.swift */; };
 		2E926DE31E8E53D100070538 /* UserSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E926DDF1E8E53D100070538 /* UserSession.swift */; };
 		2E926DE41E8E53D100070538 /* Authentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E926DE01E8E53D100070538 /* Authentication.swift */; };
@@ -150,7 +150,7 @@
 		2E7BCA671E7B087500B6FEE6 /* intro_video.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = intro_video.mp4; sourceTree = "<group>"; };
 		2E80ACE91E8FAC9B00D0DBCF /* DefaultCellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultCellNode.swift; sourceTree = "<group>"; };
 		2E9147001EB32DFC00E0D312 /* SegmentedControlNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SegmentedControlNode.swift; sourceTree = "<group>"; };
-		2E9147021EB3388400E0D312 /* ASButtonNodeExt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ASButtonNodeExt.swift; sourceTree = "<group>"; };
+		2E9147021EB3388400E0D312 /* ASControlNodeExt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ASControlNodeExt.swift; sourceTree = "<group>"; };
 		2E926DDE1E8E53D100070538 /* App.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		2E926DDF1E8E53D100070538 /* UserSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserSession.swift; sourceTree = "<group>"; };
 		2E926DE01E8E53D100070538 /* Authentication.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Authentication.swift; sourceTree = "<group>"; };
@@ -404,7 +404,7 @@
 				2E926E441E8E551600070538 /* UIImageExt.swift */,
 				2E48F27C1E99660E00DCBBC6 /* Geometry.swift */,
 				2E2FF1251EA65845006B9321 /* DataStructure.swift */,
-				2E9147021EB3388400E0D312 /* ASButtonNodeExt.swift */,
+				2E9147021EB3388400E0D312 /* ASControlNodeExt.swift */,
 			);
 			name = Util;
 			sourceTree = "<group>";
@@ -803,7 +803,7 @@
 				2E926E131E8E544300070538 /* PaperButton.swift in Sources */,
 				2E926E4C1E8E551600070538 /* CGFloatExt.swift in Sources */,
 				2E926DF41E8E53E100070538 /* APIChatErrorEvent.swift in Sources */,
-				2E9147031EB3388400E0D312 /* ASButtonNodeExt.swift in Sources */,
+				2E9147031EB3388400E0D312 /* ASControlNodeExt.swift in Sources */,
 				2E6AF3081EB3AB5800254D3B /* AddressNavBarNode.swift in Sources */,
 				2E926DE21E8E53D100070538 /* App.swift in Sources */,
 				2E926E4D1E8E551600070538 /* PopExt.swift in Sources */,

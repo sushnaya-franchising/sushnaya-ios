@@ -102,7 +102,7 @@ class PriceNode: ASDisplayNode {
         alphaAnimation?.toValue = 0
         alphaAnimation?.duration = 0.07
         alphaAnimation?.completionBlock = { [unowned self] _ in
-            debounce(delay: 1.5) {
+            debounce(delay: 1) {
                 self.animateBirth()
             }.apply()
         }
