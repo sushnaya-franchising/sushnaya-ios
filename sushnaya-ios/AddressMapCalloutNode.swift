@@ -58,7 +58,6 @@ class AddressMapCalloutNode: ASDisplayNode {
             
             setupNodes()
             setNeedsLayout()
-            addressTextNode.setNeedsLayout()
         }
     }
     
@@ -112,6 +111,15 @@ class AddressMapCalloutNode: ASDisplayNode {
         submitButtonNode.isHidden = state == .outOfDeliveryZone
     }
     
+    override func setNeedsLayout() {
+        separator.setNeedsLayout()
+        addressTextNode.setNeedsLayout()
+        activityIndicatorNode?.setNeedsLayout()
+        submitButtonNode.setNeedsLayout()
+        
+        super.setNeedsLayout()
+    }
+    
     private func setupActivityIndicatorNode() {
         guard state == .loading else {
             activityIndicatorNode = nil
@@ -119,7 +127,7 @@ class AddressMapCalloutNode: ASDisplayNode {
         }
         
         activityIndicatorNode = ASDisplayNode(viewBlock: {
-            let activityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .gray)            
+            let activityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .gray)
             activityIndicatorView.startAnimating()
             
             return activityIndicatorView

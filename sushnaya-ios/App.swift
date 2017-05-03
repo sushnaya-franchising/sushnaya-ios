@@ -179,7 +179,7 @@ class App: UIResponder, UIApplicationDelegate {
 
             CLLocationManager.promise().then { location -> () in
                 if let locality = getLocality(by: location) {
-                    ChangeLocalityEvent.fire(locality: locality)
+                    ChangeLocalityEvent.fire(locality: locality)                    
 
                 } else {
                     presentLocalitiesController()

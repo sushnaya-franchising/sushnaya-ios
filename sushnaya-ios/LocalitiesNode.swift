@@ -54,7 +54,6 @@ class LocalitiesNode: ASDisplayNode {
         tableNode.view.separatorStyle = .none
     }
 
-
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let stack = ASStackLayoutSpec.vertical()
         stack.alignItems = .center
