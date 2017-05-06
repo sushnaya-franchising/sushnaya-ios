@@ -52,7 +52,7 @@ class SegmentedControlNode: ASDisplayNode {
     // todo: add NSAttributed sting with string segment key
     func addButton(_ button: ASButtonNode) {
         let segment = buttons.count
-        button.addTargetClosure { [unowned self] _ in
+        button.setTargetClosure { [unowned self] _ in
             self.selectedSegment = segment
         }
         button.backgroundColor = nil

@@ -35,7 +35,7 @@ extension ASControlNode {
         }
     }
     
-    func addTargetClosure(closure: @escaping TargetClosure) {
+    func setTargetClosure(closure: @escaping TargetClosure) {
         targetClosure = closure
         addTarget(self, action: #selector(ASControlNode.closureAction), forControlEvents: .touchUpInside)
     }

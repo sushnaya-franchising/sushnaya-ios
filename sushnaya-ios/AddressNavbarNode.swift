@@ -62,7 +62,7 @@ class AddressNavbarNode: ASDisplayNode {
     
     private func setupCloseButtonNode() {
         closeButton.setAttributedTitle(chevronUpIconString, for: .normal)
-        closeButton.addTargetClosure { [unowned self] _ in
+        closeButton.setTargetClosure { [unowned self] _ in
             self.delegate?.addressNavbarDidTapCloseButton(node: self)
         }
     }
