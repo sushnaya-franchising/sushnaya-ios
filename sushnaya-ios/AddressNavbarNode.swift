@@ -23,7 +23,7 @@ class AddressNavbarNode: ASDisplayNode {
     fileprivate let keyboardIconString = NSAttributedString(string: String.fontAwesomeIcon(name: .keyboardO), attributes: [NSFontAttributeName: UIFont.fontAwesome(ofSize: 17), NSForegroundColorAttributeName: PaperColor.Gray800])
     
     fileprivate let segmentedControl = SegmentedControlNode()
-    fileprivate let closeButton = ASButtonNode()
+    fileprivate let closeButton = ASButtonNode()        
     
     var isSegmentedControlHidden: Bool {
         get {
@@ -43,14 +43,14 @@ class AddressNavbarNode: ASDisplayNode {
         get{
             return segmentedControl.selectedSegment
         }
-    }
+    }        
     
     weak var delegate: AddressNavbarDelegate?
     
     override init() {
         super.init()
-            
-        self.automaticallyManagesSubnodes = true        
+                
+        self.automaticallyManagesSubnodes = true
         
         setupNodes()
     }
@@ -58,7 +58,7 @@ class AddressNavbarNode: ASDisplayNode {
     private func setupNodes() {
         setupCloseButtonNode()
         setupSegmentedControlNode()
-    }
+    }        
     
     private func setupCloseButtonNode() {
         closeButton.setAttributedTitle(chevronUpIconString, for: .normal)
@@ -78,6 +78,8 @@ class AddressNavbarNode: ASDisplayNode {
         let keyboardButton = ASButtonNode()
         keyboardButton.setAttributedTitle(keyboardIconString, for: .normal)
         segmentedControl.addButton(keyboardButton)
+        
+        segmentedControl.isHidden = isSegmentedControlHidden
     }
     
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
