@@ -51,7 +51,7 @@ class AddressMapNode: ASCellNode {
         self.automaticallyManagesSubnodes = true
         
         self.locationButton.setAttributedTitle(locationArrowIconString, for: .normal)
-        self.locationButton.addTargetClosure {[unowned self] _ in
+        self.locationButton.setTargetClosure {[unowned self] _ in
             self.delegate?.addressMapDidTapLocationButton(self)
         }
         

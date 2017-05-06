@@ -10,8 +10,14 @@ import Foundation
 import AsyncDisplayKit
 import pop
 
+protocol AddressFormDelegate: class {
+    func addressFormDidSubmit(_ node: AddressFormNode)
+}
+
 class AddressFormNode: ASCellNode {
     var locality: Locality
+    
+    weak var delegate: AddressFormDelegate?
     
     fileprivate let scrollNode = ASScrollNode()
     fileprivate var keyboardHeight: CGFloat?
@@ -24,7 +30,7 @@ class AddressFormNode: ASCellNode {
         return imageNode
     }()
     
-    fileprivate let streetHouseFormFieldNode = FormFieldNode(label: "Улица, дом", isRequired: true)
+    fileprivate let streetAndHouseFormFieldNode = FormFieldNode(label: "Улица, дом", isRequired: true)
     fileprivate let suggestionsTableNode = ASTableNode()
     fileprivate let apartmentNumberFormFieldNode = FormFieldNode(label: "Квартира/Офис")
     fileprivate let entranceFormFieldNode = FormFieldNode(label: "Подъезд")
@@ -121,6 +127,16 @@ class AddressFormNode: ASCellNode {
         ])
         submitButton.setAttributedTitle(title, for: .normal)
         submitButton.backgroundColor = PaperColor.Gray300
+        submitButton.setTargetClosure { [unowned self] _ in
+            self.view.endEditing(true)
+            
+            guard self.streetAndHouseFormFieldNode.isValid else {
+                self.onStreetAndHouseConstraintViolation()
+                return
+            }
+            
+            self.delegate?.addressFormDidSubmit(self)
+        }
     }
     
     private func setupScrollNode() {
@@ -132,7 +148,7 @@ class AddressFormNode: ASCellNode {
             
             var rows = [ASLayoutElement]()
             rows.append(self.localityLayoutThatFits(constrainedSize))
-            rows.append(ASInsetLayoutSpec(insets: UIEdgeInsetsMake(0, 22, 0, 16), child: self.streetHouseFormFieldNode))
+            rows.append(ASInsetLayoutSpec(insets: UIEdgeInsetsMake(0, 22, 0, 16), child: self.streetAndHouseFormFieldNode))
             
             if self.suggestionsTableNode.isVisible {
                 self.suggestionsTableNode.style.preferredSize = CGSize(width: constrainedSize.max.width, height: 44*4)
@@ -205,6 +221,35 @@ class AddressFormNode: ASCellNode {
     }
 }
 
+extension AddressFormNode {
+    func onStreetAndHouseConstraintViolation() {
+        DispatchQueue.main.async { [unowned self] _ in
+            self.scrollFormFieldToVisible(self.streetAndHouseFormFieldNode)
+            self.playShakeAnimation(self.streetAndHouseFormFieldNode)
+        }
+    }
+
+    fileprivate func scrollFormFieldToVisible(_ formFieldNode: FormFieldNode) {
+        let origin  = formFieldNode.frame.origin
+        let size = formFieldNode.frame.size
+        let rect = CGRect(origin: CGPoint(x: origin.x, y: origin.y - navbarBackgroundNode.bounds.height), size: size)
+        
+        scrollNode.view.scrollRectToVisible(rect, animated: true)
+    }
+    
+    fileprivate func playShakeAnimation(_ formFieldNode: FormFieldNode) {
+        guard (formFieldNode.pop_animation(forKey: "shake") == nil) else {
+            return
+        }
+
+        let shake = POPSpringAnimation(propertyNamed: kPOPLayerPositionX)
+        shake?.springBounciness = 20
+        shake?.velocity = 1500
+        
+        formFieldNode.pop_add(shake, forKey: "shake")
+    }
+}
+
 extension AddressFormNode: UIScrollViewDelegate {
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         self.view.endEditing(true)
@@ -261,9 +306,9 @@ extension AddressFormNode {
     
     func adjustScrollNodeOffset() {
         if let keyboardHeight = self.keyboardHeight,
-            let view = self.view.currentFirstResponder() as? UIView,
+            let view = getFirstResponderAsFormFieldView(),
             let originY = view.superview?.convert(view.frame.origin, to: nil).y {
-            let destOriginY:CGFloat = 98 // todo: improve ui design concept
+            let destOriginY:CGFloat = self.navbarBackgroundNode.bounds.height
             let maxOffsetY = scrollNode.view.contentSize.height - (self.view.bounds.height - keyboardHeight)
             let delta = (destOriginY + view.bounds.height) - (self.view.bounds.height - keyboardHeight)
             
@@ -276,6 +321,14 @@ extension AddressFormNode {
                 scrollNode.view.contentOffset = CGPoint(x:0, y: offsetY)
             }
         }
+    }
+    
+    private func getFirstResponderAsFormFieldView() -> UIView? {
+        guard let view = self.view.currentFirstResponder() as? UIView else {
+            return nil
+        }
+        
+        return view.superview?.superview
     }
     
     func keyboardWillHide(notification: NSNotification) {
@@ -299,13 +352,25 @@ fileprivate class FormFieldNode: ASDisplayNode {
             }
             
             setupIconImageNode()
-            setLabelVisible(visible: !(value?.isEmpty ?? true), animated: true)
+            setLabelVisible(visible: !isValueEmpty, animated: true)
         }
     }
     
     var isRequired: Bool
     var label: String
     var maxValueLength: Int
+    
+    var isValid: Bool {
+        guard isRequired else {
+            return true
+        }
+        
+        return !isValueEmpty
+    }
+    
+    var isValueEmpty: Bool {
+        return value?.isEmpty ?? true
+    }
     
     var placeholderTextAttributes: [String: Any] = [NSForegroundColorAttributeName: PaperColor.Gray,
                                                     NSFontAttributeName: UIFont.boldSystemFont(ofSize: 14)] {
@@ -439,7 +504,7 @@ fileprivate class FormFieldNode: ASDisplayNode {
     
     private func setupIconImageNode() {
         iconImageNode.image = UIImage.fontAwesomeIcon(name: .pencil, textColor: iconImageColor, size: CGSize(width: 16, height: 16))
-        iconImageNode.addTargetClosure { [unowned self] _ in
+        iconImageNode.setTargetClosure { [unowned self] _ in
             self.editableTextNode.becomeFirstResponder()
         }
     }
@@ -473,6 +538,7 @@ fileprivate class FormFieldNode: ASDisplayNode {
         
         let layout = ASStackLayoutSpec.vertical()
         let iconAndEditableText = ASStackLayoutSpec.horizontal()
+        
         iconAndEditableText.justifyContent = .start
         iconAndEditableText.alignItems = .center
         
@@ -498,9 +564,10 @@ extension FormFieldNode: ASEditableTextNodeDelegate {
     }
     
     func editableTextNodeDidUpdateText(_ editableTextNode: ASEditableTextNode) {
-        self.value = editableTextNode.attributedText?.string
-        
-        self.setNeedsLayout()
+        DispatchQueue.main.async { [unowned self] _ in
+            self.value = editableTextNode.attributedText?.string        
+            self.setNeedsLayout()
+        }
     }
 }
 

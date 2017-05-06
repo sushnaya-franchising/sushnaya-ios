@@ -32,7 +32,7 @@ class App: UIResponder, UIApplicationDelegate {
 
         YMKConfiguration.sharedInstance().apiKey = "eT8sMHf8HJ3h34nIeC5nzRCx2Ye6JOm9q-02lkLxX9BdERx9-itfjncZ2uWaI5~mdjMYweAA7FTHb44Z7VptmGlbzFKvVW3IZnM9TYBjjzg="
 
-        // ASControlNode.setEnableHitTestDebug(true)
+//         ASControlNode.setEnableHitTestDebug(true)
         
         return true
     }
