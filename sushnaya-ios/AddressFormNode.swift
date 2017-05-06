@@ -146,6 +146,7 @@ class AddressFormNode: ASCellNode {
             
             let spacer = ASLayoutSpec()
             spacer.style.flexGrow = 1
+            spacer.style.flexShrink = 1
             rows.append(spacer)
             
             rows.append(ASInsetLayoutSpec(insets: UIEdgeInsetsMake(16, 16, 16, 16), child: self.submitButton))
@@ -291,15 +292,17 @@ extension AddressFormNode {
 }
 
 fileprivate class FormFieldNode: ASDisplayNode {
-    var value: String = "" {
+    var value: String? {
         didSet {
             guard oldValue != value else {
                 return
             }
             
             setupIconImageNode()
+            setLabelVisible(visible: !(value?.isEmpty ?? true), animated: true)
         }
     }
+    
     var isRequired: Bool
     var label: String
     var maxValueLength: Int
@@ -345,7 +348,7 @@ fileprivate class FormFieldNode: ASDisplayNode {
     }()
     
     var iconImageColor: UIColor {
-        switch (isRequired, value.characters.count) {
+        switch (isRequired, value?.characters.count ?? 0) {
         case (true, 0):
             return PaperColor.Red
         case (true, 1):
@@ -491,18 +494,12 @@ extension FormFieldNode: ASEditableTextNodeDelegate {
         let oldText = (editableTextNode.attributedText?.string ?? "") as NSString
         let newText = oldText.replacingCharacters(in: range, with: text)
         
-        guard newText.characters.count <= maxValueLength else {
-            return false
-        }
-        
-        setLabelVisible(visible: !newText.isEmpty, animated: true)
-        
-        value = newText
-        
-        return true
+        return newText.characters.count <= maxValueLength
     }
     
     func editableTextNodeDidUpdateText(_ editableTextNode: ASEditableTextNode) {
+        self.value = editableTextNode.attributedText?.string
+        
         self.setNeedsLayout()
     }
 }
