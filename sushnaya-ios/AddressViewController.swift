@@ -14,14 +14,18 @@ class AddressViewController: ASViewController<ASDisplayNode> {
     fileprivate var formNode: AddressFormNode!
     
     fileprivate var geocoding: Debouncer?
+    fileprivate var tapRecognizer: UITapGestureRecognizer!
     
     convenience init() {
         self.init(node: ASDisplayNode())
         
+        tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleSingleTap(recognizer:)))
+        tapRecognizer.numberOfTapsRequired = 1
+        
         self.node.backgroundColor = PaperColor.White
         self.node.automaticallyManagesSubnodes = true
         
-        setupNodes()
+        setupNodes()                
     }
 
     private func setupNodes() {
@@ -29,7 +33,7 @@ class AddressViewController: ASViewController<ASDisplayNode> {
             setupNodesIfLocationServicesDisabled()
 //            return
 //        }
-//        
+
 //        switch CLLocationManager.authorizationStatus() {
 //        case .authorizedAlways, .authorizedWhenInUse:
 //            setupNodesIfLocationServicesEnabled()
@@ -74,10 +78,11 @@ class AddressViewController: ASViewController<ASDisplayNode> {
     private func setupNodesIfLocationServicesDisabled() {
         self.navbarNode.delegate = self
         self.navbarNode.isSegmentedControlHidden = true
-        self.formNode = AddressFormNode(locality: app.userSession.locality!)
-        self.formNode.mapIsNotSupported = true
         
-        self.node.layoutSpecBlock = { [unowned self] _ in
+        self.formNode = AddressFormNode(locality: app.userSession.locality!)
+        self.formNode.navbarTitle = "Адрес доставки"
+        
+        self.node.layoutSpecBlock = { [unowned self] (node, constrainedSize) in
             return ASOverlayLayoutSpec(child: self.formNode, overlay: self.navbarNode)
         }
     }
@@ -86,15 +91,33 @@ class AddressViewController: ASViewController<ASDisplayNode> {
         super.viewDidAppear(animated)
         geocoding?.apply()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        self.view.addGestureRecognizer(tapRecognizer!)
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        self.view.removeGestureRecognizer(tapRecognizer!)
+    }
+    
+    func handleSingleTap(recognizer: UITapGestureRecognizer) {
+        self.view.endEditing(true)
+    }
 }
 
 extension AddressViewController: AddressNavbarDelegate {
     func addressNavbarDidTapCloseButton(node: AddressNavbarNode) {
         self.dismiss(animated: true, completion: nil)
+        self.view.endEditing(true)
     }
     
     func addressNavbarDidTapMapButton(node: AddressNavbarNode) {
         self.pagerNode.scrollToPage(at: 0, animated: true)
+        self.view.endEditing(true)
     }
     
     func addressNavbarDidTapFormButton(node: AddressNavbarNode) {
@@ -113,6 +136,10 @@ extension AddressViewController: ASPagerDataSource, ASPagerDelegate {
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         self.navbarNode.selectedSegment = pagerNode.currentPageIndex
+    }
+    
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        self.view.endEditing(true)
     }
 }
 

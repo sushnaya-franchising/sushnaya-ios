@@ -55,7 +55,7 @@ class AddressMapNode: ASCellNode {
             self.delegate?.addressMapDidTapLocationButton(self)
         }
         
-        self.addressCallout.backgroundColor = PaperColor.Gray200.withAlphaComponent(0.95)
+        self.addressCallout.backgroundColor = PaperColor.Gray200.withAlphaComponent(0.93)
         
         self.mapMarker.attributedText = mapMarkerIconString
         

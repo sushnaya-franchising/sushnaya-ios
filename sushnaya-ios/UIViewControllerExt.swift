@@ -12,9 +12,7 @@ import AsyncDisplayKit
 
 extension UIViewController {
     var app: App {
-        get {
-            return UIApplication.shared.delegate as! App
-        }
-    }
+        return UIApplication.shared.delegate as! App
+    }        
 }
 

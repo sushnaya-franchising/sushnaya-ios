@@ -13,7 +13,8 @@ import pop
 class AddressFormNode: ASCellNode {
     var locality: Locality
     
-    fileprivate let headerTextNode = ASTextNode()
+    fileprivate let scrollNode = ASScrollNode()
+    fileprivate var keyboardHeight: CGFloat?
     
     fileprivate let localityTextNode = ASTextNode()
     fileprivate let localityImageNode: ASNetworkImageNode = {
@@ -24,19 +25,20 @@ class AddressFormNode: ASCellNode {
     }()
     
     fileprivate let streetHouseFormFieldNode = FormFieldNode(label: "Улица, дом", isRequired: true)
-    fileprivate let apartmentNumberFormFieldNode = FormFieldNode(label: "Квартира/Офис", maxValueLength: 16)
-    fileprivate let entranceFormFieldNode = FormFieldNode(label: "Подъезд", maxValueLength: 16)
+    fileprivate let suggestionsTableNode = ASTableNode()
+    fileprivate let apartmentNumberFormFieldNode = FormFieldNode(label: "Квартира/Офис")
+    fileprivate let entranceFormFieldNode = FormFieldNode(label: "Подъезд")
     fileprivate let floorFormFieldNode = FormFieldNode(label: "Этаж", maxValueLength: 16)
     fileprivate let commentFormFieldNode = FormFieldNode(label: "Комментарий")
     
-    var mapIsNotSupported = false {
+    fileprivate let submitButton = ASButtonNode()        
+    
+    fileprivate let navbarBackgroundNode = ASDisplayNode()
+    fileprivate let navbarTitleTextNode = ASTextNode()
+    
+    var navbarTitle: String? {
         didSet {
-            guard oldValue != mapIsNotSupported else {
-                return
-            }
-            
-            setupHeaderNode()
-            headerTextNode.setNeedsLayout()
+            setupNavbarTitleNode()
         }
     }
     
@@ -48,24 +50,39 @@ class AddressFormNode: ASCellNode {
         self.automaticallyManagesSubnodes = true
         
         setupNodes()
+        
+        subscribeToKeyboardNotifications()
     }
     
-    private func setupNodes() {
-        setupHeaderNode()
+    deinit {
+        unsubscribeFromKeyboardNotifications()
+    }
+    
+    private func setupNodes() {        
+        setupScrollNode()
+        setupNavbarTitleNode()
+        setupNavbarBackgroundNode()
         setupLocalityImageNode()
         setupLocalityTextNode()
-        setupApartmentNumberFormFieldNode()
+        setupSuggestionsTableNode()
         setupFloorFormFieldNode()
-        setupEntranceFormFieldNode()
+        setupCommentFormFieldNode()
+        setupSubmitButton()
     }
     
-    private func setupHeaderNode() {
-        headerTextNode.attributedText = NSAttributedString(string: "Адрес доставки", attributes: [
+    private func setupNavbarTitleNode() {
+        guard let title = navbarTitle else {
+            return
+        }
+        
+        navbarTitleTextNode.attributedText = NSAttributedString(string: title, attributes: [
             NSForegroundColorAttributeName: PaperColor.Gray800,
             NSFontAttributeName: UIFont.boldSystemFont(ofSize: 17)
-        ])
-        
-        headerTextNode.layer.opacity = mapIsNotSupported ? 1 : 0
+        ])                
+    }
+    
+    private func setupNavbarBackgroundNode() {
+        navbarBackgroundNode.backgroundColor = PaperColor.White.withAlphaComponent(0.93)
     }
     
     private func setupLocalityTextNode() {
@@ -83,60 +100,206 @@ class AddressFormNode: ASCellNode {
         }
     }
     
-    private func setupApartmentNumberFormFieldNode() {
-        apartmentNumberFormFieldNode.keyboardType = .numberPad
+    private func setupSuggestionsTableNode() {
+        suggestionsTableNode.delegate = self
+        suggestionsTableNode.dataSource = self
+        suggestionsTableNode.isHidden = true
     }
     
     private func setupFloorFormFieldNode() {
         floorFormFieldNode.keyboardType = .numberPad
     }
     
-    private func setupEntranceFormFieldNode() {
-        entranceFormFieldNode.keyboardType = .numberPad
+    private func setupCommentFormFieldNode() {
+        commentFormFieldNode.returnKeyType = .done
+    }
+    
+    private func setupSubmitButton() {
+        let title = NSAttributedString(string: "Готово", attributes: [
+            NSForegroundColorAttributeName: PaperColor.Gray800,
+            NSFontAttributeName: UIFont.boldSystemFont(ofSize: 14)
+        ])
+        submitButton.setAttributedTitle(title, for: .normal)
+        submitButton.backgroundColor = PaperColor.Gray300
+    }
+    
+    private func setupScrollNode() {
+        scrollNode.automaticallyManagesSubnodes = true
+        scrollNode.automaticallyManagesContentSize = true
+        
+        scrollNode.layoutSpecBlock = { [unowned self] node, constrainedSize in
+            self.submitButton.style.preferredSize = CGSize(width: constrainedSize.max.width, height: 44)
+            
+            var rows = [ASLayoutElement]()
+            rows.append(self.localityLayoutThatFits(constrainedSize))
+            rows.append(ASInsetLayoutSpec(insets: UIEdgeInsetsMake(0, 22, 0, 16), child: self.streetHouseFormFieldNode))
+            
+            if self.suggestionsTableNode.isVisible {
+                self.suggestionsTableNode.style.preferredSize = CGSize(width: constrainedSize.max.width, height: 44*4)
+                rows.append(self.suggestionsTableNode)
+            }
+            
+            rows.append(ASInsetLayoutSpec(insets: UIEdgeInsetsMake(0, 22, 0, 16), child: self.apartmentNumberFormFieldNode))
+            rows.append(ASInsetLayoutSpec(insets: UIEdgeInsetsMake(0, 22, 0, 16), child: self.entranceFormFieldNode))
+            rows.append(ASInsetLayoutSpec(insets: UIEdgeInsetsMake(0, 22, 0, 16), child: self.floorFormFieldNode))
+            rows.append(ASInsetLayoutSpec(insets: UIEdgeInsetsMake(0, 22, 0, 16), child: self.commentFormFieldNode))
+            
+            let spacer = ASLayoutSpec()
+            spacer.style.flexGrow = 1
+            rows.append(spacer)
+            
+            rows.append(ASInsetLayoutSpec(insets: UIEdgeInsetsMake(16, 16, 16, 16), child: self.submitButton))
+            
+            let layout = ASStackLayoutSpec.vertical()
+            layout.spacing = 16
+            layout.children = rows
+            
+            return ASInsetLayoutSpec(insets: UIEdgeInsetsMake(84, 0, 0, 0), child: layout)
+        }
+    }
+    
+    override func didLoad() {
+        super.didLoad()
+        
+        scrollNode.view.delegate = self
+        
+        suggestionsTableNode.view.separatorStyle = .none
+        
+        submitButton.cornerRadius = 11
+        submitButton.clipsToBounds = true
+    }
+    
+    override func layoutDidFinish() {
+        super.layoutDidFinish()
+        
+        DispatchQueue.main.async { [unowned self] _ in
+            self.adjustScrollNodeOffset()
+        }
     }
     
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        var rows = [ASLayoutElement]()
+        let backgroundRow = ASStackLayoutSpec.horizontal()
+        let titleTextLayout = ASCenterLayoutSpec(centeringOptions: .XY, sizingOptions: [], child: ASInsetLayoutSpec(insets: UIEdgeInsetsMake(20, 0, 0, 0), child: navbarTitleTextNode))
+        navbarBackgroundNode.style.preferredSize = CGSize(width: constrainedSize.max.width, height: 72)
+        let backgroundLayout = ASOverlayLayoutSpec(child: navbarBackgroundNode, overlay: titleTextLayout)
+        backgroundLayout.style.preferredSize = CGSize(width: constrainedSize.max.width, height: 72)
+        backgroundRow.children = [backgroundLayout]
         
-        rows.append(headerLayoutThatFits(constrainedSize))
-        rows.append(localityLayoutThatFits(constrainedSize))
-        rows.append(ASInsetLayoutSpec(insets: UIEdgeInsetsMake(0, 22, 0, 16), child: streetHouseFormFieldNode))
-        rows.append(ASInsetLayoutSpec(insets: UIEdgeInsetsMake(0, 22, 0, 16), child: apartmentNumberFormFieldNode))
-        rows.append(ASInsetLayoutSpec(insets: UIEdgeInsetsMake(0, 22, 0, 16), child: entranceFormFieldNode))
-        rows.append(ASInsetLayoutSpec(insets: UIEdgeInsetsMake(0, 22, 0, 16), child: floorFormFieldNode))
-        rows.append(ASInsetLayoutSpec(insets: UIEdgeInsetsMake(0, 22, 0, 16), child: commentFormFieldNode))
-        
-        let layout = ASStackLayoutSpec.vertical()
-        layout.spacing = 16
-        layout.children = rows
-        
-        return layout
-    }
-    
-    private func headerLayoutThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        let headerTextNodeLayout = ASInsetLayoutSpec(insets: UIEdgeInsets(top: 36, left: 0, bottom: 0, right: 0), child: headerTextNode)
-        headerTextNodeLayout.style.alignSelf = .center
-        
-        return headerTextNodeLayout
+        return ASOverlayLayoutSpec(child: scrollNode, overlay: backgroundRow)
     }
     
     private func localityLayoutThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        let stack = ASStackLayoutSpec.horizontal()
-        stack.justifyContent = .start
-        stack.alignItems = .center
+        let layout = ASStackLayoutSpec.horizontal()
+        layout.justifyContent = .start
+        layout.alignItems = .center
         
         localityImageNode.style.preferredSize = CGSize(width: 32, height: 32)
         let imageNodeInsets = UIEdgeInsets(top: 0, left: 22, bottom: 0, right: 8)
         let imageNodeLayout = ASInsetLayoutSpec(insets: imageNodeInsets, child: localityImageNode)
         
-        stack.children = [imageNodeLayout, localityTextNode]
+        layout.children = [imageNodeLayout, localityTextNode]
         
-        let rowInsets = UIEdgeInsets(top: 16, left: 0, bottom: 0, right: 0)
-        return ASInsetLayoutSpec(insets: rowInsets, child: stack)
+        
+        return layout
+    }
+}
+
+extension AddressFormNode: UIScrollViewDelegate {
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        self.view.endEditing(true)
+    }
+}
+
+extension AddressFormNode: ASTableDelegate, ASTableDataSource {
+    func tableNode(_ tableNode: ASTableNode, numberOfRowsInSection section: Int) -> Int {
+        return 4
+    }
+    
+    func tableNode(_ tableNode: ASTableNode, nodeBlockForRowAt indexPath: IndexPath) -> ASCellNodeBlock {
+        let suggestion = "address \(indexPath.row)"
+        
+        return {
+            SuggestionCellNode(suggestion: suggestion)
+        }
+    }
+    
+    func tableNode(_ tableNode: ASTableNode, didSelectRowAt indexPath: IndexPath) {
+        // todo: implement
+        print("OK")
+    }
+}
+
+extension AddressFormNode {
+    var notificationCenter: NotificationCenter {
+        return NotificationCenter.default
+    }
+    
+    func subscribeToKeyboardNotifications() {
+        notificationCenter.addObserver(self, selector: #selector(keyboardWillShow(notification:)),
+                                       name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        
+        notificationCenter.addObserver(self, selector: #selector(keyboardWillHide(notification:)),
+                                       name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+    }
+    
+    func unsubscribeFromKeyboardNotifications() {
+        notificationCenter.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        
+        notificationCenter.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+    }
+    
+    func keyboardWillShow(notification: NSNotification) {
+        self.keyboardHeight = getKeyboardHeight(notification: notification)
+        let contentInsets = UIEdgeInsets(top: 0, left: 0, bottom: self.keyboardHeight!, right: 0)
+        
+        scrollNode.view.contentInset = contentInsets
+        scrollNode.view.scrollIndicatorInsets = contentInsets
+        
+        adjustScrollNodeOffset()
+    }
+    
+    func adjustScrollNodeOffset() {
+        if let keyboardHeight = self.keyboardHeight,
+            let view = self.view.currentFirstResponder() as? UIView,
+            let originY = view.superview?.convert(view.frame.origin, to: nil).y {
+            let destOriginY:CGFloat = 98 // todo: improve ui design concept
+            let maxOffsetY = scrollNode.view.contentSize.height - (self.view.bounds.height - keyboardHeight)
+            let delta = (destOriginY + view.bounds.height) - (self.view.bounds.height - keyboardHeight)
+            
+            if delta > 0 {
+                let offsetY = min(scrollNode.view.contentOffset.y + (originY - destOriginY) + delta, maxOffsetY)
+                scrollNode.view.contentOffset = CGPoint(x: 0, y: offsetY)
+                
+            } else {
+                let offsetY = min(scrollNode.view.contentOffset.y + (originY - destOriginY), maxOffsetY)
+                scrollNode.view.contentOffset = CGPoint(x:0, y: offsetY)
+            }
+        }
+    }
+    
+    func keyboardWillHide(notification: NSNotification) {
+        scrollNode.view.contentInset = .zero
+        scrollNode.view.scrollIndicatorInsets = .zero
+    }
+    
+    func getKeyboardHeight(notification: NSNotification) -> CGFloat {
+        let userInfo = notification.userInfo
+        let keyboardSize = userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue
+        
+        return keyboardSize.cgRectValue.height
     }
 }
 
 fileprivate class FormFieldNode: ASDisplayNode {
+    var value: String = "" {
+        didSet {
+            guard oldValue != value else {
+                return
+            }
+            
+            setupIconImageNode()
+        }
+    }
     var isRequired: Bool
     var label: String
     var maxValueLength: Int
@@ -164,6 +327,12 @@ fileprivate class FormFieldNode: ASDisplayNode {
         }
     }
     
+    var returnKeyType: UIReturnKeyType = .next {
+        didSet {
+            editableTextNode.returnKeyType = returnKeyType
+        }
+    }
+    
     fileprivate let labelTextNode = ASTextNode()
     private var isLabelVisible = false
     private var labelCenterY:CGFloat?
@@ -174,6 +343,25 @@ fileprivate class FormFieldNode: ASDisplayNode {
         imageNode.contentMode = .center
         return imageNode
     }()
+    
+    var iconImageColor: UIColor {
+        switch (isRequired, value.characters.count) {
+        case (true, 0):
+            return PaperColor.Red
+        case (true, 1):
+            return PaperColor.Green200
+        case (true, 2):
+            return PaperColor.Green300
+        case (true, 3):
+            return PaperColor.Green400
+        case (true, 4):
+            return PaperColor.Green500
+        case (true, _):
+            return PaperColor.Green600
+        default:
+            return PaperColor.Gray
+        }
+    }
     
     init(label: String, maxValueLength: Int = 128, isRequired:Bool = false) {
         self.label = label
@@ -247,7 +435,7 @@ fileprivate class FormFieldNode: ASDisplayNode {
     }
     
     private func setupIconImageNode() {
-        iconImageNode.image = UIImage.fontAwesomeIcon(name: .pencil, textColor: isRequired ? PaperColor.Red: PaperColor.Gray, size: CGSize(width: 16, height: 16))
+        iconImageNode.image = UIImage.fontAwesomeIcon(name: .pencil, textColor: iconImageColor, size: CGSize(width: 16, height: 16))
         iconImageNode.addTargetClosure { [unowned self] _ in
             self.editableTextNode.becomeFirstResponder()
         }
@@ -262,7 +450,7 @@ fileprivate class FormFieldNode: ASDisplayNode {
         editableTextNode.attributedPlaceholderText = NSAttributedString(string: label, attributes: placeholderTextAttributes)
         editableTextNode.typingAttributes = typingAttributes
         editableTextNode.spellCheckingType = .no
-        editableTextNode.returnKeyType = .done
+        editableTextNode.returnKeyType = returnKeyType
         editableTextNode.autocorrectionType = .no
         editableTextNode.keyboardType = keyboardType
         editableTextNode.delegate = self
@@ -293,6 +481,12 @@ fileprivate class FormFieldNode: ASDisplayNode {
 }
 
 extension FormFieldNode: ASEditableTextNodeDelegate {
+    func editableTextNodeDidBeginEditing(_ editableTextNode: ASEditableTextNode) {
+        DispatchQueue.main.async {
+            editableTextNode.selectedRange = NSMakeRange(editableTextNode.attributedText?.length ?? 0, 0)
+        }
+    }
+    
     func editableTextNode(_ editableTextNode: ASEditableTextNode, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         let oldText = (editableTextNode.attributedText?.string ?? "") as NSString
         let newText = oldText.replacingCharacters(in: range, with: text)
@@ -302,6 +496,8 @@ extension FormFieldNode: ASEditableTextNodeDelegate {
         }
         
         setLabelVisible(visible: !newText.isEmpty, animated: true)
+        
+        value = newText
         
         return true
     }
