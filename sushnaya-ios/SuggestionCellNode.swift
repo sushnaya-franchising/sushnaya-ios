@@ -25,6 +25,16 @@ class SuggestionCellNode: ASCellNode {
         }
     }
     
+    override var isHighlighted: Bool {
+        didSet {
+            guard isHighlighted else {
+                return
+            }
+            
+            self.backgroundColor = PaperColor.White
+        }
+    }
+    
     init(suggestion: String) {
         self.suggestion = suggestion
         super.init()
@@ -46,10 +56,10 @@ class SuggestionCellNode: ASCellNode {
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let suggestionTextNodeLayout = ASInsetLayoutSpec(insets: UIEdgeInsetsMake(0, 62, 0, 16), child: suggesionTextNode)
         
-        let layout = ASStackLayoutSpec.horizontal()
-        layout.alignItems = .center
+        let layout = ASStackLayoutSpec.vertical()
+        layout.justifyContent = .center
         layout.children = [suggestionTextNodeLayout]
-        layout.style.height = ASDimension(unit: .points, value: 44)
+        layout.style.minHeight = ASDimension(unit: .points, value: 44)
         
         return layout
     }
