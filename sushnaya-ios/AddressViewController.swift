@@ -5,53 +5,56 @@
 
 import Foundation
 import AsyncDisplayKit
+import PromiseKit
+import Alamofire
 
-class AddressViewController: ASViewController<ASDisplayNode> {        
+class AddressViewController: ASViewController<ASDisplayNode> {
     
     fileprivate let navbarNode = AddressNavbarNode()
     fileprivate var pagerNode: ASPagerNode!
     fileprivate var mapNode: AddressMapNode!
     fileprivate var formNode: AddressFormNode!
+    fileprivate var addressSuggestionsWidget: SuggestionsWidget!
     
     fileprivate var geocoding: Debouncer?
     fileprivate var tapRecognizer: UITapGestureRecognizer!
+    
+    fileprivate var isStreetAndHouseFormFieldFirstResponder: Bool = false
+    fileprivate var dadataSuggestionsProvider: DadataSuggestionsProvider!
+    
+    fileprivate var adjustSuggestionsWidgetFrame: (() -> ())?
     
     convenience init() {
         self.init(node: ASDisplayNode())
         
         tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleSingleTap(recognizer:)))
+        tapRecognizer.delegate = self
         tapRecognizer.numberOfTapsRequired = 1
         
         self.node.backgroundColor = PaperColor.White
         self.node.automaticallyManagesSubnodes = true
         
-        setupNodes()                
+        setupNodes()
+        
+        // todo: subscribe to locality change event and update map and form locality
     }
 
     private func setupNodes() {
-//        guard CLLocationManager.locationServicesEnabled() else {
-            setupNodesIfLocationServicesDisabled()
-//            return
-//        }
-
-//        switch CLLocationManager.authorizationStatus() {
-//        case .authorizedAlways, .authorizedWhenInUse:
-//            setupNodesIfLocationServicesEnabled()
-//        default:
-//            setupNodesIfLocationServicesDisabled()
-//        }
-    }
-    
-    private func setupNodesIfLocationServicesEnabled() {
         self.navbarNode.delegate = self
         
         self.formNode = AddressFormNode(locality: app.userSession.locality!)
+        self.formNode.delegate = self
         
-        self.mapNode = AddressMapNode()
+        self.addressSuggestionsWidget = SuggestionsWidget()
+        dadataSuggestionsProvider = DadataSuggestionsProvider(cityFiasId: app.userSession.locality!.fiasId)
+        self.addressSuggestionsWidget.provider = dadataSuggestionsProvider
+        self.addressSuggestionsWidget.delegate = self
+        
+        self.mapNode = AddressMapNode(locality: app.userSession.locality!)
         self.mapNode?.delegate = self
         
         self.geocoding = debounce (delay: 0.1) { [unowned self] in
-            YandexGeocoder.requestAddress(coordinate: self.mapNode!.centerCoordinate).then{ address -> () in
+            YandexGeocoder.requestAddress(coordinate: self.mapNode!.centerCoordinate).then { address -> () in
                 guard let address = address else {
                     self.mapNode.addressCalloutState = .addressIsUndefined
                     return
@@ -75,18 +78,6 @@ class AddressViewController: ASViewController<ASDisplayNode> {
         }
     }
     
-    private func setupNodesIfLocationServicesDisabled() {
-        self.navbarNode.delegate = self
-        self.navbarNode.isSegmentedControlHidden = true
-        
-        self.formNode = AddressFormNode(locality: app.userSession.locality!)
-        self.formNode.navbarTitle = "Адрес доставки"
-        
-        self.node.layoutSpecBlock = { [unowned self] (node, constrainedSize) in
-            return ASOverlayLayoutSpec(child: self.formNode, overlay: self.navbarNode)
-        }
-    }
-    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         geocoding?.apply()
@@ -96,16 +87,138 @@ class AddressViewController: ASViewController<ASDisplayNode> {
         super.viewWillAppear(animated)
         
         self.view.addGestureRecognizer(tapRecognizer!)
+        
+        updateMapLocationButtonVisibility()// todo: also update when application will resign active
+        
+        subscribeToKeyboardNotifications()
+    }
+    
+    private func updateMapLocationButtonVisibility() {
+        guard CLLocationManager.locationServicesEnabled() else {
+            mapNode.isLocationButtonHidden = true
+            return
+        }
+        
+        switch CLLocationManager.authorizationStatus() {
+        case .authorizedAlways, .authorizedWhenInUse:
+            mapNode.isLocationButtonHidden = false
+        default:
+            mapNode.isLocationButtonHidden = true
+        }
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         
         self.view.removeGestureRecognizer(tapRecognizer!)
+        
+        unsubscribeFromKeyboardNotifications()
     }
     
     func handleSingleTap(recognizer: UITapGestureRecognizer) {
+        self.addressSuggestionsWidget.state = .closed
         self.view.endEditing(true)
+    }
+}
+
+extension AddressViewController {
+    var notificationCenter: NotificationCenter {
+        return NotificationCenter.default
+    }
+    
+    func subscribeToKeyboardNotifications() {
+        notificationCenter.addObserver(self, selector: #selector(keyboardDidShow(notification:)),
+                                       name: NSNotification.Name.UIKeyboardDidShow, object: nil)
+    }
+    
+    func unsubscribeFromKeyboardNotifications() {
+        notificationCenter.removeObserver(self, name: NSNotification.Name.UIKeyboardDidShow, object: nil)
+    }
+    
+    func keyboardDidShow(notification: NSNotification) {
+        guard isStreetAndHouseFormFieldFirstResponder else {
+            return
+        }
+        
+        addressSuggestionsWidget.state = .opened
+        
+        let keyboardHeight = getKeyboardHeight(notification: notification)
+        let formFieldView = formNode.streetAndHouseFormFieldNode.view
+        let suggestionsWidgetView = addressSuggestionsWidget.view
+
+        adjustSuggestionsWidgetFrame = { [unowned self] _ in
+            guard  let originY = formFieldView.superview?.convert(formFieldView.frame.origin, to: nil).y else {
+                return
+            }
+            
+            let origin = CGPoint(x: 0, y: originY + formFieldView.bounds.height)
+            let suggestionsWidgetHeight = self.view.bounds.height - keyboardHeight - origin.y
+            let size = CGSize(width: self.view.bounds.width, height: suggestionsWidgetHeight)
+            let frame = CGRect(origin: origin, size: size)
+            
+            guard frame != suggestionsWidgetView.frame else {
+                return
+            }
+            
+            let _ = self.addressSuggestionsWidget.layout(inFrame: frame).then { [unowned self] ()->() in
+                if !self.view.subviews.contains(suggestionsWidgetView) {
+                    self.view.addSubview(suggestionsWidgetView)
+                }
+            }
+        }
+        
+        adjustSuggestionsWidgetFrame?()
+    }
+    
+    func getKeyboardHeight(notification: NSNotification) -> CGFloat {
+        let userInfo = notification.userInfo
+        let keyboardSize = userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue
+        
+        return keyboardSize.cgRectValue.height
+    }
+}
+
+extension AddressViewController: UIGestureRecognizerDelegate {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        let point = touch.location(in: self.view)
+        
+        return !addressSuggestionsWidget.view.frame.contains(point)
+    }
+}
+
+extension AddressViewController: AddressFormDelegate, SuggestionsWidgetDelegate {
+    func addressFormDidBeginEditing(_ node: AddressFormNode, streetAndHouseFormFieldNode formFieldNode: FormFieldNode) {
+        isStreetAndHouseFormFieldFirstResponder = true
+    }
+
+    func addressFormDidFinishEditing(_ node: AddressFormNode, streetAndHouseFormFieldNode formFieldNode: FormFieldNode) {
+        isStreetAndHouseFormFieldFirstResponder = false
+        addressSuggestionsWidget.state = .closed
+    }
+    
+    func addressFormDidUpdateValue(_ node: AddressFormNode, ofStreetAndHouseFormFieldNode formFieldNode: FormFieldNode) {
+        let query = formFieldNode.value ?? ""
+        dadataSuggestionsProvider.suggestHouseOnly = query.characters.contains(",")
+        
+        addressSuggestionsWidget.updateSuggestions(forQuery: query)
+        addressSuggestionsWidget.state = .opened
+    }
+    
+    func addressFormDidLayout(_ node: AddressFormNode, streetAndHouseFormFieldNode formFieldNode: FormFieldNode) {
+        adjustSuggestionsWidgetFrame?()
+    }
+    
+    func addressFormDidSubmit(_ node: AddressFormNode) {
+        // todo: implement
+    }
+    
+    func suggestionsWidget(_ widget: SuggestionsWidget, didSelectSuggestion suggestion: String) {
+        formNode.streetAndHouseFormFieldNode.setValue(suggestion, notifyDelegate: false)
+        addressSuggestionsWidget.state = .closed
+        
+        if !suggestion.characters.contains(",") {
+            formNode.streetAndHouseFormFieldNode.setValue("\(suggestion), ")
+        }
     }
 }
 

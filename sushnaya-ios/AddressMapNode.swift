@@ -28,6 +28,16 @@ class AddressMapNode: ASCellNode {
     fileprivate let addressCallout = AddressMapCalloutNode()
     fileprivate var mapView: YMKMapView!
     
+    var isLocationButtonHidden: Bool {
+        get {
+            return locationButton.isHidden
+        }
+        
+        set {
+            locationButton.isHidden = newValue
+        }
+    }
+    
     var centerCoordinate: CLLocationCoordinate2D {
         let coordinate = mapView.centerCoordinate
         return CLLocationCoordinate2D(latitude: coordinate.latitude, longitude: coordinate.longitude)
@@ -45,15 +55,15 @@ class AddressMapNode: ASCellNode {
     
     weak var delegate: AddressMapDelegate?
     
-    override init() {
+    var locality: Locality
+    
+    init(locality: Locality) {
+        self.locality = locality
         super.init()
         
         self.automaticallyManagesSubnodes = true
         
-        self.locationButton.setAttributedTitle(locationArrowIconString, for: .normal)
-        self.locationButton.setTargetClosure {[unowned self] _ in
-            self.delegate?.addressMapDidTapLocationButton(self)
-        }
+        setupLocationButtonNode()
         
         self.addressCallout.backgroundColor = PaperColor.Gray200.withAlphaComponent(0.93)
         
@@ -68,11 +78,21 @@ class AddressMapNode: ASCellNode {
             
             CLLocationManager.promise().then { location -> () in
                 mapView.setCenter(location.coordinate, atZoomLevel: self.zoomLevel, animated: false)
+                
             }.catch { _ in
+                mapView.setCenter(locality.location.coordinate, atZoomLevel: self.zoomLevel, animated: false)
             }
             
             return mapView
         })
+    }
+    
+    private func setupLocationButtonNode() {
+        self.locationButton.setAttributedTitle(locationArrowIconString, for: .normal)
+        
+        self.locationButton.setTargetClosure {[unowned self] _ in
+            self.delegate?.addressMapDidTapLocationButton(self)
+        }
     }
     
     func setCenter(coordinate: CLLocationCoordinate2D, animated: Bool) {

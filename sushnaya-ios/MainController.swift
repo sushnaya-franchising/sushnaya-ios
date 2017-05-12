@@ -18,6 +18,16 @@ class MainController: ASTabBarController {
 
     private var cartVC: CartViewController!
     
+    private func addCartButtonViewAsynchronously(containerRect: CGRect) {
+        DispatchQueue.global().async {
+            let cartButtonNode = self.createCartButtonNode(containerRect: containerRect)
+            
+            DispatchQueue.main.async {
+                self.view.addSubview(cartButtonNode.view)
+            }
+        }
+    }
+    
     private func createCartButtonNode(containerRect: CGRect) -> CartButton {
         let button = CartButton()
         let layout = button.layoutThatFits(ASSizeRange(min: CGSize.zero, max: containerRect.size))
@@ -29,16 +39,6 @@ class MainController: ASTabBarController {
         button.addTarget(self, action: #selector(presentCartViewController), forControlEvents: .touchUpInside)
         
         return button
-    }
-
-    private func addCartButtonViewAsynchronously(containerRect: CGRect) {
-        DispatchQueue.global().async {
-            let cartButtonNode = self.createCartButtonNode(containerRect: containerRect)
-            
-            DispatchQueue.main.async {
-                self.view.addSubview(cartButtonNode.view)
-            }
-        }
     }
     
     func presentCartViewController() {
