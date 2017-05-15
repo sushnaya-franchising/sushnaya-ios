@@ -66,36 +66,13 @@ class Dadata {
         var result = [String]()
         
         for suggestionJson in suggestionsJsonArray {
-            if let suggestion = parseSuggestion(suggestionJson) {
+            if let suggestion = suggestionJson["value"] as? String {
                 result.append(suggestion)
             }
         }
         
         return result
     }
-    
-    private static func parseSuggestion(_ suggestionJson: Json) -> String? {
-        return suggestionJson["value"] as? String
-//        guard let suggestionData = suggestionJson["data"] as? Json else {
-//            return nil
-//        }
-//        
-//        guard let streetWithType = suggestionData["street_with_type"] as? String,
-//            let houseType = suggestionData["house_type"] as? String,
-//            let house = suggestionData["house"] as? String else {
-//            return nil
-//        }
-//        
-//        var suggestion = "\(streetWithType), \(houseType) \(house)"
-//        
-//        if let blockType = suggestionData["block_type"] as? String,
-//            let block = suggestionData["block"] as? String {
-//            suggestion = "\(suggestion) \(blockType) \(block)"
-//        }
-//        
-//        return suggestion
-    }
-    
     
     // todo: use Dadata custom session manager
     static func cancelAllRequests() -> Promise<()> {

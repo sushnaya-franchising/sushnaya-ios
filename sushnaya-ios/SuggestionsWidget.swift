@@ -12,7 +12,7 @@ import PromiseKit
 
 protocol SuggestionsProvider: class {
     func requestSuggestions(forQuery query: String) -> Promise<[String]?>
-    
+    @discardableResult
     func cancelAllRequests() -> Promise<()>
 }
 

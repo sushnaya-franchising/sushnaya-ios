@@ -21,8 +21,8 @@ class YandexGeocoderTest: XCTestCase {
         super.tearDown()
     }
     
-    func testExample() {
-        let exp = expectation(description: "Yandex reverse geocoding")
+    func testGeocodeByCoordinate() {
+        let exp = expectation(description: "Yandex reverse geocoding: geocode by coordinate")
     
         let coordinate = CLLocationCoordinate2D(latitude: 55.758, longitude: 37.611)
         YandexGeocoder.requestAddress(coordinate: coordinate).then { address -> () in
@@ -33,6 +33,22 @@ class YandexGeocoderTest: XCTestCase {
             exp.fulfill()
             
         }.catch{ _ in
+        }
+        
+        wait(for: [exp], timeout: 10)
+    }
+    
+    func testGeocodeByQuery() {
+        let exp = expectation(description: "Yandex reverse geocoding: geocode by query")
+        
+        YandexGeocoder.requestAddress(query: "ярославль зеленцовская 11").then { address -> () in
+            XCTAssertNotNil(address)
+            XCTAssertEqual(address!.countryCode, "RU")
+            XCTAssertEqual(address!.formatted, "Ярославль, Зеленцовская улица, 9")
+            
+            exp.fulfill()
+            
+            }.catch{ _ in
         }
         
         wait(for: [exp], timeout: 10)

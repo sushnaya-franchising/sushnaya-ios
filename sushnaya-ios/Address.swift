@@ -9,18 +9,11 @@
 import Foundation
 
 struct Address {
+    var locality: Locality
     var coordinate: CLLocationCoordinate2D
-    var countryCode: String
-    var formatted: String
-    var components: [AddressComponent]
-    var opengisName: String?
-    
-    var displayName: String {
-        return opengisName ?? formatted
-    }
-}
-
-struct AddressComponent {
-    var kind: String
-    var name: String
+    var streetAndHouse: String?
+    var apartment: String?
+    var entrance: String?
+    var floor: String?
+    var comment: String?
 }

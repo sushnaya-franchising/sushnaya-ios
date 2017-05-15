@@ -19,6 +19,8 @@ class UserSettings {
         }
     }
     
+    var addresses: [Address]?
+    
     init() {
         bindEventHandlers()
     }

@@ -8,6 +8,10 @@ import AsyncDisplayKit
 import PromiseKit
 import Alamofire
 
+protocol AddressViewControllerDelegate: class {
+    func addressViewController(_ vc: AddressViewController, didSubmitAddress address: Address)
+}
+
 class AddressViewController: ASViewController<ASDisplayNode> {
     
     fileprivate let navbarNode = AddressNavbarNode()
@@ -23,6 +27,14 @@ class AddressViewController: ASViewController<ASDisplayNode> {
     fileprivate var dadataSuggestionsProvider: DadataSuggestionsProvider!
     
     fileprivate var adjustSuggestionsWidgetFrame: (() -> ())?
+    
+    fileprivate var addressOnMap: Address?
+    
+    weak var delegate: AddressViewControllerDelegate?
+    
+    var locality: Locality {
+        return app.userSession.locality!
+    }
     
     convenience init() {
         self.init(node: ASDisplayNode())
@@ -42,11 +54,11 @@ class AddressViewController: ASViewController<ASDisplayNode> {
     private func setupNodes() {
         self.navbarNode.delegate = self
         
-        self.formNode = AddressFormNode(locality: app.userSession.locality!)
+        self.formNode = AddressFormNode(locality: locality)
         self.formNode.delegate = self
         
         self.addressSuggestionsWidget = SuggestionsWidget()
-        dadataSuggestionsProvider = DadataSuggestionsProvider(cityFiasId: app.userSession.locality!.fiasId)
+        dadataSuggestionsProvider = DadataSuggestionsProvider(cityFiasId: locality.fiasId)
         self.addressSuggestionsWidget.provider = dadataSuggestionsProvider
         self.addressSuggestionsWidget.delegate = self
         
@@ -62,10 +74,13 @@ class AddressViewController: ASViewController<ASDisplayNode> {
                 
                 self.mapNode!.setCenter(coordinate: address.coordinate, animated: true)
                 self.mapNode.addressCalloutState = .addressIsDefined(address.displayName)
+                self.addressOnMap = address.toAddress(locality: self.locality)
                 
             }.catch { error in
                 self.mapNode.addressCalloutState = .addressIsUndefined
             }
+        }.onCancel {
+            YandexGeocoder.cancelAllRequests()
         }
         
         self.pagerNode = ASPagerNode()
@@ -209,7 +224,29 @@ extension AddressViewController: AddressFormDelegate, SuggestionsWidgetDelegate 
     }
     
     func addressFormDidSubmit(_ node: AddressFormNode) {
-        // todo: implement
+        let streetAndHouse = node.streetAndHouseFormFieldNode.value!
+        // todo: show loading indicator
+        YandexGeocoder.requestAddress(query: "\(locality.name) \(streetAndHouse)").then { [unowned self] (yandexAddress) -> () in
+            guard let coordinate = yandexAddress?.coordinate else {
+                self.alert(title: "Неизвестный адрес", message: "Не удалось определить географические координаты адреса доставки. Попробуйте указать другой адрес.")
+                return
+            }
+            
+            let address = Address(locality: self.locality,
+                                  coordinate: coordinate,
+                                  streetAndHouse: streetAndHouse,
+                                  apartment: node.apartmentFormFieldNode.value,
+                                  entrance: node.entranceFormFieldNode.value,
+                                  floor: node.floorFormFieldNode.value,
+                                  comment: node.commentFormFieldNode.value)
+            
+            self.app.userSession.settings.addresses = [address] // todo: persists address and sync server
+            
+            self.delegate?.addressViewController(self, didSubmitAddress: address)
+                                    
+        }.catch { error in
+            self.alert(title: "Возникла ошибка", message: error.localizedDescription)
+        }
     }
     
     func suggestionsWidget(_ widget: SuggestionsWidget, didSelectSuggestion suggestion: String) {
@@ -256,8 +293,12 @@ extension AddressViewController: ASPagerDataSource, ASPagerDelegate {
     }
 }
 
-extension AddressViewController: AddressMapDelegate {
+extension AddressViewController: AddressMapDelegate { // todo: mapnode delegate submit button handler!
     func addressMapWasDragged(_ node: AddressMapNode) {
+        self.addressOnMap = Address(locality: locality, coordinate: node.centerCoordinate,
+                                    streetAndHouse: nil, apartment: nil, entrance: nil,
+                                    floor: nil, comment: nil)
+        
         node.addressCalloutState = .loading
         geocoding?.apply()
     }
@@ -274,6 +315,10 @@ extension AddressViewController: AddressMapDelegate {
     
     func addressMap(_ node: AddressMapNode, gotTapAndHoldAt coordinate: CLLocationCoordinate2D) {
         geocoding?.cancel()
+        
+        self.addressOnMap = Address(locality: locality, coordinate: node.centerCoordinate,
+                                    streetAndHouse: nil, apartment: nil, entrance: nil,
+                                    floor: nil, comment: nil)
         
         node.setCenter(coordinate: coordinate, animated: true)
         node.addressCalloutState = .forceDeliveryPoint
