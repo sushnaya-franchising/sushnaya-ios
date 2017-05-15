@@ -143,11 +143,7 @@ extension AddressMapNode: YMKMapViewDelegate {
         self.delegate?.addressMap(self, gotTapAndHoldAt: CLLocationCoordinate2D(latitude: coordinate.latitude, longitude: coordinate.longitude))
     }
     
-    func mapView(_ mapView: YMKMapView!, locationManagerDidReceiveError error: Error!) {
-        print(error)
-    }
-    
-    func mapViewWasDragged(_ mapView: YMKMapView!) {        
+    func mapViewWasDragged(_ mapView: YMKMapView!) {
         self.delegate?.addressMapWasDragged(self)
     }
 }

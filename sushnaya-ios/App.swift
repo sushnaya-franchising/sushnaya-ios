@@ -13,6 +13,7 @@ import SwiftWebSocket
 import PaperFold
 import FontAwesome_swift
 import PromiseKit
+import Alamofire
 
 @UIApplicationMain
 class App: UIResponder, UIApplicationDelegate {
@@ -30,8 +31,8 @@ class App: UIResponder, UIApplicationDelegate {
         
         registerEventHandlers()
 
-        YMKConfiguration.sharedInstance().apiKey = "eT8sMHf8HJ3h34nIeC5nzRCx2Ye6JOm9q-02lkLxX9BdERx9-itfjncZ2uWaI5~mdjMYweAA7FTHb44Z7VptmGlbzFKvVW3IZnM9TYBjjzg="
-
+        YMKConfiguration.sharedInstance().apiKey = "eT8sMHf8HJ3h34nIeC5nzRCx2Ye6JOm9q-02lkLxX9BdERx9-itfjncZ2uWaI5~mdjMYweAA7FTHb44Z7VptmGlbzFKvVW3IZnM9TYBjjzg="        
+        
 //         ASControlNode.setEnableHitTestDebug(true)
         
         return true

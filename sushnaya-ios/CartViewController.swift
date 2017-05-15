@@ -72,11 +72,19 @@ extension CartViewController: CartNodeDelegate {
     func cartNodeDidTouchUpInsideOrderWithDeliveryButton() {
         if addressVC == nil {
             addressVC = AddressViewController()
+            addressVC.delegate = self
             addressVC.transitioningDelegate = self
             addressVC.modalPresentationStyle = .custom
         }
 
         present(addressVC, animated: true, completion: nil)
+    }
+}
+
+extension CartViewController: AddressViewControllerDelegate {
+    func addressViewController(_ vc: AddressViewController, didSubmitAddress address: Address) {
+        addressVC.alert(title: "Адрес определен", message: address.streetAndHouse!)
+        // todo: present delivery form vc
     }
 }
 

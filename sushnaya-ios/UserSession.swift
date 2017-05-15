@@ -23,10 +23,10 @@ class UserSession: NSObject {
     }
 
     var locality: Locality? {
-        return userSettings.locality
+        return settings.locality
     }
     
-    let userSettings = UserSettings()
+    let settings = UserSettings()
 
     let cart = Cart()
     

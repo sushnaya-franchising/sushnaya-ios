@@ -35,6 +35,7 @@
 		2E6AF3041EB3A32C00254D3B /* AddressMapNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E6AF3031EB3A32C00254D3B /* AddressMapNode.swift */; };
 		2E6AF3061EB3A34000254D3B /* AddressFormNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E6AF3051EB3A34000254D3B /* AddressFormNode.swift */; };
 		2E6AF3081EB3AB5800254D3B /* AddressNavbarNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E6AF3071EB3AB5800254D3B /* AddressNavbarNode.swift */; };
+		2E7AE6FD1EC9AEAB00748C33 /* OrderWithDeliveryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E7AE6FC1EC9AEAB00748C33 /* OrderWithDeliveryViewController.swift */; };
 		2E7BCA681E7B087500B6FEE6 /* intro_video.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 2E7BCA671E7B087500B6FEE6 /* intro_video.mp4 */; };
 		2E80ACEA1E8FAC9B00D0DBCF /* DefaultCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E80ACE91E8FAC9B00D0DBCF /* DefaultCellNode.swift */; };
 		2E9147011EB32DFC00E0D312 /* SegmentedControlNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9147001EB32DFC00E0D312 /* SegmentedControlNode.swift */; };
@@ -153,6 +154,7 @@
 		2E6AF3031EB3A32C00254D3B /* AddressMapNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddressMapNode.swift; sourceTree = "<group>"; };
 		2E6AF3051EB3A34000254D3B /* AddressFormNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddressFormNode.swift; sourceTree = "<group>"; };
 		2E6AF3071EB3AB5800254D3B /* AddressNavbarNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddressNavbarNode.swift; sourceTree = "<group>"; };
+		2E7AE6FC1EC9AEAB00748C33 /* OrderWithDeliveryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderWithDeliveryViewController.swift; sourceTree = "<group>"; };
 		2E7BCA671E7B087500B6FEE6 /* intro_video.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = intro_video.mp4; sourceTree = "<group>"; };
 		2E80ACE91E8FAC9B00D0DBCF /* DefaultCellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultCellNode.swift; sourceTree = "<group>"; };
 		2E9147001EB32DFC00E0D312 /* SegmentedControlNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SegmentedControlNode.swift; sourceTree = "<group>"; };
@@ -356,6 +358,7 @@
 		2E3F729E1E846D4000EAE05C /* App */ = {
 			isa = PBXGroup;
 			children = (
+				2E7AE6FB1EC9AE8F00748C33 /* Order */,
 				2E926E021E8E540000070538 /* HomeViewController.swift */,
 				2E926E031E8E540000070538 /* SettingsViewController.swift */,
 				2E926E041E8E540000070538 /* LocalitiesViewController.swift */,
@@ -426,6 +429,21 @@
 			name = Util;
 			sourceTree = "<group>";
 		};
+		2E7AE6FA1EC9AE5700748C33 /* Order */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Order;
+			sourceTree = "<group>";
+		};
+		2E7AE6FB1EC9AE8F00748C33 /* Order */ = {
+			isa = PBXGroup;
+			children = (
+				2E7AE6FC1EC9AEAB00748C33 /* OrderWithDeliveryViewController.swift */,
+			);
+			name = Order;
+			sourceTree = "<group>";
+		};
 		2E7BCA631E7AC4F000B6FEE6 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
@@ -484,6 +502,7 @@
 		2E926E211E8E547400070538 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				2E7AE6FA1EC9AE5700748C33 /* Order */,
 				2E6AF3021EB3A30500254D3B /* Address */,
 				2E2FF11C1EA122C7006B9321 /* Locality */,
 				2E2FF11B1EA122AA006B9321 /* Home */,
@@ -832,6 +851,7 @@
 				2ED4C7041EB4B3F000374132 /* Address.swift in Sources */,
 				2ED4C70E1EBE2BC800374132 /* Dadata.swift in Sources */,
 				2E926DF31E8E53E100070538 /* OpeningConnectionAPIChatEvent.swift in Sources */,
+				2E7AE6FD1EC9AEAB00748C33 /* OrderWithDeliveryViewController.swift in Sources */,
 				2E926E2E1E8E54E800070538 /* LocalitiesNode.swift in Sources */,
 				2E926E181E8E546000070538 /* ButtonNode.swift in Sources */,
 				2E926E1D1E8E546A00070538 /* SignInNode.swift in Sources */,

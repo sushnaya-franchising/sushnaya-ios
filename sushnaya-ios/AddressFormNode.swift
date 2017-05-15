@@ -40,10 +40,10 @@ class AddressFormNode: ASCellNode {
     }()
     
     let streetAndHouseFormFieldNode = FormFieldNode(label: "Улица, дом", isRequired: true)
-    fileprivate let apartmentNumberFormFieldNode = FormFieldNode(label: "Квартира/Офис")
-    fileprivate let entranceFormFieldNode = FormFieldNode(label: "Подъезд")
-    fileprivate let floorFormFieldNode = FormFieldNode(label: "Этаж", maxValueLength: 16)
-    fileprivate let commentFormFieldNode = FormFieldNode(label: "Комментарий")
+    let apartmentFormFieldNode = FormFieldNode(label: "Квартира/Офис")
+    let entranceFormFieldNode = FormFieldNode(label: "Подъезд")
+    let floorFormFieldNode = FormFieldNode(label: "Этаж", maxValueLength: 16)
+    let commentFormFieldNode = FormFieldNode(label: "Комментарий")
     
     fileprivate let submitButton = ASButtonNode()        
     
@@ -123,7 +123,7 @@ class AddressFormNode: ASCellNode {
             self.delegate?.addressFormDidFinishEditing(self, streetAndHouseFormFieldNode: self.streetAndHouseFormFieldNode)
         }
         streetAndHouseFormFieldNode.onReturn = { [unowned self] in
-            self.apartmentNumberFormFieldNode.becomeFirstResponder()
+            self.apartmentFormFieldNode.becomeFirstResponder()
         }
         streetAndHouseFormFieldNode.didLayout = { [unowned self] in
             self.delegate?.addressFormDidLayout(self, streetAndHouseFormFieldNode: self.streetAndHouseFormFieldNode)
@@ -131,7 +131,7 @@ class AddressFormNode: ASCellNode {
     }        
     
     private func setupApartmentNumberFormFieldNode() {
-        apartmentNumberFormFieldNode.onReturn = { [unowned self] in
+        apartmentFormFieldNode.onReturn = { [unowned self] in
             self.entranceFormFieldNode.becomeFirstResponder()
         }
     }
@@ -171,6 +171,9 @@ class AddressFormNode: ASCellNode {
                 return
             }
             
+            // request yandex geocoder to detect delivery coordinate
+            // show button loader while request is being processed
+            
             self.delegate?.addressFormDidSubmit(self)
         }
     }
@@ -184,7 +187,7 @@ class AddressFormNode: ASCellNode {
             rows.append(self.localityLayoutThatFits(constrainedSize))
             rows.append(ASInsetLayoutSpec(insets: UIEdgeInsetsMake(0, 22, 0, 16), child: self.streetAndHouseFormFieldNode))
             
-            rows.append(ASInsetLayoutSpec(insets: UIEdgeInsetsMake(0, 22, 0, 16), child: self.apartmentNumberFormFieldNode))
+            rows.append(ASInsetLayoutSpec(insets: UIEdgeInsetsMake(0, 22, 0, 16), child: self.apartmentFormFieldNode))
             rows.append(ASInsetLayoutSpec(insets: UIEdgeInsetsMake(0, 22, 0, 16), child: self.entranceFormFieldNode))
             rows.append(ASInsetLayoutSpec(insets: UIEdgeInsetsMake(0, 22, 0, 16), child: self.floorFormFieldNode))
             rows.append(ASInsetLayoutSpec(insets: UIEdgeInsetsMake(0, 22, 0, 16), child: self.commentFormFieldNode))
