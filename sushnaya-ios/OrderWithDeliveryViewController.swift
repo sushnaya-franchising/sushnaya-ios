@@ -12,6 +12,8 @@ import pop
 
 class OrderWithDeliveryViewController: ASViewController<ASDisplayNode> {
     
+    fileprivate let navbarNode = OrderNavbarNode()
+    
     fileprivate var tapRecognizer: UITapGestureRecognizer!
     
     convenience init() {
@@ -27,10 +29,21 @@ class OrderWithDeliveryViewController: ASViewController<ASDisplayNode> {
     }
     
     private func setupNodes() {
+        self.navbarNode.delegate = self
         
+        self.node.layoutSpecBlock = { [unowned self] _ in
+            return ASWrapperLayoutSpec(layoutElement: self.navbarNode)
+        }
     }
     
     func handleSingleTap(recognizer: UITapGestureRecognizer) {        
+        self.view.endEditing(true)
+    }
+}
+
+extension OrderWithDeliveryViewController: OrderNavbarDelegate {
+    func orderNavbarDidTapBackButton(node: OrderNavbarNode) {
+        self.dismiss(animated: true, completion: nil)
         self.view.endEditing(true)
     }
 }

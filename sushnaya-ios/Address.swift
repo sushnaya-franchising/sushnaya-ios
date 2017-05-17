@@ -16,4 +16,16 @@ struct Address {
     var entrance: String?
     var floor: String?
     var comment: String?
+    
+    init(locality: Locality, coordinate: CLLocationCoordinate2D,
+         streetAndHouse: String? = nil, apartment: String? = nil,
+         entrance: String? = nil, floor: String? = nil, comment: String? = nil) {
+        self.locality = locality
+        self.coordinate = coordinate
+        self.streetAndHouse = streetAndHouse
+        self.apartment = apartment
+        self.entrance = entrance
+        self.floor = floor
+        self.comment = comment
+    }
 }

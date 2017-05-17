@@ -99,6 +99,7 @@
 		2E9A77D21E97AE560042BBE9 /* CartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9A77D11E97AE550042BBE9 /* CartViewController.swift */; };
 		2EB2992C1E98E2E400189D4B /* CartPresentingAnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EB2992B1E98E2E400189D4B /* CartPresentingAnimationController.swift */; };
 		2EB2992E1E98E2F400189D4B /* CartDismissingAnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EB2992D1E98E2F400189D4B /* CartDismissingAnimationController.swift */; };
+		2ECB50771ECC7A4500AF1204 /* OrderNavbarNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ECB50761ECC7A4500AF1204 /* OrderNavbarNode.swift */; };
 		2ED4C7001EB4978B00374132 /* YandexGeocoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED4C6FF1EB4978B00374132 /* YandexGeocoder.swift */; };
 		2ED4C7021EB4989B00374132 /* YandexGeocoderTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED4C7011EB4989B00374132 /* YandexGeocoderTest.swift */; };
 		2ED4C7041EB4B3F000374132 /* Address.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED4C7031EB4B3F000374132 /* Address.swift */; };
@@ -222,6 +223,7 @@
 		2E9A77D11E97AE550042BBE9 /* CartViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CartViewController.swift; sourceTree = "<group>"; };
 		2EB2992B1E98E2E400189D4B /* CartPresentingAnimationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CartPresentingAnimationController.swift; sourceTree = "<group>"; };
 		2EB2992D1E98E2F400189D4B /* CartDismissingAnimationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CartDismissingAnimationController.swift; sourceTree = "<group>"; };
+		2ECB50761ECC7A4500AF1204 /* OrderNavbarNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderNavbarNode.swift; sourceTree = "<group>"; };
 		2ED4C6FF1EB4978B00374132 /* YandexGeocoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YandexGeocoder.swift; sourceTree = "<group>"; };
 		2ED4C7011EB4989B00374132 /* YandexGeocoderTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YandexGeocoderTest.swift; sourceTree = "<group>"; };
 		2ED4C7031EB4B3F000374132 /* Address.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Address.swift; sourceTree = "<group>"; };
@@ -432,6 +434,7 @@
 		2E7AE6FA1EC9AE5700748C33 /* Order */ = {
 			isa = PBXGroup;
 			children = (
+				2ECB50761ECC7A4500AF1204 /* OrderNavbarNode.swift */,
 			);
 			name = Order;
 			sourceTree = "<group>";
@@ -820,6 +823,7 @@
 				2E2FF1281EA65963006B9321 /* AddToCartEvent.swift in Sources */,
 				2E926DF81E8E53E100070538 /* AskMenuEvent.swift in Sources */,
 				2E926E071E8E540000070538 /* HomeViewController.swift in Sources */,
+				2ECB50771ECC7A4500AF1204 /* OrderNavbarNode.swift in Sources */,
 				2E2FF1221EA391AE006B9321 /* CartToolbarNode.swift in Sources */,
 				2E926E4A1E8E551600070538 /* NSAttributedStringExt.swift in Sources */,
 				2E48F27D1E99660E00DCBBC6 /* Geometry.swift in Sources */,

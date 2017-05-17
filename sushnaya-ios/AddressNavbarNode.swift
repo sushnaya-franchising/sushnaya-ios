@@ -10,7 +10,7 @@ import Foundation
 import AsyncDisplayKit
 
 protocol AddressNavbarDelegate: class {
-    func addressNavbarDidTapCloseButton(node: AddressNavbarNode)
+    func addressNavbarDidTapBackButton(node: AddressNavbarNode)
     
     func addressNavbarDidTapMapButton(node: AddressNavbarNode)
     
@@ -23,7 +23,7 @@ class AddressNavbarNode: ASDisplayNode {
     fileprivate let keyboardIconString = NSAttributedString(string: String.fontAwesomeIcon(name: .keyboardO), attributes: [NSFontAttributeName: UIFont.fontAwesome(ofSize: 17), NSForegroundColorAttributeName: PaperColor.Gray800])
     
     fileprivate let segmentedControl = SegmentedControlNode()
-    fileprivate let closeButton = ASButtonNode()        
+    fileprivate let backButton = ASButtonNode()        
     
     var isSegmentedControlHidden: Bool {
         get {
@@ -56,14 +56,14 @@ class AddressNavbarNode: ASDisplayNode {
     }
     
     private func setupNodes() {
-        setupCloseButtonNode()
+        setupBackButtonNode()
         setupSegmentedControlNode()
     }        
     
-    private func setupCloseButtonNode() {
-        closeButton.setAttributedTitle(chevronUpIconString, for: .normal)
-        closeButton.setTargetClosure { [unowned self] _ in
-            self.delegate?.addressNavbarDidTapCloseButton(node: self)
+    private func setupBackButtonNode() {
+        backButton.setAttributedTitle(chevronUpIconString, for: .normal)
+        backButton.setTargetClosure { [unowned self] _ in
+            self.delegate?.addressNavbarDidTapBackButton(node: self)
         }
     }
     
@@ -99,13 +99,13 @@ class AddressNavbarNode: ASDisplayNode {
     }
     
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        closeButton.hitTestSlop = UIEdgeInsets(top: -22, left: -22, bottom: -22, right: -22)
-        closeButton.style.preferredSize = CGSize(width: 44, height: 44)
-        let closeButtonLayout = ASInsetLayoutSpec(insets: UIEdgeInsetsMake(24, 16, 0, 0), child: closeButton)
+        backButton.hitTestSlop = UIEdgeInsets(top: -22, left: -22, bottom: -22, right: -22)
+        backButton.style.preferredSize = CGSize(width: 44, height: 44)
+        let backButtonLayout = ASInsetLayoutSpec(insets: UIEdgeInsetsMake(24, 16, 0, 0), child: backButton)
         
-        let closeButtonRow = ASStackLayoutSpec.horizontal()
-        closeButtonRow.alignItems = .start
-        closeButtonRow.children = [closeButtonLayout]
+        let backButtonRow = ASStackLayoutSpec.horizontal()
+        backButtonRow.alignItems = .start
+        backButtonRow.children = [backButtonLayout]
         
         segmentedControl.style.maxHeight = ASDimension(unit: .points, value: 44)
         let segmentedControlLayout = ASInsetLayoutSpec(insets: UIEdgeInsetsMake(24, 0, 0, 0), child: segmentedControl)
@@ -115,7 +115,7 @@ class AddressNavbarNode: ASDisplayNode {
         segmentedControlRow.justifyContent = .center
         segmentedControlRow.children = [segmentedControlLayout]
         
-        return ASOverlayLayoutSpec(child: closeButtonRow, overlay: segmentedControlRow)
+        return ASOverlayLayoutSpec(child: backButtonRow, overlay: segmentedControlRow)
     }
 }
 

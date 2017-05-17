@@ -28,7 +28,7 @@ class AddressViewController: ASViewController<ASDisplayNode> {
     
     fileprivate var adjustSuggestionsWidgetFrame: (() -> ())?
     
-    fileprivate var addressOnMap: Address?
+    fileprivate var addressOnMap: Address!
     
     weak var delegate: AddressViewControllerDelegate?
     
@@ -62,22 +62,24 @@ class AddressViewController: ASViewController<ASDisplayNode> {
         self.addressSuggestionsWidget.provider = dadataSuggestionsProvider
         self.addressSuggestionsWidget.delegate = self
         
-        self.mapNode = AddressMapNode(locality: app.userSession.locality!)
+        self.mapNode = AddressMapNode(locality: locality)
+        self.addressOnMap = Address(locality: locality, coordinate: locality.location.coordinate)
         self.mapNode?.delegate = self
+        self.mapNode?.addressCallout.delegate = self
         
         self.geocoding = debounce (delay: 0.1) { [unowned self] in
             YandexGeocoder.requestAddress(coordinate: self.mapNode!.centerCoordinate).then { address -> () in
                 guard let address = address else {
-                    self.mapNode.addressCalloutState = .addressIsUndefined
+                    self.mapNode.addressCallout.state = .addressIsUndefined
                     return
                 }
                 
                 self.mapNode!.setCenter(coordinate: address.coordinate, animated: true)
-                self.mapNode.addressCalloutState = .addressIsDefined(address.displayName)
+                self.mapNode.addressCallout.state = .addressIsDefined(address.displayName)
                 self.addressOnMap = address.toAddress(locality: self.locality)
                 
             }.catch { error in
-                self.mapNode.addressCalloutState = .addressIsUndefined
+                self.mapNode.addressCallout.state = .addressIsUndefined
             }
         }.onCancel {
             YandexGeocoder.cancelAllRequests()
@@ -239,9 +241,7 @@ extension AddressViewController: AddressFormDelegate, SuggestionsWidgetDelegate 
                                   entrance: node.entranceFormFieldNode.value,
                                   floor: node.floorFormFieldNode.value,
                                   comment: node.commentFormFieldNode.value)
-            
-            self.app.userSession.settings.addresses = [address] // todo: persists address and sync server
-            
+                        
             self.delegate?.addressViewController(self, didSubmitAddress: address)
                                     
         }.catch { error in
@@ -260,7 +260,7 @@ extension AddressViewController: AddressFormDelegate, SuggestionsWidgetDelegate 
 }
 
 extension AddressViewController: AddressNavbarDelegate {
-    func addressNavbarDidTapCloseButton(node: AddressNavbarNode) {
+    func addressNavbarDidTapBackButton(node: AddressNavbarNode) {
         self.dismiss(animated: true, completion: nil)
         self.view.endEditing(true)
     }
@@ -293,13 +293,10 @@ extension AddressViewController: ASPagerDataSource, ASPagerDelegate {
     }
 }
 
-extension AddressViewController: AddressMapDelegate { // todo: mapnode delegate submit button handler!
+extension AddressViewController: AddressMapDelegate, AddressMapCalloutDelegate { // todo: mapnode delegate submit button handler!
     func addressMapWasDragged(_ node: AddressMapNode) {
-        self.addressOnMap = Address(locality: locality, coordinate: node.centerCoordinate,
-                                    streetAndHouse: nil, apartment: nil, entrance: nil,
-                                    floor: nil, comment: nil)
-        
-        node.addressCalloutState = .loading
+        self.addressOnMap = Address(locality: locality, coordinate: node.centerCoordinate)
+        node.addressCallout.state = .loading
         geocoding?.apply()
     }
     
@@ -316,11 +313,13 @@ extension AddressViewController: AddressMapDelegate { // todo: mapnode delegate 
     func addressMap(_ node: AddressMapNode, gotTapAndHoldAt coordinate: CLLocationCoordinate2D) {
         geocoding?.cancel()
         
-        self.addressOnMap = Address(locality: locality, coordinate: node.centerCoordinate,
-                                    streetAndHouse: nil, apartment: nil, entrance: nil,
-                                    floor: nil, comment: nil)
+        self.addressOnMap = Address(locality: locality, coordinate: node.centerCoordinate)
         
         node.setCenter(coordinate: coordinate, animated: true)
-        node.addressCalloutState = .forceDeliveryPoint
+        node.addressCallout.state = .forceDeliveryPoint
+    }
+    
+    func addressMapCalloutDidSubmit(_ node: AddressMapCalloutNode) {
+        self.delegate?.addressViewController(self, didSubmitAddress: addressOnMap!)
     }
 }
