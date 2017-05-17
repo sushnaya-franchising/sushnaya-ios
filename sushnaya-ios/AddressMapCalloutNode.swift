@@ -37,6 +37,10 @@ public func ==(lhs: AddressMapCalloutState, rhs: AddressMapCalloutState) -> Bool
     }
 }
 
+protocol AddressMapCalloutDelegate: class {
+    func addressMapCalloutDidSubmit(_ node: AddressMapCalloutNode)
+}
+
 class AddressMapCalloutNode: ASDisplayNode {
     
     fileprivate let addressDetermining = "Определение адреса ..."
@@ -49,6 +53,8 @@ class AddressMapCalloutNode: ASDisplayNode {
     fileprivate let submitButtonNode = ASButtonNode()
     fileprivate let separator = ASDisplayNode()
     fileprivate var activityIndicatorNode: ASDisplayNode?
+    
+    weak var delegate: AddressMapCalloutDelegate?
     
     var state: AddressMapCalloutState = .loading {
         didSet {
@@ -109,6 +115,9 @@ class AddressMapCalloutNode: ASDisplayNode {
         submitButtonNode.setAttributedTitle(NSAttributedString.attributedString(string: "Да", fontSize: 14, color: PaperColor.Gray800.withAlphaComponent(0.5)), for: .disabled)
         submitButtonNode.isEnabled = state != .loading
         submitButtonNode.isHidden = state == .outOfDeliveryZone
+        submitButtonNode.setTargetClosure { [unowned self] _ in
+            self.delegate?.addressMapCalloutDidSubmit(self)
+        }
     }
     
     override func setNeedsLayout() {

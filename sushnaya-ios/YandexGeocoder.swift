@@ -29,9 +29,7 @@ struct YandexAddressComponent {
  
 extension YandexAddress {
     func toAddress(locality: Locality) -> Address {
-        return Address(locality: locality, coordinate: self.coordinate,
-                       streetAndHouse: self.displayName, apartment: nil,
-                       entrance: nil, floor: nil, comment: nil)
+        return Address(locality: locality, coordinate: self.coordinate, streetAndHouse: self.displayName)
     }
 }
  

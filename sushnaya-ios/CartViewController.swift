@@ -13,6 +13,7 @@ class CartViewController: ASViewController<ASDisplayNode> {
     
     fileprivate var cartNode: CartNode!
     fileprivate var addressVC: AddressViewController!
+    fileprivate var orderWithDeliveryVC: OrderWithDeliveryViewController!
     
     var cart: Cart {
         return app.userSession.cart
@@ -77,14 +78,21 @@ extension CartViewController: CartNodeDelegate {
             addressVC.modalPresentationStyle = .custom
         }
 
-        present(addressVC, animated: true, completion: nil)
+        show(addressVC, sender: self)
     }
 }
 
 extension CartViewController: AddressViewControllerDelegate {
     func addressViewController(_ vc: AddressViewController, didSubmitAddress address: Address) {
-        addressVC.alert(title: "Адрес определен", message: address.streetAndHouse!)
-        // todo: present delivery form vc
+        self.app.userSession.settings.addresses = [address] // todo: persists address and sync server
+        
+        if orderWithDeliveryVC == nil {
+            orderWithDeliveryVC = OrderWithDeliveryViewController()
+            orderWithDeliveryVC.transitioningDelegate = self
+            orderWithDeliveryVC.modalPresentationStyle = .custom
+        }
+        
+        show(orderWithDeliveryVC, sender: self)
     }
 }
 

@@ -25,7 +25,7 @@ class AddressMapNode: ASCellNode {
     fileprivate var mapNode: ASDisplayNode!
     fileprivate let locationButton = ASButtonNode()
     fileprivate let mapMarker = ASTextNode()
-    fileprivate let addressCallout = AddressMapCalloutNode()
+    let addressCallout = AddressMapCalloutNode()
     fileprivate var mapView: YMKMapView!
     
     var isLocationButtonHidden: Bool {
@@ -41,16 +41,6 @@ class AddressMapNode: ASCellNode {
     var centerCoordinate: CLLocationCoordinate2D {
         let coordinate = mapView.centerCoordinate
         return CLLocationCoordinate2D(latitude: coordinate.latitude, longitude: coordinate.longitude)
-    }
-    
-    var addressCalloutState: AddressMapCalloutState {
-        set {
-            addressCallout.state = newValue
-        }
-        
-        get {
-            return addressCallout.state
-        }
     }
     
     weak var delegate: AddressMapDelegate?
