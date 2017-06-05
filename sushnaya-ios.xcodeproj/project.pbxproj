@@ -12,9 +12,9 @@
 		19BB4529FE30768E8B28DCAF /* Price.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19BB450AEB4CA2BA6CF573BC /* Price.swift */; };
 		19BB485CFD3BF7ECAE14EC5E /* OneColumnLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19BB4E7419EC6262ACB49B2B /* OneColumnLayout.swift */; };
 		19BB488254FA94D583D1E0FD /* AddressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19BB4E425A2EEEA1D5597843 /* AddressViewController.swift */; };
-		19BB48C66E49E8F52632787E /* AddressDismissingAnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19BB4C01C949D75F48EF82CE /* AddressDismissingAnimationController.swift */; };
+		19BB48C66E49E8F52632787E /* OrderDismissingAnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19BB4C01C949D75F48EF82CE /* OrderDismissingAnimationController.swift */; };
 		19BB4D0FBB206525B2AE5C2F /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19BB4EDE411E92ABDA1E1EDC /* UserSettings.swift */; };
-		19BB4E02540F209DC3D1930F /* AddressPresentingAnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19BB42DE297AD21F7ED15B94 /* AddressPresentingAnimationController.swift */; };
+		19BB4E02540F209DC3D1930F /* OrderPresentingAnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19BB42DE297AD21F7ED15B94 /* OrderPresentingAnimationController.swift */; };
 		1D6565BCCCEE9612FD7CFA21 /* Pods_sushnaya_ios_tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7364172E21650F8281B034E /* Pods_sushnaya_ios_tests.framework */; };
 		2E2FF1141E9F8E03006B9321 /* CartNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2FF1131E9F8E03006B9321 /* CartNode.swift */; };
 		2E2FF1161E9FD0C1006B9321 /* CartContentNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2FF1151E9FD0C1006B9321 /* CartContentNode.swift */; };
@@ -35,7 +35,7 @@
 		2E6AF3041EB3A32C00254D3B /* AddressMapNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E6AF3031EB3A32C00254D3B /* AddressMapNode.swift */; };
 		2E6AF3061EB3A34000254D3B /* AddressFormNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E6AF3051EB3A34000254D3B /* AddressFormNode.swift */; };
 		2E6AF3081EB3AB5800254D3B /* AddressNavbarNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E6AF3071EB3AB5800254D3B /* AddressNavbarNode.swift */; };
-		2E7AE6FD1EC9AEAB00748C33 /* OrderWithDeliveryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E7AE6FC1EC9AEAB00748C33 /* OrderWithDeliveryViewController.swift */; };
+		2E7AE6FD1EC9AEAB00748C33 /* OrderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E7AE6FC1EC9AEAB00748C33 /* OrderViewController.swift */; };
 		2E7BCA681E7B087500B6FEE6 /* intro_video.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 2E7BCA671E7B087500B6FEE6 /* intro_video.mp4 */; };
 		2E80ACEA1E8FAC9B00D0DBCF /* DefaultCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E80ACE91E8FAC9B00D0DBCF /* DefaultCellNode.swift */; };
 		2E9147011EB32DFC00E0D312 /* SegmentedControlNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9147001EB32DFC00E0D312 /* SegmentedControlNode.swift */; };
@@ -100,6 +100,11 @@
 		2EB2992C1E98E2E400189D4B /* CartPresentingAnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EB2992B1E98E2E400189D4B /* CartPresentingAnimationController.swift */; };
 		2EB2992E1E98E2F400189D4B /* CartDismissingAnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EB2992D1E98E2F400189D4B /* CartDismissingAnimationController.swift */; };
 		2ECB50771ECC7A4500AF1204 /* OrderNavbarNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ECB50761ECC7A4500AF1204 /* OrderNavbarNode.swift */; };
+		2ECB50791ECCA20F00AF1204 /* OrderWithDeliveryFormNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ECB50781ECCA20F00AF1204 /* OrderWithDeliveryFormNode.swift */; };
+		2ECB507B1ECCE72400AF1204 /* OrderFormAddressSectionNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ECB507A1ECCE72400AF1204 /* OrderFormAddressSectionNode.swift */; };
+		2ECB507D1ECCE8B400AF1204 /* OrderFormPaymentSectionNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ECB507C1ECCE8B400AF1204 /* OrderFormPaymentSectionNode.swift */; };
+		2ECB507F1ECCE91500AF1204 /* OrderFormOptionalSectionNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ECB507E1ECCE91500AF1204 /* OrderFormOptionalSectionNode.swift */; };
+		2ECB50821ECDAF7000AF1204 /* OrderFormSummarySectionNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ECB50811ECDAF7000AF1204 /* OrderFormSummarySectionNode.swift */; };
 		2ED4C7001EB4978B00374132 /* YandexGeocoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED4C6FF1EB4978B00374132 /* YandexGeocoder.swift */; };
 		2ED4C7021EB4989B00374132 /* YandexGeocoderTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED4C7011EB4989B00374132 /* YandexGeocoderTest.swift */; };
 		2ED4C7041EB4B3F000374132 /* Address.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED4C7031EB4B3F000374132 /* Address.swift */; };
@@ -125,11 +130,11 @@
 
 /* Begin PBXFileReference section */
 		18CA98D1845D2B1E27697A15 /* Pods-sushnaya-ios-tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sushnaya-ios-tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-sushnaya-ios-tests/Pods-sushnaya-ios-tests.debug.xcconfig"; sourceTree = "<group>"; };
-		19BB42DE297AD21F7ED15B94 /* AddressPresentingAnimationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddressPresentingAnimationController.swift; sourceTree = "<group>"; };
+		19BB42DE297AD21F7ED15B94 /* OrderPresentingAnimationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderPresentingAnimationController.swift; sourceTree = "<group>"; };
 		19BB450AEB4CA2BA6CF573BC /* Price.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Price.swift; sourceTree = "<group>"; };
 		19BB48AFDFEC94CCC6894936 /* ProductCellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductCellNode.swift; sourceTree = "<group>"; };
 		19BB4BC0CF6F2C3200B99AEE /* MainController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainController.swift; sourceTree = "<group>"; };
-		19BB4C01C949D75F48EF82CE /* AddressDismissingAnimationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddressDismissingAnimationController.swift; sourceTree = "<group>"; };
+		19BB4C01C949D75F48EF82CE /* OrderDismissingAnimationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderDismissingAnimationController.swift; sourceTree = "<group>"; };
 		19BB4E425A2EEEA1D5597843 /* AddressViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddressViewController.swift; sourceTree = "<group>"; };
 		19BB4E7419EC6262ACB49B2B /* OneColumnLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OneColumnLayout.swift; sourceTree = "<group>"; };
 		19BB4EDE411E92ABDA1E1EDC /* UserSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserSettings.swift; sourceTree = "<group>"; };
@@ -155,7 +160,7 @@
 		2E6AF3031EB3A32C00254D3B /* AddressMapNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddressMapNode.swift; sourceTree = "<group>"; };
 		2E6AF3051EB3A34000254D3B /* AddressFormNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddressFormNode.swift; sourceTree = "<group>"; };
 		2E6AF3071EB3AB5800254D3B /* AddressNavbarNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddressNavbarNode.swift; sourceTree = "<group>"; };
-		2E7AE6FC1EC9AEAB00748C33 /* OrderWithDeliveryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderWithDeliveryViewController.swift; sourceTree = "<group>"; };
+		2E7AE6FC1EC9AEAB00748C33 /* OrderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderViewController.swift; sourceTree = "<group>"; };
 		2E7BCA671E7B087500B6FEE6 /* intro_video.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = intro_video.mp4; sourceTree = "<group>"; };
 		2E80ACE91E8FAC9B00D0DBCF /* DefaultCellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultCellNode.swift; sourceTree = "<group>"; };
 		2E9147001EB32DFC00E0D312 /* SegmentedControlNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SegmentedControlNode.swift; sourceTree = "<group>"; };
@@ -224,6 +229,11 @@
 		2EB2992B1E98E2E400189D4B /* CartPresentingAnimationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CartPresentingAnimationController.swift; sourceTree = "<group>"; };
 		2EB2992D1E98E2F400189D4B /* CartDismissingAnimationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CartDismissingAnimationController.swift; sourceTree = "<group>"; };
 		2ECB50761ECC7A4500AF1204 /* OrderNavbarNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderNavbarNode.swift; sourceTree = "<group>"; };
+		2ECB50781ECCA20F00AF1204 /* OrderWithDeliveryFormNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderWithDeliveryFormNode.swift; sourceTree = "<group>"; };
+		2ECB507A1ECCE72400AF1204 /* OrderFormAddressSectionNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderFormAddressSectionNode.swift; sourceTree = "<group>"; };
+		2ECB507C1ECCE8B400AF1204 /* OrderFormPaymentSectionNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderFormPaymentSectionNode.swift; sourceTree = "<group>"; };
+		2ECB507E1ECCE91500AF1204 /* OrderFormOptionalSectionNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderFormOptionalSectionNode.swift; sourceTree = "<group>"; };
+		2ECB50811ECDAF7000AF1204 /* OrderFormSummarySectionNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderFormSummarySectionNode.swift; sourceTree = "<group>"; };
 		2ED4C6FF1EB4978B00374132 /* YandexGeocoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YandexGeocoder.swift; sourceTree = "<group>"; };
 		2ED4C7011EB4989B00374132 /* YandexGeocoderTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YandexGeocoderTest.swift; sourceTree = "<group>"; };
 		2ED4C7031EB4B3F000374132 /* Address.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Address.swift; sourceTree = "<group>"; };
@@ -264,8 +274,6 @@
 			isa = PBXGroup;
 			children = (
 				19BB4E425A2EEEA1D5597843 /* AddressViewController.swift */,
-				19BB42DE297AD21F7ED15B94 /* AddressPresentingAnimationController.swift */,
-				19BB4C01C949D75F48EF82CE /* AddressDismissingAnimationController.swift */,
 			);
 			name = Address;
 			sourceTree = "<group>";
@@ -360,7 +368,7 @@
 		2E3F729E1E846D4000EAE05C /* App */ = {
 			isa = PBXGroup;
 			children = (
-				2E7AE6FB1EC9AE8F00748C33 /* Order */,
+				2ECB50801ECCEEAD00AF1204 /* Order */,
 				2E926E021E8E540000070538 /* HomeViewController.swift */,
 				2E926E031E8E540000070538 /* SettingsViewController.swift */,
 				2E926E041E8E540000070538 /* LocalitiesViewController.swift */,
@@ -435,14 +443,11 @@
 			isa = PBXGroup;
 			children = (
 				2ECB50761ECC7A4500AF1204 /* OrderNavbarNode.swift */,
-			);
-			name = Order;
-			sourceTree = "<group>";
-		};
-		2E7AE6FB1EC9AE8F00748C33 /* Order */ = {
-			isa = PBXGroup;
-			children = (
-				2E7AE6FC1EC9AEAB00748C33 /* OrderWithDeliveryViewController.swift */,
+				2ECB50781ECCA20F00AF1204 /* OrderWithDeliveryFormNode.swift */,
+				2ECB507A1ECCE72400AF1204 /* OrderFormAddressSectionNode.swift */,
+				2ECB507C1ECCE8B400AF1204 /* OrderFormPaymentSectionNode.swift */,
+				2ECB507E1ECCE91500AF1204 /* OrderFormOptionalSectionNode.swift */,
+				2ECB50811ECDAF7000AF1204 /* OrderFormSummarySectionNode.swift */,
 			);
 			name = Order;
 			sourceTree = "<group>";
@@ -566,6 +571,16 @@
 				2EB2992D1E98E2F400189D4B /* CartDismissingAnimationController.swift */,
 			);
 			name = Cart;
+			sourceTree = "<group>";
+		};
+		2ECB50801ECCEEAD00AF1204 /* Order */ = {
+			isa = PBXGroup;
+			children = (
+				2E7AE6FC1EC9AEAB00748C33 /* OrderViewController.swift */,
+				19BB42DE297AD21F7ED15B94 /* OrderPresentingAnimationController.swift */,
+				19BB4C01C949D75F48EF82CE /* OrderDismissingAnimationController.swift */,
+			);
+			name = Order;
 			sourceTree = "<group>";
 		};
 		A3F9701793BE3119A8FC1600 /* Frameworks */ = {
@@ -832,12 +847,14 @@
 				2E2FF1161E9FD0C1006B9321 /* CartContentNode.swift in Sources */,
 				2ED4C7161EC1EBB200374132 /* FormFieldNode.swift in Sources */,
 				2E6AF3041EB3A32C00254D3B /* AddressMapNode.swift in Sources */,
+				2ECB507D1ECCE8B400AF1204 /* OrderFormPaymentSectionNode.swift in Sources */,
 				2EB2992C1E98E2E400189D4B /* CartPresentingAnimationController.swift in Sources */,
 				2E926E081E8E540000070538 /* SettingsViewController.swift in Sources */,
 				2E926E151E8E544300070538 /* PaperColor.swift in Sources */,
 				2E926DF01E8E53E100070538 /* AuthenticationEvent.swift in Sources */,
 				2E926E2D1E8E54E800070538 /* LocalityCellNode.swift in Sources */,
 				2E926E011E8E53F700070538 /* TermsOfUseViewController.swift in Sources */,
+				2ECB50791ECCA20F00AF1204 /* OrderWithDeliveryFormNode.swift in Sources */,
 				2E926DF51E8E53E100070538 /* ConnectionDidOpenAPIChatEvent.swift in Sources */,
 				2E2FF1261EA65845006B9321 /* DataStructure.swift in Sources */,
 				2E926E0D1E8E540900070538 /* PaperFold.swift in Sources */,
@@ -855,7 +872,7 @@
 				2ED4C7041EB4B3F000374132 /* Address.swift in Sources */,
 				2ED4C70E1EBE2BC800374132 /* Dadata.swift in Sources */,
 				2E926DF31E8E53E100070538 /* OpeningConnectionAPIChatEvent.swift in Sources */,
-				2E7AE6FD1EC9AEAB00748C33 /* OrderWithDeliveryViewController.swift in Sources */,
+				2E7AE6FD1EC9AEAB00748C33 /* OrderViewController.swift in Sources */,
 				2E926E2E1E8E54E800070538 /* LocalitiesNode.swift in Sources */,
 				2E926E181E8E546000070538 /* ButtonNode.swift in Sources */,
 				2E926E1D1E8E546A00070538 /* SignInNode.swift in Sources */,
@@ -870,6 +887,7 @@
 				2E926E141E8E544300070538 /* PaperElevation.swift in Sources */,
 				2E48F27F1E9AB27900DCBBC6 /* PriceNode.swift in Sources */,
 				2E926E461E8E551600070538 /* Debouncer.swift in Sources */,
+				2ECB50821ECDAF7000AF1204 /* OrderFormSummarySectionNode.swift in Sources */,
 				2ED4C7001EB4978B00374132 /* YandexGeocoder.swift in Sources */,
 				2E926E4E1E8E551600070538 /* ASEditableTextNodeExt.swift in Sources */,
 				2E926E0B1E8E540000070538 /* FiltersViewController.swift in Sources */,
@@ -889,6 +907,7 @@
 				2E926DF71E8E53E100070538 /* ChangeLocalityProposalEvent.swift in Sources */,
 				2E926E201E8E546A00070538 /* VerificationCodeNode.swift in Sources */,
 				2E926E351E8E54F200070538 /* Locality.swift in Sources */,
+				2ECB507B1ECCE72400AF1204 /* OrderFormAddressSectionNode.swift in Sources */,
 				2E926E361E8E54F200070538 /* Menu.swift in Sources */,
 				2E926E481E8E551600070538 /* StringExt.swift in Sources */,
 				2EB2992E1E98E2F400189D4B /* CartDismissingAnimationController.swift in Sources */,
@@ -910,8 +929,9 @@
 				19BB44CE80D53BF3F610154E /* MainController.swift in Sources */,
 				19BB4529FE30768E8B28DCAF /* Price.swift in Sources */,
 				19BB488254FA94D583D1E0FD /* AddressViewController.swift in Sources */,
-				19BB4E02540F209DC3D1930F /* AddressPresentingAnimationController.swift in Sources */,
-				19BB48C66E49E8F52632787E /* AddressDismissingAnimationController.swift in Sources */,
+				19BB4E02540F209DC3D1930F /* OrderPresentingAnimationController.swift in Sources */,
+				19BB48C66E49E8F52632787E /* OrderDismissingAnimationController.swift in Sources */,
+				2ECB507F1ECCE91500AF1204 /* OrderFormOptionalSectionNode.swift in Sources */,
 				19BB4D0FBB206525B2AE5C2F /* UserSettings.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

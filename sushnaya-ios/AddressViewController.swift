@@ -49,6 +49,7 @@ class AddressViewController: ASViewController<ASDisplayNode> {
         setupNodes()
         
         // todo: subscribe to locality change event and update map and form locality
+        // todo: reveal form if no internet connection available
     }
 
     private func setupNodes() {

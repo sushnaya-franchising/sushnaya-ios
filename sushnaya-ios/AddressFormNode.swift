@@ -48,13 +48,6 @@ class AddressFormNode: ASCellNode {
     fileprivate let submitButton = ASButtonNode()        
     
     fileprivate let navbarBackgroundNode = ASDisplayNode()
-    fileprivate let navbarTitleTextNode = ASTextNode()
-    
-    var navbarTitle: String? {
-        didSet {
-            setupNavbarTitleNode()
-        }
-    }
     
     init(locality: Locality) {
         self.locality = locality
@@ -70,7 +63,6 @@ class AddressFormNode: ASCellNode {
     
     private func setupNodes() {        
         setupScrollNode()
-        setupNavbarTitleNode()
         setupNavbarBackgroundNode()
         setupLocalityImageNode()
         setupLocalityTextNode()
@@ -80,17 +72,6 @@ class AddressFormNode: ASCellNode {
         setupFloorFormFieldNode()
         setupCommentFormFieldNode()
         setupSubmitButton()
-    }
-    
-    private func setupNavbarTitleNode() {
-        guard let title = navbarTitle else {
-            return
-        }
-        
-        navbarTitleTextNode.attributedText = NSAttributedString(string: title, attributes: [
-            NSForegroundColorAttributeName: PaperColor.Gray800,
-            NSFontAttributeName: UIFont.boldSystemFont(ofSize: 17)
-        ])                
     }
     
     private func setupNavbarBackgroundNode() {
@@ -169,10 +150,7 @@ class AddressFormNode: ASCellNode {
             guard self.streetAndHouseFormFieldNode.isValid else {
                 self.onStreetAndHouseConstraintViolation()
                 return
-            }
-            
-            // request yandex geocoder to detect delivery coordinate
-            // show button loader while request is being processed
+            }                        
             
             self.delegate?.addressFormDidSubmit(self)
         }
@@ -204,13 +182,14 @@ class AddressFormNode: ASCellNode {
             layout.spacing = 16
             layout.children = rows
             
-            return ASInsetLayoutSpec(insets: UIEdgeInsetsMake(84, 0, 0, 0), child: layout)
+            return ASInsetLayoutSpec(insets: UIEdgeInsetsMake(88, 0, 0, 0), child: layout)
         }
     }
     
     override func didLoad() {
         super.didLoad()
-        
+        scrollNode.view.showsVerticalScrollIndicator = false
+        scrollNode.view.showsHorizontalScrollIndicator = false
         scrollNode.view.delegate = self
         
         submitButton.cornerRadius = 11

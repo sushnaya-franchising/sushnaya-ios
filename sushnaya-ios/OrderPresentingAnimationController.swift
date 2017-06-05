@@ -6,7 +6,7 @@
 import Foundation
 import pop
 
-class AddressPresentingAnimationController: NSObject, UIViewControllerAnimatedTransitioning {
+class OrderPresentingAnimationController: NSObject, UIViewControllerAnimatedTransitioning {
 
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
         return 0.5
@@ -18,6 +18,8 @@ class AddressPresentingAnimationController: NSObject, UIViewControllerAnimatedTr
         fromView.isUserInteractionEnabled = false
 
         guard let toView = transitionContext.viewController(forKey: .to)?.view else { return }
+        toView.tintAdjustmentMode = .normal
+        toView.isUserInteractionEnabled = true
         toView.frame = CGRect(x: 0, y: 0,
                 width: transitionContext.containerView.bounds.width,
                 height: transitionContext.containerView.bounds.height)

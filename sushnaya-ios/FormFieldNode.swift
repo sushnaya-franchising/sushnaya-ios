@@ -231,8 +231,8 @@ class FormFieldNode: ASDisplayNode {
     
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
         labelTextNode.textContainerInset = UIEdgeInsets(top: 0, left: 40, bottom: 0, right: 0)
-        iconImageNode.style.preferredSize = CGSize(width: 32, height: 32)
-        editableTextNode.textContainerInset = UIEdgeInsets(top: 9, left: 8, bottom: 9, right: 0)
+        iconImageNode.style.preferredSize = CGSize(width: 32, height: 24)
+        editableTextNode.textContainerInset = UIEdgeInsets(top: 5, left: 8, bottom: 5, right: 0)
         editableTextNode.style.flexGrow = 1
         editableTextNode.style.flexShrink = 1
         

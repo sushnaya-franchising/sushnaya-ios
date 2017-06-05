@@ -14,7 +14,7 @@ class CartToolbarNode: ASDisplayNode {
 
     let cart: Cart
 
-    let sumTextNode = ASTextNode()
+    let subtotalTextNode = ASTextNode()
     let orderWithDeliveryButton = ASButtonNode()
     let changeOrderTypeButton = ASButtonNode()
     let recommendationsTitleNode = ASTextNode()
@@ -94,28 +94,28 @@ class CartToolbarNode: ASDisplayNode {
 
     private func registerEventHandlers() {
         EventBus.onMainThread(self, name: DidAddToCartEvent.name) { [unowned self] _ in
-            self.updateSumNodeText()
+            self.updateSubtotalTextNode()
         }
 
         EventBus.onMainThread(self, name: DidRemoveFromCartEvent.name) { [unowned self] _ in
-            self.updateSumNodeText()
+            self.updateSubtotalTextNode()
         }
     }
 
     private func setupNodes() {
-        setupSumTextNode()
+        setupSubtotalTextNode()
         setupDeliveryButton()
         setupChangeOrderTypeButton()
         setupRecommendationsTitleNode()
         setupRecommendationsCollectionNode()
     }
 
-    private func setupSumTextNode() {
-        updateSumNodeText()
+    private func setupSubtotalTextNode() {
+        updateSubtotalTextNode()
     }
 
-    private func updateSumNodeText() {
-        sumTextNode.attributedText = NSAttributedString.attributedString(string: "Сумма: \(cart.sum.formattedValue)", fontSize: 14, color: PaperColor.Gray800)
+    private func updateSubtotalTextNode() {
+        subtotalTextNode.attributedText = NSAttributedString.attributedString(string: "Сумма: \(cart.sum.formattedValue)", fontSize: 14, color: PaperColor.Gray800)
     }
 
     private func setupDeliveryButton() {
@@ -164,7 +164,7 @@ class CartToolbarNode: ASDisplayNode {
     }
 
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        let sumTextNodeLayout = sumLayoutSpecThatFits(constrainedSize)
+        let subtotalTextNodeLayout = sumLayoutSpecThatFits(constrainedSize)
         let deliveryButtonLayout = deliveryButtonLayoutSpecThatFits(constrainedSize)
         let recommendationsTitleLayout = recommendationsTitlLayoutSpecThatFits(constrainedSize)
 
@@ -173,12 +173,12 @@ class CartToolbarNode: ASDisplayNode {
         let layout = ASStackLayoutSpec.vertical()
         layout.alignItems = .center
         layout.children = [recommendationsTitleLayout, recommendationsCollection,
-                           sumTextNodeLayout, deliveryButtonLayout]
+                           subtotalTextNodeLayout, deliveryButtonLayout]
         return layout
     }
 
     private func sumLayoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        let layout = ASInsetLayoutSpec(insets: UIEdgeInsets(top: 8, left: 0, bottom: 0, right: 56), child: sumTextNode)
+        let layout = ASInsetLayoutSpec(insets: UIEdgeInsets(top: 8, left: 0, bottom: 0, right: 56), child: subtotalTextNode)
         layout.style.alignSelf = .end
 
         return layout

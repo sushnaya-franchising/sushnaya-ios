@@ -13,7 +13,7 @@ class CartViewController: ASViewController<ASDisplayNode> {
     
     fileprivate var cartNode: CartNode!
     fileprivate var addressVC: AddressViewController!
-    fileprivate var orderWithDeliveryVC: OrderWithDeliveryViewController!
+    fileprivate var orderVC: OrderViewController!
     
     var cart: Cart {
         return app.userSession.cart
@@ -63,6 +63,27 @@ class CartViewController: ASViewController<ASDisplayNode> {
         super.viewWillDisappear(animated)
         cartNode.cartContentNode.unbindEventHandler()
     }
+    
+    fileprivate func showAddressViewController() {
+        if addressVC == nil {
+            addressVC = AddressViewController()
+            addressVC.delegate = self
+            addressVC.transitioningDelegate = self
+            addressVC.modalPresentationStyle = .custom
+        }
+        
+        show(addressVC, sender: self)
+    }
+    
+    fileprivate func showOrderViewController() {
+        if orderVC == nil {
+            orderVC = OrderViewController()
+            orderVC.transitioningDelegate = self
+            orderVC.modalPresentationStyle = .custom
+        }
+        
+        show(orderVC, sender: self)
+    }
 }
 
 extension CartViewController: CartNodeDelegate {
@@ -71,37 +92,28 @@ extension CartViewController: CartNodeDelegate {
     }
 
     func cartNodeDidTouchUpInsideOrderWithDeliveryButton() {
-        if addressVC == nil {
-            addressVC = AddressViewController()
-            addressVC.delegate = self
-            addressVC.transitioningDelegate = self
-            addressVC.modalPresentationStyle = .custom
+        if (app.userSession.settings.addresses?.isEmpty ?? true) {
+            showAddressViewController()
+        
+        } else {
+            showOrderViewController()
         }
-
-        show(addressVC, sender: self)
     }
 }
 
 extension CartViewController: AddressViewControllerDelegate {
     func addressViewController(_ vc: AddressViewController, didSubmitAddress address: Address) {
         self.app.userSession.settings.addresses = [address] // todo: persists address and sync server
-        
-        if orderWithDeliveryVC == nil {
-            orderWithDeliveryVC = OrderWithDeliveryViewController()
-            orderWithDeliveryVC.transitioningDelegate = self
-            orderWithDeliveryVC.modalPresentationStyle = .custom
-        }
-        
-        show(orderWithDeliveryVC, sender: self)
+        showOrderViewController()
     }
 }
 
 extension CartViewController: UIViewControllerTransitioningDelegate {
     func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return AddressPresentingAnimationController()
+        return OrderPresentingAnimationController()
     }
 
     func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return AddressDismissingAnimationController()
+        return OrderDismissingAnimationController()
     }
 }
