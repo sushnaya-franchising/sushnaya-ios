@@ -49,7 +49,7 @@ class SegmentedControlNode: ASDisplayNode {
         self.automaticallyManagesSubnodes = true
     }
     
-    // todo: add NSAttributed sting with string segment key
+    // todo: add NSAttributed string with string segment key
     func addButton(_ button: ASButtonNode) {
         let segment = buttons.count
         button.setTargetClosure { [unowned self] _ in
@@ -80,7 +80,7 @@ class SegmentedControlNode: ASDisplayNode {
             }
         }
         
-        let buttonWidth = max(maxButtonTextWidth + 10, 44)
+        let buttonWidth = max(maxButtonTextWidth + 16, 44)
         let buttonHeight = max(constrainedSize.max.height, 44)
         
         buttons.forEach {

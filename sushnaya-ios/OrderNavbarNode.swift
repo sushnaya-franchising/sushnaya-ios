@@ -17,6 +17,14 @@ class OrderNavbarNode: ASDisplayNode {
     fileprivate let chevronUpIconString = NSAttributedString(string: String.fontAwesomeIcon(name: .chevronUp), attributes: [NSFontAttributeName: UIFont.fontAwesome(ofSize: 16), NSForegroundColorAttributeName: PaperColor.Gray800])
     
     fileprivate let backButton = ASButtonNode()
+    fileprivate let backgroundNode = ASDisplayNode()
+    fileprivate let titleTextNode = ASTextNode()
+    
+    var title: String? {
+        didSet {
+            setupTitleNode()
+        }
+    }
     
     weak var delegate: OrderNavbarDelegate?
     
@@ -29,7 +37,20 @@ class OrderNavbarNode: ASDisplayNode {
     }
     
     private func setupNodes() {
+        setupBackgroundNode()
         setupBackButtonNode()
+        setupTitleNode()
+    }
+    
+    private func setupTitleNode() {
+        guard let title = title else {
+            return
+        }
+        
+        titleTextNode.attributedText = NSAttributedString(string: title, attributes: [
+            NSForegroundColorAttributeName: PaperColor.Gray800,
+            NSFontAttributeName: UIFont.boldSystemFont(ofSize: 17)
+            ])
     }
     
     private func setupBackButtonNode() {
@@ -37,6 +58,10 @@ class OrderNavbarNode: ASDisplayNode {
         backButton.setTargetClosure { [unowned self] _ in
             self.delegate?.orderNavbarDidTapBackButton(node: self)
         }
+    }
+    
+    private func setupBackgroundNode() {
+        backgroundNode.backgroundColor = PaperColor.White.withAlphaComponent(0.93)
     }
     
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
@@ -55,8 +80,19 @@ class OrderNavbarNode: ASDisplayNode {
         
         let backButtonRow = ASStackLayoutSpec.horizontal()
         backButtonRow.alignItems = .start
-        backButtonRow.children = [backButtonLayout]                
+        backButtonRow.children = [backButtonLayout]
         
-        return backButtonRow
+        let titleLayout = ASInsetLayoutSpec(insets: UIEdgeInsetsMake(36, 0, 0, 0), child: titleTextNode)
+        
+        let titleRow = ASStackLayoutSpec.horizontal()
+        titleRow.alignItems = .start
+        titleRow.justifyContent = .center
+        titleRow.children = [titleLayout]
+        
+        let backgroundRow = ASStackLayoutSpec.horizontal()
+        backgroundNode.style.preferredSize = CGSize(width: constrainedSize.max.width, height: 72)
+        backgroundRow.children = [backgroundNode]
+        
+        return ASOverlayLayoutSpec(child: ASOverlayLayoutSpec(child: backgroundRow, overlay: titleRow), overlay: backButtonRow)
     }
 }

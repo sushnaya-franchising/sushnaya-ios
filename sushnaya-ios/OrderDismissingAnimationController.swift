@@ -6,14 +6,22 @@
 import Foundation
 import pop
 
-class AddressDismissingAnimationController: NSObject, UIViewControllerAnimatedTransitioning {
+class OrderDismissingAnimationController: NSObject, UIViewControllerAnimatedTransitioning {
 
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
         return 0.5
     }
 
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
-        guard let toView = transitionContext.viewController(forKey: .to)?.view else { return }
+        guard var toVC = transitionContext.viewController(forKey: .to) else { return }
+        
+        if toVC is AddressViewController {
+            toVC.dismiss(animated: false, completion: nil)
+            toVC = toVC.presentingViewController!
+        }
+        
+        guard let toView = toVC.view else { return }
+
         toView.tintAdjustmentMode = .normal
         toView.isUserInteractionEnabled = true
 
