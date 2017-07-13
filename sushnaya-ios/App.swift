@@ -177,7 +177,7 @@ class App: UIResponder, UIApplicationDelegate {
                     $0.isIncluded(location: location)
                 }.first
             }
-
+            
             CLLocationManager.promise().then { location -> () in
                 if let locality = getLocality(by: location) {
                     ChangeLocalityEvent.fire(locality: locality)                    

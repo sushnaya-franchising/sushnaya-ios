@@ -19,7 +19,6 @@ class HashValueUtil {
         
         return result
     }
-
 }
 
 func ImageNodePrecompositedCornerModification(cornerRadius: CGFloat) -> ((UIImage) -> UIImage) {
@@ -58,6 +57,11 @@ func drawTabBarImage(frame: CGRect = CGRect(x: 0, y: 0, width: 375, height: 49))
 
 func fireFakeChangeLoalitiesProposal() {
     ChangeLocalityProposalEvent.fire(localities: [
+        Locality(location: CLLocation(latitude: 55.753215, longitude: 37.622504), name: "Москва", description: "Россия",
+                 boundedBy: (CLLocation(latitude: 55.142627, longitude: 36.803259),
+                             CLLocation(latitude: 56.021367, longitude: 37.967682)), fiasId: "0c5b2444-70a0-4932-980c-b4dc0d3f02b5",
+                            coatOfArmsUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Coat_of_Arms_of_Moscow.svg/440px-Coat_of_Arms_of_Moscow.svg.png"),
+
             Locality(location: CLLocation(latitude: 56.838607, longitude: 60.605514), name: "Екатеринбург", description: "Свердловская область, Россия",
                     boundedBy: (CLLocation(latitude: 56.593795, longitude: 60.263481),
                             CLLocation(latitude: 56.982916, longitude: 60.943308)), fiasId: "2763c110-cb8b-416a-9dac-ad28a55b4402",
@@ -84,3 +88,35 @@ func fireFakeChangeLoalitiesProposal() {
                     coatOfArmsUrl: "https://upload.wikimedia.org/wikipedia/commons/f/f6/Coat_of_Arms_of_Yaroslavl_%281995%29.png")
     ])
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

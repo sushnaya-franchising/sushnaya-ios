@@ -22,8 +22,6 @@ class OrderFormPaymentSectionNode: ASDisplayNode {
     fileprivate var titleTextNode = ASTextNode()
     fileprivate let segmentedControl = SegmentedControlNode()
     
-    let textNodeOne = ASTextNode()
-    
     weak var delegate: OrderFormPaymentSectionDelegate?
     
     var paymentType = PaymentType.cash {
@@ -43,7 +41,6 @@ class OrderFormPaymentSectionNode: ASDisplayNode {
     private func setupNodes() {
         setupTitleTextNode()
         setupSegmentedControlNode()
-        setupDummy()
     }
     
     private func setupTitleTextNode() {
@@ -66,10 +63,6 @@ class OrderFormPaymentSectionNode: ASDisplayNode {
         segmentedControl.addButton(bankCardButton)
     }
     
-    private func setupDummy() {
-        textNodeOne.attributedText = NSAttributedString.init(string: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled")
-    }
-    
     override func didLoad() {
         super.didLoad()
         
@@ -87,22 +80,9 @@ class OrderFormPaymentSectionNode: ASDisplayNode {
         segmentedControlRow.alignItems = .start
         segmentedControlRow.justifyContent = .center
         segmentedControlRow.children = [segmentedControlLayout]
-        
-        var rows = [titleLayout, segmentedControlRow]
-        
-        if paymentType == .cash {
-            let textNodeLayout =  ASInsetLayoutSpec(insets: UIEdgeInsetsMake(16, 16, 16, 16), child: textNodeOne)
-            
-            textNodeLayout.style.flexShrink = 1
-            textNodeLayout.style.flexGrow = 1
-        
-            let horizontalStack = ASStackLayoutSpec.horizontal()
-            horizontalStack.children = [textNodeLayout]
-            rows.append(horizontalStack)
-        }
             
         let stackLayout = ASStackLayoutSpec.vertical()
-        stackLayout.children = rows
+        stackLayout.children = [titleLayout, segmentedControlRow]
         
         return stackLayout
     }

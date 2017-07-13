@@ -10,68 +10,11 @@ import Foundation
 import AsyncDisplayKit
 import pop
 
-//class OrderWithDeliveryFormNode: ASCellNode {
-//    static let SectionTitleStringAttributes = [
-//        NSForegroundColorAttributeName: PaperColor.Gray,
-//        NSFontAttributeName: UIFont.systemFont(ofSize: 14)
-//    ]
-//
-//    let cart: Cart
-//    
-//    let textNodeOne = ASTextNode()
-//    let textNodeTwo = ASTextNode()
-//    let buttonNode = ASButtonNode()
-//    
-//    var enabled = false
-//    
-//    init(cart: Cart) {
-//        self.cart = cart
-//        super.init()
-//        self.backgroundColor = PaperColor.Gray100
-//        self.automaticallyManagesSubnodes = true
-//        setupNodes()
-//    }
-//    
-//    private func setupNodes() {
-//        textNodeOne.attributedText = NSAttributedString(string: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled")
-//        textNodeTwo.attributedText = NSAttributedString(string: "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.")
-//        
-//        buttonNode.setAttributedTitle(NSAttributedString.attributedString(string: "Start Layout Transition", fontSize: 16, color: PaperColor.Blue), for: .normal)
-//        buttonNode.setAttributedTitle(NSAttributedString.attributedString(string: "Start Layout Transition", fontSize: 16, color: PaperColor.Blue.withAlphaComponent(0.5)), for: .highlighted)
-//        
-//        textNodeOne.backgroundColor = PaperColor.Orange
-//        textNodeTwo.backgroundColor = PaperColor.Green
-//    }
-//    
-//    override func didLoad() {
-//        super.didLoad()
-//        
-//        buttonNode.setTargetClosure { [unowned self] _ in
-//            self.enabled = !self.enabled
-//            self.transitionLayout(withAnimation: true, shouldMeasureAsync: false, measurementCompletion: nil)
-//        }
-//    }
-//    
-//    override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
-//        let nextTextNode = self.enabled ? self.textNodeTwo : self.textNodeOne
-//        nextTextNode.style.flexGrow = 1
-//        nextTextNode.style.flexShrink = 1
-//        
-//        let horizontalStackLayout = ASStackLayoutSpec.horizontal()
-//        horizontalStackLayout.children = [nextTextNode]
-//        
-//        self.buttonNode.style.alignSelf = .center
-//        
-//        let verticalStackLayout = ASStackLayoutSpec.vertical()
-//        verticalStackLayout.spacing = 10
-//        verticalStackLayout.children = [horizontalStackLayout, self.buttonNode]
-//        
-//        return ASInsetLayoutSpec(insets: UIEdgeInsetsMake(16, 16, 16, 16), child: verticalStackLayout)
-//    }
-//}
 
 protocol OrderWithDeliveryFormDelegate: class {
     func orderWithDeliveryFormDidSubmit(_ node: OrderWithDeliveryFormNode)
+    
+    func orderWithDeliveryForm(_ node: OrderWithDeliveryFormNode, didChangePaymentTypeTo paymentType: PaymentType)
 }
 
 class OrderWithDeliveryFormNode: ASCellNode {
@@ -81,29 +24,46 @@ class OrderWithDeliveryFormNode: ASCellNode {
         NSFontAttributeName: UIFont.systemFont(ofSize: 14)
     ]
     
-    weak var delegate: OrderWithDeliveryFormDelegate?        
+    weak var delegate: OrderWithDeliveryFormDelegate?    
     
-    fileprivate var addressSectionNode = OrderFormAddressSectionNode()
-    fileprivate var paymentSectionNode = OrderFormPaymentSectionNode()
+    fileprivate let addressSectionNode = OrderFormAddressSectionNode()
+    fileprivate let paymentSectionNode = OrderFormPaymentSectionNode()
+    fileprivate let cashOptionsSectionNode: CashOptionsSectionNode
     
-    fileprivate var optionalSectionNode = OrderFormOptionalSectionNode()
-    fileprivate var summarySectionNode: OrderFormSummarySectionNode
-    fileprivate var submitButtonNode = ASButtonNode()        
+    fileprivate let optionalSectionNode = OrderFormOptionalSectionNode()
+    fileprivate let summarySectionNode: OrderFormSummarySectionNode
+    fileprivate let submitButtonNode = ASButtonNode()
     
-    let cart: Cart
+    fileprivate var userSession: UserSession
+    fileprivate var cart: Cart {
+        return self.userSession.cart
+    }
+    fileprivate var addresses: [Address]? {
+        return self.userSession.settings.addresses
+    }
     
-    init(cart: Cart) {
-        self.cart = cart
-        self.summarySectionNode = OrderFormSummarySectionNode(cart: cart)
+    init(userSession: UserSession) {
+        self.userSession = userSession
+        self.summarySectionNode = OrderFormSummarySectionNode(cart: userSession.cart)
+        self.cashOptionsSectionNode = CashOptionsSectionNode(cart: userSession.cart)
+        
         super.init()
         self.automaticallyManagesSubnodes = true
-        setupNodes()
-
+        setupNodes()        
     }
     
     private func setupNodes() {
+        setupAddressSectionNode()
         setupSubmitButtonNode()
         setupPaymentSectionNode()
+    }
+    
+    private func setupAddressSectionNode() {
+        addressSectionNode.addresses = self.addresses
+    }
+    
+    private func setupPaymentSectionNode() {
+        paymentSectionNode.delegate = self
     }
     
     private func setupSubmitButtonNode() {
@@ -122,10 +82,6 @@ class OrderWithDeliveryFormNode: ASCellNode {
         }
     }
     
-    private func setupPaymentSectionNode() {
-        paymentSectionNode.delegate = self
-    }
-    
     override func didLoad() {
         super.didLoad()
         
@@ -140,6 +96,10 @@ class OrderWithDeliveryFormNode: ASCellNode {
         self.paymentSectionNode.style.flexGrow = 1
         self.paymentSectionNode.style.flexShrink = 1
         rows.append(self.paymentSectionNode)
+        
+        if(self.paymentSectionNode.paymentType == .cash) {
+            rows.append(cashOptionsSectionNode)
+        }
         
         rows.append(self.optionalSectionNode)
         
@@ -161,10 +121,9 @@ class OrderWithDeliveryFormNode: ASCellNode {
     }
 }
 
+
 extension OrderWithDeliveryFormNode: OrderFormPaymentSectionDelegate {
     func orderFormPaymentSection(_ node: OrderFormPaymentSectionNode, didChangePaymentTypeTo paymentType: PaymentType) {
-        self.paymentSectionNode.setNeedsLayout()
-        self.invalidateCalculatedLayout()
+        self.delegate?.orderWithDeliveryForm(self, didChangePaymentTypeTo: paymentType)
     }
 }
-
