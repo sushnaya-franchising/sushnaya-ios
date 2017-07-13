@@ -82,12 +82,25 @@ extension OrderViewController: ASTableDataSource, ASTableDelegate {
     
     func tableNode(_ tableNode: ASTableNode, nodeBlockForRowAt indexPath: IndexPath) -> ASCellNodeBlock {
         return { [unowned self] _ in
-            OrderWithDeliveryFormNode(cart: self.app.userSession.cart)
+            let node = OrderWithDeliveryFormNode(userSession: self.app.userSession)
+            node.delegate = self
+            
+            return node
         }
     }
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         self.view.endEditing(true)
+    }
+}
+
+extension OrderViewController: OrderWithDeliveryFormDelegate {
+    func orderWithDeliveryFormDidSubmit(_ node: OrderWithDeliveryFormNode) {
+        // todo: implement
+    }
+    
+    func orderWithDeliveryForm(_ node: OrderWithDeliveryFormNode, didChangePaymentTypeTo paymentType: PaymentType) {
+        node.transitionLayout(withAnimation: true, shouldMeasureAsync: false, measurementCompletion: nil)
     }
 }
 

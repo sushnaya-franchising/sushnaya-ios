@@ -19,10 +19,10 @@ class MainController: ASTabBarController {
     private var cartVC: CartViewController!
     
     private func addCartButtonViewAsynchronously(containerRect: CGRect) {
-        DispatchQueue.global().async {
+        DispatchQueue.global().async { [unowned self] _ in
             let cartButtonNode = self.createCartButtonNode(containerRect: containerRect)
             
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [unowned self] _ in
                 self.view.addSubview(cartButtonNode.view)
             }
         }

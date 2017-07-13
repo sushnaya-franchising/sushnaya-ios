@@ -80,7 +80,7 @@ class SegmentedControlNode: ASDisplayNode {
             }
         }
         
-        let buttonWidth = max(maxButtonTextWidth + 16, 44)
+        let buttonWidth = max(maxButtonTextWidth + 32, 44)
         let buttonHeight = max(constrainedSize.max.height, 44)
         
         buttons.forEach {

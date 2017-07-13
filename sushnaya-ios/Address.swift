@@ -16,6 +16,15 @@ struct Address {
     var entrance: String?
     var floor: String?
     var comment: String?
+    var displayName: String? {
+        guard let streetAndHouse = streetAndHouse else { return nil }
+        
+        guard let apartment = apartment else {
+            return streetAndHouse
+        }
+        
+        return "\(streetAndHouse), \(apartment)"
+    }
     
     init(locality: Locality, coordinate: CLLocationCoordinate2D,
          streetAndHouse: String? = nil, apartment: String? = nil,
