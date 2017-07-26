@@ -55,7 +55,7 @@ func drawTabBarImage(frame: CGRect = CGRect(x: 0, y: 0, width: 375, height: 49))
 }
 
 
-func fireFakeChangeLoalitiesProposal() {
+func fireFakeChangeLocalitiesProposal() {
     ChangeLocalityProposalEvent.fire(localities: [
         Locality(location: CLLocation(latitude: 55.753215, longitude: 37.622504), name: "Москва", description: "Россия",
                  boundedBy: (CLLocation(latitude: 55.142627, longitude: 36.803259),

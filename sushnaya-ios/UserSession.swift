@@ -34,7 +34,7 @@ class UserSession: NSObject {
         super.init()
         
         // todo: query the auth token
-        authToken = "Mi1SNkF6UDJjRkVaWFA1Mkl6TlRMOE85VStodz09"
+        authToken = "NTJiZTJmNjVhNTBjNDY3OTIwMjAyMTdjMjA4YTA0NGNhNzMxNjg3Zi0xNTAwMDM3OTE4MjA3LS0x"
         
         // todo: query locality
 //        locality = ...

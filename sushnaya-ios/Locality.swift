@@ -16,20 +16,8 @@ struct Locality {
     var boundedBy: (lowerCorner: CLLocation, upperCorner: CLLocation)
     var fiasId: String
     var coatOfArmsUrl: String?
-    
-//    convenience init(location: CLLocation, name: String, description: String, boundedBy: (CLLocation, CLLocation)) {
-//        self.init(location: location, name: name, description: description, boundedBy: boundedBy, coatOfArmsUrl: nil)
-//    }
-//    
-//    init(location: CLLocation, name: String, description: String, boundedBy: (CLLocation, CLLocation), coatOfArmsUrl: String?) {
-//        self.location = location
-//        self.name = name.capitalized
-//        self.description = description
-//        self.boundedBy = boundedBy
-//        self.coatOfArmsUrl = coatOfArmsUrl
-//    }
-    
-    func isIncluded(location: CLLocation) -> Bool {
+        
+    func includes(location: CLLocation) -> Bool {
         let (lower, upper) = boundedBy
         
         return lower.coordinate.latitude <= location.coordinate.latitude &&
