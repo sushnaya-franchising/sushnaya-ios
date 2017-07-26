@@ -36,6 +36,7 @@ PODS:
     - PromiseKit/CorePromise
   - SwiftEventBus (2.2.0)
   - SwiftWebSocket (2.6.5)
+  - SwiftyJSON (3.1.4)
   - Texture (2.2):
     - Texture/PINRemoteImage (= 2.2)
   - Texture/Core (2.2)
@@ -57,6 +58,7 @@ DEPENDENCIES:
   - PromiseKit/CoreLocation
   - SwiftEventBus (from `https://github.com/cesarferreira/SwiftEventBus.git`, tag `2.2.0`)
   - SwiftWebSocket
+  - SwiftyJSON
   - Texture (= 2.2)
   - YandexMapKit
 
@@ -84,9 +86,10 @@ SPEC CHECKSUMS:
   PromiseKit: 08dfb783c161ddcd95b7912421f14c5113fd8318
   SwiftEventBus: 39cde57d1881f9d6e8afb1f9e41f973e331bf847
   SwiftWebSocket: 1ef8a0efb023544643bdf480c1ec4a62b204f293
+  SwiftyJSON: c2842d878f95482ffceec5709abc3d05680c0220
   Texture: 3e4664479225216198c29bdb9621664de390534d
   YandexMapKit: 70c6e0819e88f742e3800711f7aedecaf3029300
 
-PODFILE CHECKSUM: 7c3daf24dfb519a5040804f0bfd3e80a24f6a917
+PODFILE CHECKSUM: fe22704f7e86a7abd7651b35493f7fd4b666badf
 
 COCOAPODS: 1.2.0

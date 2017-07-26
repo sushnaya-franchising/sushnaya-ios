@@ -84,7 +84,7 @@ class MainController: ASTabBarController {
 
         if !cartButtonSetupStarted {
             let screenBounds = UIScreen.main.bounds
-            let containerRect = CGRect(x: 0, y: screenBounds.height-49, width: screenBounds.width, height: 49)
+            let containerRect = CGRect(x: 0, y: screenBounds.height - 49, width: screenBounds.width, height: 49)
             addCartButtonViewAsynchronously(containerRect: containerRect)
             cartButtonSetupStarted = true
         }

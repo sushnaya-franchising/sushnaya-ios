@@ -158,7 +158,6 @@ class App: UIResponder, UIApplicationDelegate {
             self.startAPIChat()
 
             let authenticatedVC = self.createDefaultRootViewController()
-            // todo: open full side vc with categories and set tab bar invisible
 
             self.changeRootViewController(authenticatedVC)
         }
@@ -174,7 +173,7 @@ class App: UIResponder, UIApplicationDelegate {
 
             func getLocality(by location: CLLocation) -> Locality? {
                 return localities.filter {
-                    $0.isIncluded(location: location)
+                    $0.includes(location: location)
                 }.first
             }
             

@@ -13,6 +13,7 @@ class OrderFormAddressSectionNode: ASDisplayNode {
     
     fileprivate var titleTextNode = ASTextNode()
     fileprivate let collectionNode: ASCollectionNode
+    fileprivate let flowLayout: UICollectionViewFlowLayout
     
     var addresses: [Address]? {
         didSet {
@@ -23,9 +24,9 @@ class OrderFormAddressSectionNode: ASDisplayNode {
     }
     
     override init() {
-        let flowLayout = UICollectionViewFlowLayout()
+        flowLayout = UICollectionViewFlowLayout()
         flowLayout.scrollDirection = .horizontal
-        flowLayout.itemSize = CGSize(width: 230, height: 115)
+        flowLayout.itemSize = OrderFormAddressSectionNode.calcAddressCellSize()
         flowLayout.minimumInteritemSpacing = 8
         
         collectionNode = ASCollectionNode(collectionViewLayout: flowLayout)
@@ -64,7 +65,7 @@ class OrderFormAddressSectionNode: ASDisplayNode {
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let titleLayout = ASInsetLayoutSpec(insets: UIEdgeInsetsMake(0, 16, 0, 0), child: titleTextNode)
         
-        let collectionNodeSize = CGSize(width: constrainedSize.max.width, height: 115)
+        let collectionNodeSize = CGSize(width: constrainedSize.max.width, height: flowLayout.itemSize.height)
         collectionNode.style.preferredSize = collectionNodeSize
         
         let stackLayout = ASStackLayoutSpec.vertical()
@@ -97,6 +98,16 @@ extension OrderFormAddressSectionNode: ASCollectionDataSource, ASCollectionDeleg
         let node = collectionNode.nodeForItem(at: indexPath)
         node?.invalidateCalculatedLayout()
         node?.setNeedsDisplay()
+    }
+}
+
+extension OrderFormAddressSectionNode {
+    static func calcAddressCellSize() -> CGSize {
+        let screenBounds = UIScreen.main.bounds
+        let width = screenBounds.width / Constants.GoldenRatio
+        let height = width / Constants.GoldenRatio
+        
+        return CGSize(width: ceil(width), height: ceil(height))
     }
 }
 

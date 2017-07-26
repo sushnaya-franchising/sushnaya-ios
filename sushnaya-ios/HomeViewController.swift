@@ -11,6 +11,7 @@ import AsyncDisplayKit
 import FontAwesome_swift
 import pop
 import PaperFold
+import SwiftEventBus
 
 class HomeViewController: ASViewController<ASDisplayNode> {
 
@@ -43,8 +44,14 @@ class HomeViewController: ASViewController<ASDisplayNode> {
             return ASInsetLayoutSpec(insets: UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0), child: self._collectionNode)
         }                        
         
+        SwiftEventBus.onMainThread(self, name: ConnectionDidOpenAPIChatEvent.name) { [unowned self] (notification) in
+            if self.products == nil {
+                AskMenuEvent.fire()
+            }
+        }
+        
         initFakeData()
-    }    
+    }
     
     private func setupCollectionNode() {
         let layout = ProductsMosaicLayout()
@@ -129,7 +136,7 @@ class HomeViewController: ASViewController<ASDisplayNode> {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        fireFakeChangeLoalitiesProposal()                
+        fireFakeChangeLocalitiesProposal()
     }
 }
 

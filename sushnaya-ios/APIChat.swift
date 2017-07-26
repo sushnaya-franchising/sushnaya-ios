@@ -9,6 +9,7 @@
 import Foundation
 import SwiftWebSocket
 import PromiseKit
+import SwiftyJSON
 
 enum APIChatCommand: String {
     case menu = "/menu"
@@ -17,7 +18,7 @@ enum APIChatCommand: String {
 }
 
 class APIChat: NSObject {
-    static let webSocketUrl = "ws://api.sushnaya.com:8888/0.1.0"
+    static let webSocketUrl = "ws://api.sushnaya.com:8080/0.1.0"
 
     private var ws: WebSocket?
 
@@ -70,6 +71,7 @@ class APIChat: NSObject {
         }
 
         ws?.event.message = handleMessage
+        ws?.binaryType = WebSocketBinaryType.nsData
 
         OpeningConnectionAPIChatEvent.fire()
 
@@ -90,14 +92,9 @@ class APIChat: NSObject {
     }
 
     private func handleMessage(message: Any?) {
-        if let textMessage = message as? String {
-            print("NEW INCOMMING MESSAGE: \(textMessage)")
-            // todo: parse message and fire appropriate event
-
-            // todo: remove simulation
-            if textMessage.hasPrefix(APIChatCommand.menu.rawValue) {
-                fireFakeChangeLoalitiesProposal()
-            }
+        if let data = message as? Data {
+            let _ = JSON(data: data)
+            
         }
     }
 

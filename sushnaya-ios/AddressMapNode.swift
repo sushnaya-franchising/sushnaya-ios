@@ -20,7 +20,7 @@ protocol AddressMapDelegate: class {
 class AddressMapNode: ASCellNode {
     fileprivate let zoomLevel:UInt = 16
     fileprivate let locationArrowIconString = NSAttributedString(string: String.fontAwesomeIcon(name: .locationArrow), attributes: [NSFontAttributeName: UIFont.fontAwesome(ofSize: 16), NSForegroundColorAttributeName: PaperColor.Gray800])
-    fileprivate let mapMarkerIconString = NSAttributedString(string: String.fontAwesomeIcon(name: .mapMarker), attributes: [NSFontAttributeName: UIFont.fontAwesome(ofSize: 44), NSForegroundColorAttributeName: PaperColor.Red800])
+    fileprivate let mapMarkerIconString = NSAttributedString(string: String.fontAwesomeIcon(name: .mapMarker), attributes: [NSFontAttributeName: UIFont.fontAwesome(ofSize: 44), NSForegroundColorAttributeName: PaperColor.Gray800])
     
     fileprivate var mapNode: ASDisplayNode!
     fileprivate let locationButton = ASButtonNode()
