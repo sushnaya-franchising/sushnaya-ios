@@ -26,6 +26,7 @@
 		2E2FF12A1EA659FC006B9321 /* RemoveFromCartEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2FF1291EA659FC006B9321 /* RemoveFromCartEvent.swift */; };
 		2E2FF1371EA693BA006B9321 /* CartTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2FF1361EA693BA006B9321 /* CartTest.swift */; };
 		2E3013381EEAF7F800CAD153 /* CashOptionsSectionNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E3013371EEAF7F800CAD153 /* CashOptionsSectionNode.swift */; };
+		2E479F041F29C6BC00396965 /* PageableCollectionNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E479F031F29C6BC00396965 /* PageableCollectionNode.swift */; };
 		2E48F2791E98EB5000DCBBC6 /* Cart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E48F2781E98EB5000DCBBC6 /* Cart.swift */; };
 		2E48F27B1E99475000DCBBC6 /* CartButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E48F27A1E99475000DCBBC6 /* CartButton.swift */; };
 		2E48F27D1E99660E00DCBBC6 /* Geometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E48F27C1E99660E00DCBBC6 /* Geometry.swift */; };
@@ -157,6 +158,7 @@
 		2E2FF1361EA693BA006B9321 /* CartTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartTest.swift; sourceTree = "<group>"; };
 		2E2FF1381EA693BA006B9321 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2E3013371EEAF7F800CAD153 /* CashOptionsSectionNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CashOptionsSectionNode.swift; sourceTree = "<group>"; };
+		2E479F031F29C6BC00396965 /* PageableCollectionNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PageableCollectionNode.swift; sourceTree = "<group>"; };
 		2E48F2781E98EB5000DCBBC6 /* Cart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cart.swift; sourceTree = "<group>"; };
 		2E48F27A1E99475000DCBBC6 /* CartButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CartButton.swift; sourceTree = "<group>"; };
 		2E48F27C1E99660E00DCBBC6 /* Geometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Geometry.swift; sourceTree = "<group>"; };
@@ -510,6 +512,7 @@
 				2E926E121E8E544300070538 /* PaperColor.swift */,
 				2E2FF11F1EA22F60006B9321 /* Label.swift */,
 				2E9147001EB32DFC00E0D312 /* SegmentedControlNode.swift */,
+				2E479F031F29C6BC00396965 /* PageableCollectionNode.swift */,
 			);
 			name = Control;
 			sourceTree = "<group>";
@@ -931,6 +934,7 @@
 				2E926DF71E8E53E100070538 /* ChangeLocalityProposalEvent.swift in Sources */,
 				2E926E201E8E546A00070538 /* VerificationCodeNode.swift in Sources */,
 				2E926E351E8E54F200070538 /* Locality.swift in Sources */,
+				2E479F041F29C6BC00396965 /* PageableCollectionNode.swift in Sources */,
 				2ECB507B1ECCE72400AF1204 /* AddressSectionNode.swift in Sources */,
 				2E926E361E8E54F200070538 /* Menu.swift in Sources */,
 				2E926E481E8E551600070538 /* StringExt.swift in Sources */,
