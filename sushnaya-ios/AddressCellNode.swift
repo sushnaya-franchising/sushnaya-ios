@@ -13,10 +13,11 @@ class AddressCellNode: ASCellNode {
     var address: Address
     fileprivate let mapImageBuilder = YMKMapImageBuilder()
     
-    fileprivate let labelTextNode = ASTextNode()
+    fileprivate var labelNode: ASDisplayNode?
+    fileprivate var labelView: UILabel?
+    
     fileprivate let highlighter = ASDisplayNode()
     fileprivate var mapImageNode = ASImageNode()
-//    fileprivate let mapMarkerNode = ASTextNode()
     fileprivate let localityImageNode: ASNetworkImageNode = {
         let imageNode = ASNetworkImageNode()
         imageNode.contentMode = .scaleAspectFit
@@ -24,19 +25,11 @@ class AddressCellNode: ASCellNode {
         return imageNode
     }()
     
-//    fileprivate let mapMarkerIconString = NSAttributedString(
-//        string: String.fontAwesomeIcon(name: .mapMarker),
-//        attributes: [
-//            NSFontAttributeName: UIFont.fontAwesome(ofSize: 27),
-//            NSForegroundColorAttributeName: PaperColor.Gray800
-//        ])
-    
     override var isSelected: Bool {
         didSet {
             adjustHighlighterNodeBgColor()
             adjustHighlighterNodeOpacity()
             adjustLabelTextNodeOpacity()
-//            adjustMapMarkerNodeOpacity()
             adjustLocalityImageNodeOpacity()
         }
     }
@@ -48,7 +41,7 @@ class AddressCellNode: ASCellNode {
         self.automaticallyManagesSubnodes = true
         self.backgroundColor = PaperColor.Gray200
         
-        self.mapImageBuilder?.delegate = self
+        self.mapImageBuilder?.delegate = self                
         
         setupNodes()
     }
@@ -56,7 +49,6 @@ class AddressCellNode: ASCellNode {
     private func setupNodes() {
         setupHighlighterNode()
         setupLabelNode()
-//        setupMapMarkerNode()
         setupLocalityImageNode()
     }
     
@@ -71,16 +63,24 @@ class AddressCellNode: ASCellNode {
     private func setupLabelNode() {
         guard let addressDisplayName = address.displayName else { return }
         
-        let stringAttributes:[String: Any] = [
-            NSForegroundColorAttributeName: PaperColor.Gray800,
-            NSBackgroundColorAttributeName: PaperColor.White,
-            NSFontAttributeName: getLabelFont(addressDisplayName)
-        ]
-        
-        let attributedString = NSMutableAttributedString(string: "\(addressDisplayName) ",
-                                                          attributes: stringAttributes)
-        
-        labelTextNode.attributedText = attributedString
+        self.labelNode = ASDisplayNode(viewBlock: { [unowned self] _ in
+            let labelView = UILabel()
+            self.labelView = labelView
+            labelView.textAlignment = .center
+            labelView.lineBreakMode = .byWordWrapping
+            labelView.numberOfLines = 0
+            
+            let stringAttributes:[String: Any] = [
+                NSForegroundColorAttributeName: PaperColor.Gray800,
+                NSBackgroundColorAttributeName: PaperColor.White,
+                NSFontAttributeName: self.getLabelFont(addressDisplayName)
+            ]
+            
+            labelView.attributedText = NSMutableAttributedString(string: "\(addressDisplayName) ",
+                attributes: stringAttributes)
+            
+            return labelView
+        })
     }
     
     private func getLabelFont(_ labelText: String) -> UIFont {
@@ -90,10 +90,6 @@ class AddressCellNode: ASCellNode {
                 labelText.characters.count <= 60 ? UIFont.boldSystemFont(ofSize: 12):
                 UIFont.boldSystemFont(ofSize: 11)
     }
-    
-//    private func setupMapMarkerNode() {
-//        mapMarkerNode.attributedText = mapMarkerIconString
-//    }
     
     private func setupLocalityImageNode() {
         localityImageNode.defaultImage = UIImage(color: PaperColor.Gray300, size: CGSize(width: 32, height: 32))
@@ -112,7 +108,6 @@ class AddressCellNode: ASCellNode {
         highlighterDidLoad()
         mapImageNodeDidLoad()
         labelTextNodeDidLoad()
-//        mapMarkerNodeDidLoad()
         localityImageNodeDidLoad()
     }
 
@@ -131,12 +126,8 @@ class AddressCellNode: ASCellNode {
     }
     
     private func adjustLabelTextNodeOpacity() {
-        labelTextNode.layer.opacity = isSelected ? 1 : 0.5
+        labelNode?.layer.opacity = isSelected ? 1 : 0.5
     }
-    
-//    private func adjustMapMarkerNodeOpacity() {
-//        mapMarkerNode.layer.opacity = isSelected ? 1 : 0.5
-//    }
     
     private func adjustLocalityImageNodeOpacity() {
         localityImageNode.layer.opacity = isSelected ? 1: 0.5
@@ -147,22 +138,11 @@ class AddressCellNode: ASCellNode {
         mapImageNode.view.clipsToBounds = true
     }
     
-//    private func mapMarkerNodeDidLoad() {
-//        adjustMapMarkerNodeOpacity()
-//    }
-    
     private func localityImageNodeDidLoad() {
         adjustLocalityImageNodeOpacity()
     }
         
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        let spacer = ASLayoutSpec()
-        spacer.style.height = ASDimension(unit: .fraction, value: 1 / Constants.GoldenRatio)
-        labelTextNode.style.maxHeight = ASDimension(unit: .fraction, value: 1 - 1 / Constants.GoldenRatio)
-        let labelLayout = ASInsetLayoutSpec(insets: UIEdgeInsetsMake(0, 8, 8, 8), child: labelTextNode)
-        let labelStackLayout = ASStackLayoutSpec.vertical()
-        labelStackLayout.children = [spacer, labelLayout]
-        
         let contentSize = CGSize(width: constrainedSize.max.width - 4, height: constrainedSize.max.height - 4)
         
         mapImageNode.style.preferredSize = contentSize
@@ -172,17 +152,25 @@ class AddressCellNode: ASCellNode {
         highlighter.style.preferredSize = contentSize
         let highlighterLayout = ASCenterLayoutSpec(centeringOptions: .XY, sizingOptions: [], child: highlighter)
         
-//        mapMarkerNode.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 30, right: 0)
-//        let mapMarkerLayout = ASCenterLayoutSpec(centeringOptions: .XY, sizingOptions: [], child: mapMarkerNode)
-        
         localityImageNode.style.preferredSize = CGSize(width: 32, height: 32)
         let localityImageLayout = ASCenterLayoutSpec(centeringOptions: .XY, sizingOptions: [], child:
             ASInsetLayoutSpec(insets: UIEdgeInsetsMake(0, 0, 40, 0), child: localityImageNode))
         
+        guard let labelNode = labelNode else {
+            return ASOverlayLayoutSpec(child: mapImageLayout, overlay:
+                ASOverlayLayoutSpec(child: highlighterLayout, overlay: localityImageLayout))
+        }
+        
+        let spacer = ASLayoutSpec()
+        spacer.style.height = ASDimension(unit: .fraction, value: 1 / Constants.GoldenRatio)
+        labelNode.style.maxHeight = ASDimension(unit: .fraction, value: 1 - 1 / Constants.GoldenRatio)
+        let labelLayout = ASInsetLayoutSpec(insets: UIEdgeInsetsMake(0, 8, 8, 8), child: labelNode)
+        let labelStackLayout = ASStackLayoutSpec.vertical()
+        labelStackLayout.children = [spacer, labelLayout]
+        
         return ASOverlayLayoutSpec(child: mapImageLayout, overlay:
             ASOverlayLayoutSpec(child: highlighterLayout, overlay:
-//                ASOverlayLayoutSpec(child: mapMarkerLayout, overlay:
-                    ASOverlayLayoutSpec(child: localityImageLayout, overlay: labelStackLayout)))
+                ASOverlayLayoutSpec(child: localityImageLayout, overlay: labelStackLayout)))
     }
     
     private func createStaticMap(imageSize: CGSize) {
