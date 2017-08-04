@@ -17,6 +17,7 @@ target 'sushnaya-ios' do
     pod 'PaperFold'    
     pod 'YandexMapKit'
     pod 'SwiftyJSON'
+    pod 'SwiftProtobuf', '~> 0.9.903'
     
     target 'sushnaya-ios-tests' do
         inherit! :search_paths

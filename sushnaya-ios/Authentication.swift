@@ -19,16 +19,14 @@ enum AuthenticationError: Error {
 
 class Authentication {
     // todo: use ssl
-    static let baseUrl = "http://auth.sushnaya.com:8443"
+    static let baseUrl = "http://84bf451a.ngrok.io/0.1.0"
     static let authenticateUrl = baseUrl + "/authenticate"
     static let tokenUrl = baseUrl + "/token"
 
 
     class func requestSMSWithVerificationCode(phoneNumber: String) -> Promise<Void> {
         return Promise { fulfill, reject in
-            let parameters = ["phoneNumber": phoneNumber.replacingOccurrences(of: "+", with: "")]
-
-            //fulfill()
+            let parameters = ["phoneNumber": phoneNumber.replacingOccurrences(of: "+", with: "")]            
 
             Alamofire.request(authenticateUrl, method: .post, parameters: parameters).validate().response { response in
                 if let error = response.error {
@@ -45,11 +43,9 @@ class Authentication {
     class func requestAuthToken(phoneNumber: String, code: String) -> Promise<String> {
         return Promise { fulfill, reject in
             let parameters = [
-                    "phoneNumber": phoneNumber.replacingOccurrences(of: "+", with: ""),
+                    "phoneNumber": phoneNumber,
                     "code": code
             ]
-
-//            fulfill("token")
 
             Alamofire.request(tokenUrl, method: .get, parameters: parameters).validate().responseString { response in
                 switch response.result {

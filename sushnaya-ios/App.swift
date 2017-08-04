@@ -34,7 +34,7 @@ class App: UIResponder, UIApplicationDelegate {
         YMKConfiguration.sharedInstance().apiKey = "eT8sMHf8HJ3h34nIeC5nzRCx2Ye6JOm9q-02lkLxX9BdERx9-itfjncZ2uWaI5~mdjMYweAA7FTHb44Z7VptmGlbzFKvVW3IZnM9TYBjjzg="        
         
 //         ASControlNode.setEnableHitTestDebug(true)
-        
+                
         return true
     }
 
@@ -162,24 +162,24 @@ class App: UIResponder, UIApplicationDelegate {
             self.changeRootViewController(authenticatedVC)
         }
 
-        SwiftEventBus.onMainThread(self, name: ChangeLocalityProposalEvent.name) { [unowned self] (notification) in
-            let localities = (notification.object as! ChangeLocalityProposalEvent).localities
+        SwiftEventBus.onMainThread(self, name: SelectMenuEvent.name) { [unowned self] (notification) in
+            let menus = (notification.object as! SelectMenuEvent).menus
 
             func presentLocalitiesController() {
-                let vc = LocalitiesViewController(localities: localities)
+                let vc = MenusViewController(menus: menus)
 
                 self.window?.rootViewController?.present(vc, animated: true, completion: nil)
             }
 
-            func getLocality(by location: CLLocation) -> Locality? {
-                return localities.filter {
-                    $0.includes(location: location)
+            func getMenu(by location: CLLocation) -> Menu? {
+                return menus.filter {
+                    $0.locality.includes(location: location) // todo: get most inner locality
                 }.first
             }
             
             CLLocationManager.promise().then { location -> () in
-                if let locality = getLocality(by: location) {
-                    ChangeLocalityEvent.fire(locality: locality)                    
+                if let menu = getMenu(by: location) {
+                    DidSelectMenuEvent.fire(menu: menu)
 
                 } else {
                     presentLocalitiesController()

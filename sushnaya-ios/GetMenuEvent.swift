@@ -1,5 +1,5 @@
 //
-//  AskMenuEvent.swift
+//  GetMenuEvent.swift
 //  sushnaya-ios
 //
 //  Created by Igor Kurylenko on 3/25/17.
@@ -9,10 +9,10 @@
 import Foundation
 import SwiftEventBus
 
-struct AskMenuEvent: Event {
-    static var name: String = "\(AskMenuEvent.self)"
+struct GetMenuEvent: Event {
+    static var name: String = "\(GetMenuEvent.self)"
     
     static func fire() {
-        EventBus.post(AskMenuEvent.name)
+        EventBus.post(GetMenuEvent.name)
     }
 }

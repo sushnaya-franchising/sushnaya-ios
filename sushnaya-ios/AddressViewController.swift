@@ -33,7 +33,7 @@ class AddressViewController: ASViewController<ASDisplayNode> {
     weak var delegate: AddressViewControllerDelegate?
     
     var locality: Locality {
-        return app.userSession.locality!
+        return app.userSession.menu!.locality
     }
     
     convenience init() {

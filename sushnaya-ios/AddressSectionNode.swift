@@ -98,6 +98,10 @@ extension OrderFormAddressSectionNode: PageableCollectionDataSource, PageableCol
         pageNode?.invalidateCalculatedLayout()
         pageNode?.setNeedsDisplay()
     }
+    
+    var pageWidth: CGFloat {
+        return flowLayout.itemSize.width
+    }
 }
 
 extension OrderFormAddressSectionNode {
