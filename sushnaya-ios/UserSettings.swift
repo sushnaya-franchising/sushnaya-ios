@@ -7,15 +7,15 @@ import Foundation
 import SwiftEventBus
 
 class UserSettings {
-    var locality: Locality? {
+    var menu: Menu? {
         didSet {
             // todo: persist locality
         }
     }
 
-    var isLocalitySelected: Bool {
+    var isMenuSelected: Bool {
         get {
-            return locality != nil
+            return menu != nil
         }
     }
     
@@ -30,12 +30,12 @@ class UserSettings {
     }
     
     private func bindEventHandlers() {
-        EventBus.onMainThread(self, name: ChangeLocalityEvent.name) { [unowned self] notification in
-            guard let event = notification.object as? ChangeLocalityEvent else {
+        EventBus.onMainThread(self, name: DidSelectMenuEvent.name) { [unowned self] notification in
+            guard let event = notification.object as? DidSelectMenuEvent else {
                 return
             }
             
-            self.locality = event.locality
+            self.menu = event.menu
         }
     }
 }

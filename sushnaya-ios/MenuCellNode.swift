@@ -7,7 +7,7 @@ import Foundation
 import AsyncDisplayKit
 import UIKit
 
-class LocalityCellNode: ASCellNode {
+class MenuCellNode: ASCellNode {
 
     var titleLabel = ASTextNode()
 
@@ -30,28 +30,28 @@ class LocalityCellNode: ASCellNode {
         }
     }
 
-    init(locality: Locality) {
+    init(menu: Menu) {
         super.init()
 
         self.selectionStyle = .none
         self.automaticallyManagesSubnodes = true
 
-        setupNodes(locality)
+        setupNodes(menu)
     }
 
-    private func setupNodes(_ locality: Locality) {
-        setupTitleLabel(locality)
-        setupImageNode(locality)
+    private func setupNodes(_ menu: Menu) {
+        setupTitleLabel(menu)
+        setupImageNode(menu)
     }
 
-    private func setupTitleLabel(_ locality: Locality) {
-        titleLabel.attributedText = NSAttributedString(string: locality.name, attributes: titleStringAttributes)
+    private func setupTitleLabel(_ menu: Menu) {
+        titleLabel.attributedText = NSAttributedString(string: menu.locality.name, attributes: titleStringAttributes)
     }
 
-    private func setupImageNode(_ locality: Locality) {
+    private func setupImageNode(_ menu: Menu) {
         imageNode.defaultImage = UIImage(color: PaperColor.Gray300, size: Constants.LocalityCellLayout.CoatOfArmsImageSize)
 
-        if let url = locality.coatOfArmsUrl {
+        if let url = menu.locality.coatOfArmsUrl {
             imageNode.url = URL(string: url)
         }
     }

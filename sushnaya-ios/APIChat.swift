@@ -11,14 +11,8 @@ import SwiftWebSocket
 import PromiseKit
 import SwiftyJSON
 
-enum APIChatCommand: String {
-    case menu = "/menu"
-    case changeLocality = "/setcity"
-    case termsOfUseUpdate = "/termsofuseupdate"
-}
-
 class APIChat: NSObject {
-    static let webSocketUrl = "ws://api.sushnaya.com:8080/0.1.0"
+    static let webSocketUrl = "ws://84bf451a.ngrok.io/0.1.0"
 
     private var ws: WebSocket?
 
@@ -34,13 +28,16 @@ class APIChat: NSObject {
     }
 
     private func registerEventHandlers() {
-        EventBus.onBackgroundThread(self, name: AskMenuEvent.name) { [unowned self] _ in
-            self.ws?.send(APIChatCommand.menu.rawValue)
+        EventBus.onBackgroundThread(self, name: GetMenuEvent.name) { [unowned self] _ in
+            self.ws?.send(try! GetMenuDto().serializedData())
         }
 
-        EventBus.onBackgroundThread(self, name: ChangeLocalityEvent.name) { [unowned self] notification in
-            if let locality = (notification.object as? ChangeLocalityEvent)?.locality {
-                self.ws?.send("\(APIChatCommand.changeLocality.rawValue) \(locality.name)")
+        EventBus.onBackgroundThread(self, name: DidSelectMenuEvent.name) { [unowned self] notification in
+            if let menu = (notification.object as? DidSelectMenuEvent)?.menu {
+                var data = DidSelectMenuDto()
+                data.menuID = menu.menuId
+                
+                self.ws?.send(try! data.serializedData())
             }
         }
     }
@@ -92,13 +89,40 @@ class APIChat: NSObject {
     }
 
     private func handleMessage(message: Any?) {
-        if let data = message as? Data {
-            let _ = JSON(data: data)
+        if let data = message as? Data,
+            let foodServiceMsg = try? FoodServiceMessage(serializedData: data),
+            let oneOfMsg = foodServiceMsg.msg {
             
+            switch oneOfMsg {
+            
+            case .selectMenu(let dto):
+                SelectMenuEvent.fire(menus: map(dto.menus))
+            
+            case .didUpdateTermsOfServices:
+                return
+            }
         }
     }
 
     func disconnect() {
         ws?.close()
+    }
+}
+
+extension APIChat {
+    func map(_ dtos: [MenuDto]) -> [Menu] {
+        return dtos.map { dto in
+            return Menu(menuId: dto.menuID, locality: map(dto.locality))
+        }
+    }
+    
+    func map(_ dto: LocalityDto) -> Locality {
+        return Locality(location: CLLocation(latitude: dto.latitude, longitude: dto.longitude),
+                                name: dto.name,
+                                description: dto.descr,
+                                boundedBy: (lowerCorner: CLLocation(latitude: dto.lowerLatitude, longitude: dto.lowerLongitude),
+                                            upperCorner: CLLocation(latitude: dto.upperLatitude, longitude: dto.upperLongitude)),
+                                fiasId: dto.fiasID,
+                                coatOfArmsUrl: dto.coatOfArmsURL)
     }
 }

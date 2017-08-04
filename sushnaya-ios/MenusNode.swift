@@ -6,9 +6,9 @@
 import Foundation
 import AsyncDisplayKit
 
-class LocalitiesNode: ASDisplayNode {
+class MenusNode: ASDisplayNode {
 
-    var localities: [Locality]
+    var menus: [Menu]
 
     var headerNode = ASTextNode()
     var subheadingNode = ASTextNode()
@@ -28,8 +28,8 @@ class LocalitiesNode: ASDisplayNode {
         ]
     }()
 
-    init(localities: [Locality]) {
-        self.localities = localities
+    init(menus: [Menu]) {
+        self.menus = menus
         super.init()
 
         self.automaticallyManagesSubnodes = true
@@ -69,18 +69,18 @@ class LocalitiesNode: ASDisplayNode {
     }
 }
 
-extension LocalitiesNode: ASTableDataSource, ASTableDelegate {
+extension MenusNode: ASTableDataSource, ASTableDelegate {
     func tableNode(_ tableNode: ASTableNode, numberOfRowsInSection section: Int) -> Int {
-        return localities.count
+        return menus.count
     }
 
     func tableNode(_ tableNode: ASTableNode, nodeBlockForRowAt indexPath: IndexPath) -> ASCellNodeBlock {
-        guard localities.count > indexPath.row else { return { ASCellNode() } }
+        guard menus.count > indexPath.row else { return { ASCellNode() } }
 
-        let locality = self.localities[indexPath.row]
+        let menu = self.menus[indexPath.row]
 
         return {
-            return LocalityCellNode(locality: locality)
+            return MenuCellNode(menu: menu)
         }
     }
 }

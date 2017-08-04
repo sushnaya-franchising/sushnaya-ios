@@ -9,16 +9,7 @@
 import Foundation
 
 
-class Menu {
-    var locality: Locality
-    var categories: [MenuCategory]?
-    
-    convenience init(locality: Locality) {
-        self.init(locality: locality, categories: nil)
-    }
-    
-    init(locality: Locality, categories: [MenuCategory]?) {
-        self.locality = locality
-        self.categories = categories
-    }
+struct Menu {
+    var menuId: Int64
+    var locality: Locality        
 }

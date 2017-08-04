@@ -7,16 +7,16 @@ import Foundation
 import AsyncDisplayKit
 import UIKit
 
-class LocalitiesViewController: ASViewController<LocalitiesNode> {
+class MenusViewController: ASViewController<MenusNode> {
 
-    var localities: [Locality] {
+    var menus: [Menu] {
         get {
-            return node.localities
+            return node.menus
         }
     }
 
-    convenience init(localities: [Locality]) {
-        self.init(node: LocalitiesNode(localities: localities))
+    convenience init(menus: [Menu]) {
+        self.init(node: MenusNode(menus: menus))
     }
 
     override func viewWillAppear(_ animated: Bool) {

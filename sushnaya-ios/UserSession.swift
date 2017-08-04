@@ -22,8 +22,8 @@ class UserSession: NSObject {
         }
     }
 
-    var locality: Locality? {
-        return settings.locality
+    var menu: Menu? {
+        return settings.menu
     }
     
     let settings = UserSettings()

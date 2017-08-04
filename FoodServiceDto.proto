@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+
+message GetMenuDto {
+}
+
+message SelectMenuDto {
+    repeated MenuDto menus = 1;
+}
+
+message DidUpdateTermsOfServicesDto {
+}
+
+message MenuDto {
+    int64 menuId = 1;
+	LocalityDto locality = 2;
+}
+
+message LocalityDto {
+    string name = 1;
+    string descr = 2;
+    double latitude = 3;
+    double longitude = 4;
+    double lowerLatitude = 5;
+    double lowerLongitude = 6;
+    double upperLatitude = 7;
+    double upperLongitude = 8;
+    string fiasId = 9;
+    string coatOfArmsUrl = 10;
+}
+
+message DidSelectMenuDto {
+    int64 menuId = 1;
+}
+
+message UserMessage {
+    oneof msg {
+        DidSelectMenuDto didSelectMenu = 1;
+		GetMenuDto getMenu = 2;
+    }
+}
+
+message FoodServiceMessage {
+    oneof msg {
+        SelectMenuDto selectMenu = 1;
+		DidUpdateTermsOfServicesDto didUpdateTermsOfServices = 2;
+    }
+}

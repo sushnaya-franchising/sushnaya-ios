@@ -15,6 +15,8 @@ import SwiftEventBus
 
 class HomeViewController: ASViewController<ASDisplayNode> {
 
+    private let isFakeMode = true
+    
     let cellInsets = Constants.ProductCellLayout.CellInsets
     let titleLabelInsets = Constants.ProductCellLayout.TitleLabelInsets
     let subtitleLabelInsets = Constants.ProductCellLayout.SubtitleLabelInsets
@@ -32,7 +34,7 @@ class HomeViewController: ASViewController<ASDisplayNode> {
 
     var _collectionNode: ASCollectionNode!
     var _selectedProductIndexPath: IndexPath?
-
+    
     convenience init() {
         self.init(node: ASDisplayNode())
 
@@ -46,11 +48,13 @@ class HomeViewController: ASViewController<ASDisplayNode> {
         
         SwiftEventBus.onMainThread(self, name: ConnectionDidOpenAPIChatEvent.name) { [unowned self] (notification) in
             if self.products == nil {
-                AskMenuEvent.fire()
+                GetMenuEvent.fire()
             }
         }
         
-        initFakeData()
+        if isFakeMode {
+            initFakeData()
+        }
     }
     
     private func setupCollectionNode() {
@@ -129,14 +133,16 @@ class HomeViewController: ASViewController<ASDisplayNode> {
         navigationController?.setNavigationBarHidden(true, animated: false)
 
         if self.products == nil {
-            AskMenuEvent.fire()
+            GetMenuEvent.fire()
         }
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        fireFakeChangeLocalitiesProposal()
+        if isFakeMode {
+            fireFakeChangeLocalitiesProposal()
+        }
     }
 }
 
