@@ -14,7 +14,7 @@ protocol OrderNavbarDelegate: class {
 }
 
 class OrderNavbarNode: ASDisplayNode {
-    fileprivate let chevronUpIconString = NSAttributedString(string: String.fontAwesomeIcon(name: .chevronUp), attributes: [NSFontAttributeName: UIFont.fontAwesome(ofSize: 16), NSForegroundColorAttributeName: PaperColor.Gray800])
+    fileprivate let dismissIconString = NSAttributedString(string: String.fontAwesomeIcon(name: .chevronDown), attributes: [NSFontAttributeName: UIFont.fontAwesome(ofSize: 16), NSForegroundColorAttributeName: PaperColor.Gray800])
     
     fileprivate let backButton = ASButtonNode()
     fileprivate let backgroundNode = ASDisplayNode()
@@ -54,7 +54,7 @@ class OrderNavbarNode: ASDisplayNode {
     }
     
     private func setupBackButtonNode() {
-        backButton.setAttributedTitle(chevronUpIconString, for: .normal)
+        backButton.setAttributedTitle(dismissIconString, for: .normal)
         backButton.setTargetClosure { [unowned self] _ in
             self.delegate?.orderNavbarDidTapBackButton(node: self)
         }

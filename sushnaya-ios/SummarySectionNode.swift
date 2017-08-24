@@ -79,22 +79,22 @@ class OrderFormSummarySectionNode: ASDisplayNode {
     
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
         iconImageNode.style.preferredSize = CGSize(width: 32, height: 24)
-        let iconLayout = ASInsetLayoutSpec(insets: UIEdgeInsetsMake(0, 16, 0, 0), child: iconImageNode)
+//        let iconLayout = ASInsetLayoutSpec(insets: UIEdgeInsetsMake(0, 16, 0, 0), child: iconImageNode)
         
         titleTextNode.textContainerInset = UIEdgeInsets(top: 5, left: 8, bottom: 5, right: 16)
         titleTextNode.style.flexGrow = 1
         titleTextNode.style.flexShrink = 1
         
-        let iconAndTitle = ASStackLayoutSpec.horizontal()
-        iconAndTitle.justifyContent = .start
-        iconAndTitle.alignItems = .center
-        iconAndTitle.children = [iconLayout, titleTextNode]
+//        let iconAndTitle = ASStackLayoutSpec.horizontal()
+//        iconAndTitle.justifyContent = .start
+//        iconAndTitle.alignItems = .center
+//        iconAndTitle.children = [iconLayout, titleTextNode]
         
         let summaryTableLayout = summaryTableLayoutSpecThatFits(constrainedSize)
         
         let layout = ASStackLayoutSpec.vertical()
         layout.spacing = 32
-        layout.children = [iconAndTitle, summaryTableLayout]
+        layout.children = [/*iconAndTitle,*/ summaryTableLayout]
         
         return layout
     }

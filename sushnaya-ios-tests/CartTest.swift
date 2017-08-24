@@ -8,6 +8,7 @@
 
 import XCTest
 @testable import sushnaya_ios
+import Darwin
 
 class CartTest: XCTestCase {
     
@@ -64,7 +65,7 @@ class CartTest: XCTestCase {
         cart.remove()
         XCTAssertTrue(cart.sectionsCount == 0)
         
-        XCTAssertTrue(cart.sum.value == 0)
+        XCTAssertTrue(cart.sum.value == 0)                
     }
     
     func testPerformanceExample() {

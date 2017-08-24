@@ -9,7 +9,6 @@
 import UIKit
 import AsyncDisplayKit
 import SwiftEventBus
-import SwiftWebSocket
 import PaperFold
 import FontAwesome_swift
 import PromiseKit
@@ -22,7 +21,11 @@ class App: UIResponder, UIApplicationDelegate {
 
     var userSession = UserSession()
 
-    private let apiChat = APIChat()
+    var isAPIChatConnected: Bool {
+        return foodServiceWebsocket.isConnected
+    }
+    
+    private let foodServiceWebsocket = FoodServiceWebSocket()
 
     private var apiChatRestartDelay = 1        
     
@@ -58,7 +61,7 @@ class App: UIResponder, UIApplicationDelegate {
     }
 
     private func createDefaultRootViewController() -> UIViewController {
-        let rootTBC = MainController()
+        let rootTBC = MainViewController()
         rootTBC.delegate = self
         rootTBC.tabBar.unselectedItemTintColor = PaperColor.Gray
         rootTBC.tabBar.tintColor = PaperColor.Gray800
@@ -87,7 +90,7 @@ class App: UIResponder, UIApplicationDelegate {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
 
-        apiChat.disconnect()
+        foodServiceWebsocket.disconnect()
     }
 
     func applicationDidEnterBackground(_ application: UIApplication) {
@@ -127,7 +130,7 @@ class App: UIResponder, UIApplicationDelegate {
         }.apply()
 
         firstly {
-            return apiChat.connect(authToken: userSession.authToken!)
+            return foodServiceWebsocket.connect(authToken: userSession.authToken!)
 
         }.always {
             onNetworkActivity.cancel()
@@ -152,8 +155,8 @@ class App: UIResponder, UIApplicationDelegate {
             self.window?.rootViewController?.present(vc, animated: true, completion: nil)
         }
 
-        SwiftEventBus.onMainThread(self, name: AuthenticationEvent.name) { [unowned self] (notification) in
-            self.userSession.authToken = (notification.object as! AuthenticationEvent).authToken
+        SwiftEventBus.onMainThread(self, name: DidAuthenticateEvent.name) { [unowned self] (notification) in
+            self.userSession.authToken = (notification.object as! DidAuthenticateEvent).authToken
 
             self.startAPIChat()
 
@@ -192,14 +195,7 @@ class App: UIResponder, UIApplicationDelegate {
 
         SwiftEventBus.onMainThread(self, name: APIChatErrorEvent.name) { notification in
             if let event = notification.object as? APIChatErrorEvent {
-                switch event.cause {
-
-                case WebSocketError.network(let description):
-                    print("WebSocket error: \(description)")
-
-                default:
-                    print(event.cause)
-                }
+                print("WebSocket error: \(event.cause)")
             }
         }
 
@@ -231,6 +227,6 @@ class App: UIResponder, UIApplicationDelegate {
 
 extension App: UITabBarControllerDelegate {
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
-        (tabBarController as! MainController).setPaperFoldState(isFolded: true, animated: true)
+        (tabBarController as! MainViewController).setPaperFoldState(isFolded: true, animated: true)
     }
 }

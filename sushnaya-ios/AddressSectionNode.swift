@@ -12,7 +12,7 @@ import AsyncDisplayKit
 class OrderFormAddressSectionNode: ASDisplayNode {
     
     fileprivate var titleTextNode = ASTextNode()
-    fileprivate let collectionNode: PageableCollectionNode
+    fileprivate let collectionNode: ASCollectionNode
     fileprivate let flowLayout: UICollectionViewFlowLayout
     
     var addresses: [Address]? {
@@ -28,8 +28,7 @@ class OrderFormAddressSectionNode: ASDisplayNode {
         flowLayout.scrollDirection = .horizontal
         flowLayout.itemSize = OrderFormAddressSectionNode.calcAddressCellSize()
         flowLayout.minimumInteritemSpacing = 8
-        
-        collectionNode = PageableCollectionNode(collectionViewLayout: flowLayout)
+        collectionNode = ASCollectionNode(collectionViewLayout: flowLayout)
         
         super.init()
         
@@ -58,8 +57,7 @@ class OrderFormAddressSectionNode: ASDisplayNode {
     override func didLoad() {
         super.didLoad()
         
-        collectionNode.collectionView.showsHorizontalScrollIndicator = false
-        collectionNode.collectionView.contentInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+        collectionNode.view.decelerationRate = UIScrollViewDecelerationRateFast
     }
     
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
@@ -76,25 +74,25 @@ class OrderFormAddressSectionNode: ASDisplayNode {
     }
 }
 
-extension OrderFormAddressSectionNode: PageableCollectionDataSource, PageableCollectionDelegate {
-    func pageableCollectionNode(_ node: PageableCollectionNode, numberOfPagesInSection section: Int) -> Int {
-        return (addresses?.count ?? 0) + 1 + 5 // todo: remove +5
+extension OrderFormAddressSectionNode: ASCollectionDataSource, ASCollectionDelegate {
+    func collectionNode(_ collectionNode: ASCollectionNode, numberOfItemsInSection section: Int) -> Int {
+        return (addresses?.count ?? 0) + 1
     }
     
-    func pageableCollectionNode(_ node: PageableCollectionNode, nodeBlockForPageAt indexPath: IndexPath) -> ASCellNodeBlock {
+    func collectionNode(_ collectionNode: ASCollectionNode, nodeBlockForItemAt indexPath: IndexPath) -> ASCellNodeBlock {
         return { [unowned self] _ in
-            guard indexPath.row < (self.addresses?.count ?? 0) + 5 else { // todo: remove +5
+            guard indexPath.row < (self.addresses?.count ?? 0) else {
                 let cell = AddAddressCellNode()
                 cell.delegate = self
                 return cell
             }
             
-            return AddressCellNode(address: self.addresses![0/*indexPath.row*/]) // todo: remove 0, uncomment valid index
+            return AddressCellNode(address: self.addresses![indexPath.row])
         }
     }
     
-    func pageableCollectionNode(_ node: PageableCollectionNode, didSelectPageAt indexPath: IndexPath) {
-        let pageNode = node.pageForItem(at: indexPath)
+    func collectionNode(_ collectionNode: ASCollectionNode, didSelectItemAt indexPath: IndexPath) {
+        let pageNode = collectionNode.nodeForItem(at: indexPath)
         pageNode?.invalidateCalculatedLayout()
         pageNode?.setNeedsDisplay()
     }

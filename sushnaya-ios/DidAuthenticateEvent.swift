@@ -1,5 +1,5 @@
 //
-//  AuthenticationEvent.swift
+//  DidAuthenticateEvent.swift
 //  sushnaya-ios
 //
 //  Created by Igor Kurylenko on 3/24/17.
@@ -9,12 +9,12 @@
 import Foundation
 import SwiftEventBus
 
-struct AuthenticationEvent: Event {
-    static var name: String = "\(AuthenticationEvent.self)"
+struct DidAuthenticateEvent: Event {
+    static var name: String = "\(DidAuthenticateEvent.self)"
     
     var authToken: String
     
     static func fire(authToken: String) {
-        EventBus.post(AuthenticationEvent.name, sender: AuthenticationEvent(authToken: authToken))
+        EventBus.post(DidAuthenticateEvent.name, sender: DidAuthenticateEvent(authToken: authToken))
     }
 }

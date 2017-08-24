@@ -18,7 +18,7 @@ protocol AddressNavbarDelegate: class {
 }
 
 class AddressNavbarNode: ASDisplayNode {
-    fileprivate let chevronUpIconString = NSAttributedString(string: String.fontAwesomeIcon(name: .chevronUp), attributes: [NSFontAttributeName: UIFont.fontAwesome(ofSize: 16), NSForegroundColorAttributeName: PaperColor.Gray800])
+    fileprivate let dismissIconString = NSAttributedString(string: String.fontAwesomeIcon(name: .chevronDown), attributes: [NSFontAttributeName: UIFont.fontAwesome(ofSize: 16), NSForegroundColorAttributeName: PaperColor.Gray800])
     fileprivate let mapIconString = NSAttributedString(string: String.fontAwesomeIcon(name: .mapO), attributes: [NSFontAttributeName: UIFont.fontAwesome(ofSize: 16), NSForegroundColorAttributeName: PaperColor.Gray800])
     fileprivate let keyboardIconString = NSAttributedString(string: String.fontAwesomeIcon(name: .keyboardO), attributes: [NSFontAttributeName: UIFont.fontAwesome(ofSize: 17), NSForegroundColorAttributeName: PaperColor.Gray800])
     
@@ -61,7 +61,7 @@ class AddressNavbarNode: ASDisplayNode {
     }        
     
     private func setupBackButtonNode() {
-        backButton.setAttributedTitle(chevronUpIconString, for: .normal)
+        backButton.setAttributedTitle(dismissIconString, for: .normal)
         backButton.setTargetClosure { [unowned self] _ in
             self.delegate?.addressNavbarDidTapBackButton(node: self)
         }

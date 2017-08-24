@@ -94,9 +94,7 @@ class AddressCellNode: ASCellNode {
     private func setupLocalityImageNode() {
         localityImageNode.defaultImage = UIImage(color: PaperColor.Gray300, size: CGSize(width: 32, height: 32))
         
-        if let url = address.locality.coatOfArmsUrl {
-            localityImageNode.url = URL(string: url)
-        }
+        localityImageNode.url = FoodServiceImages.getCoatOfArmsImageUrl(location: address.locality.location)
     }
     
     override func didLoad() {

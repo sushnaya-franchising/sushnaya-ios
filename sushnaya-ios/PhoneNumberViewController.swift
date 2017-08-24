@@ -117,7 +117,7 @@ class PhoneNumberViewController: ASViewController<ASTableNode> {
         firstly {
             onNetworkActivity.apply()
             
-            return Authentication.requestSMSWithVerificationCode(phoneNumber: e154PhoneNumber)
+            return FoodServiceAuth.requestSMSWithVerificationCode(phoneNumber: e154PhoneNumber)
             
         }.then { () -> () in
             self.pushVerificationCodeController(phoneNumber: phoneNumber!)

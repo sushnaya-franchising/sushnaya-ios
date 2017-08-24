@@ -14,9 +14,11 @@ class MenusViewController: ASViewController<MenusNode> {
             return node.menus
         }
     }
-
+    
     convenience init(menus: [Menu]) {
         self.init(node: MenusNode(menus: menus))
+        
+        self.node.delegate = self
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -28,3 +30,10 @@ class MenusViewController: ASViewController<MenusNode> {
     }
 }
 
+extension MenusViewController: MenusNodeDelegate {
+    func menusNode(_ node: MenusNode, didSelectMenu menu: Menu) {
+        DidSelectMenuEvent.fire(menu: menu)
+        
+        self.dismiss(animated: true, completion: nil)
+    }
+}

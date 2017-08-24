@@ -35,6 +35,7 @@ class HomeViewController: ASViewController<ASDisplayNode> {
     var _collectionNode: ASCollectionNode!
     var _selectedProductIndexPath: IndexPath?
     
+    
     convenience init() {
         self.init(node: ASDisplayNode())
 
@@ -132,17 +133,14 @@ class HomeViewController: ASViewController<ASDisplayNode> {
 
         navigationController?.setNavigationBarHidden(true, animated: false)
 
-        if self.products == nil {
+        if products == nil && app.isAPIChatConnected {
             GetMenuEvent.fire()
         }
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-
-        if isFakeMode {
-            fireFakeChangeLocalitiesProposal()
-        }
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        SwiftEventBus.unregister(self)
     }
 }
 

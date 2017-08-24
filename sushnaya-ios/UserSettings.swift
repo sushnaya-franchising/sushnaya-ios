@@ -19,7 +19,7 @@ class UserSettings {
         }
     }
     
-    var addresses: [Address]?
+    private(set) var addresses = [Address]()
     
     init() {
         bindEventHandlers()
@@ -37,5 +37,9 @@ class UserSettings {
             
             self.menu = event.menu
         }
+    }
+    
+    func addAddress(_ address: Address) {
+        self.addresses.append(address)
     }
 }

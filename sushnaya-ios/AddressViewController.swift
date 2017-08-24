@@ -10,15 +10,17 @@ import Alamofire
 
 protocol AddressViewControllerDelegate: class {
     func addressViewController(_ vc: AddressViewController, didSubmitAddress address: Address)
+    
+    func addressViewControllerDidTapBackButton(_ vc: AddressViewController)
 }
 
-class AddressViewController: ASViewController<ASDisplayNode> {
+class AddressViewController: ASViewController<AddressContentNode> {
     
-    fileprivate let navbarNode = AddressNavbarNode()
-    fileprivate var pagerNode: ASPagerNode!
-    fileprivate var mapNode: AddressMapNode!
-    fileprivate var formNode: AddressFormNode!
-    fileprivate var addressSuggestionsWidget: SuggestionsWidget!
+//    let contentNode = AddressContentNode()
+    
+    var mapNode: AddressMapNode!
+    var formNode: AddressFormNode!
+    var addressSuggestionsWidget: SuggestionsWidget!
     
     fileprivate var geocoding: Debouncer?
     fileprivate var tapRecognizer: UITapGestureRecognizer!
@@ -32,50 +34,55 @@ class AddressViewController: ASViewController<ASDisplayNode> {
     
     weak var delegate: AddressViewControllerDelegate?
     
+    var pagerNode: ASPagerNode {
+        return node.pagerNode
+    }
+    
+    var navbarNode: AddressNavbarNode {
+        return node.navbarNode
+    }
+    
     var locality: Locality {
         return app.userSession.menu!.locality
     }
     
     convenience init() {
-        self.init(node: ASDisplayNode())
+        self.init(node: AddressContentNode())
+        
+        self.formNode = AddressFormNode()
+        self.formNode.locality = locality
+        self.formNode.delegate = self
+        
+        self.addressSuggestionsWidget = SuggestionsWidget()
+        self.addressSuggestionsWidget.delegate = self
+        
+        self.mapNode = AddressMapNode(locality: self.locality)
+        self.mapNode.delegate = self
+        self.mapNode.addressCallout.delegate = self
+        
+        self.pagerNode.setDataSource(self)
+        self.pagerNode.setDelegate(self)
+        
+        self.navbarNode.delegate = self
         
         tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleSingleTap(recognizer:)))
         tapRecognizer.delegate = self
         tapRecognizer.numberOfTapsRequired = 1
         
-        self.node.backgroundColor = PaperColor.White
         self.node.automaticallyManagesSubnodes = true
         
-        setupNodes()
-        
-        // todo: subscribe to locality change event and update map and form locality
-        // todo: reveal form if no internet connection available
-    }
-
-    private func setupNodes() {
-        self.navbarNode.delegate = self
-        
-        self.formNode = AddressFormNode(locality: locality)
-        self.formNode.delegate = self
-        
-        self.addressSuggestionsWidget = SuggestionsWidget()
-        dadataSuggestionsProvider = DadataSuggestionsProvider(cityFiasId: locality.fiasId)
-        self.addressSuggestionsWidget.provider = dadataSuggestionsProvider
-        self.addressSuggestionsWidget.delegate = self
-        
-        self.mapNode = AddressMapNode(locality: locality)
         self.addressOnMap = Address(locality: locality, coordinate: locality.location.coordinate)
-        self.mapNode?.delegate = self
-        self.mapNode?.addressCallout.delegate = self
+        self.dadataSuggestionsProvider = DadataSuggestionsProvider(cityFiasId: locality.fiasId)
+        self.addressSuggestionsWidget.provider = dadataSuggestionsProvider
         
         self.geocoding = debounce (delay: 0.1) { [unowned self] in
-            YandexGeocoder.requestAddress(coordinate: self.mapNode!.centerCoordinate).then { address -> () in
+            YandexGeocoder.requestAddress(coordinate: self.mapNode.centerCoordinate).then { address -> () in
                 guard let address = address else {
                     self.mapNode.addressCallout.state = .addressIsUndefined
                     return
                 }
                 
-                self.mapNode!.setCenter(coordinate: address.coordinate, animated: true)
+                self.mapNode.setCenter(coordinate: address.coordinate, animated: true)
                 self.mapNode.addressCallout.state = .addressIsDefined(address.displayName)
                 self.addressOnMap = address.toAddress(locality: self.locality)
                 
@@ -85,20 +92,19 @@ class AddressViewController: ASViewController<ASDisplayNode> {
         }.onCancel {
             YandexGeocoder.cancelAllRequests()
         }
+
+//        self.node.layoutSpecBlock = { [unowned self] (node, constrainedSize) in
+//            return ASWrapperLayoutSpec(layoutElement: self.contentNode)
+//        }
         
-        self.pagerNode = ASPagerNode()
-        self.pagerNode.allowsAutomaticInsetsAdjustment = true
-        self.pagerNode.setDataSource(self)
-        self.pagerNode.setDelegate(self)
-        
-        self.node.layoutSpecBlock = { [unowned self] _ in
-            return ASOverlayLayoutSpec(child: self.pagerNode, overlay: self.navbarNode)
-        }
+        // todo: subscribe to locality change event and update map and form locality
+        // todo: reveal form if no internet connection available
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        geocoding?.apply()
+        
+        geocoding?.apply()                
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -106,12 +112,12 @@ class AddressViewController: ASViewController<ASDisplayNode> {
         
         self.view.addGestureRecognizer(tapRecognizer!)
         
-        updateMapLocationButtonVisibility()// todo: also update when application will resign active
+        adjustMapLocationButtonVisibility()// todo: also update when application will resign active
         
         subscribeToKeyboardNotifications()
     }
     
-    private func updateMapLocationButtonVisibility() {
+    private func adjustMapLocationButtonVisibility() {
         guard CLLocationManager.locationServicesEnabled() else {
             mapNode.isLocationButtonHidden = true
             return
@@ -262,8 +268,8 @@ extension AddressViewController: AddressFormDelegate, SuggestionsWidgetDelegate 
 
 extension AddressViewController: AddressNavbarDelegate {
     func addressNavbarDidTapBackButton(node: AddressNavbarNode) {
-        self.dismiss(animated: true, completion: nil)
         self.view.endEditing(true)
+        delegate?.addressViewControllerDidTapBackButton(self)
     }
     
     func addressNavbarDidTapMapButton(node: AddressNavbarNode) {
@@ -321,6 +327,11 @@ extension AddressViewController: AddressMapDelegate, AddressMapCalloutDelegate {
     }
     
     func addressMapCalloutDidSubmit(_ node: AddressMapCalloutNode) {
-        self.delegate?.addressViewController(self, didSubmitAddress: addressOnMap!)
+        addAddress(addressOnMap)
+        self.delegate?.addressViewController(self, didSubmitAddress: addressOnMap)
+    }
+    
+    func addAddress(_ address: Address) {
+        self.app.userSession.settings.addAddress(address)
     }
 }

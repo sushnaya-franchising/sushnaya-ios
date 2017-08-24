@@ -6,7 +6,7 @@
 import Foundation
 import pop
 
-class OrderPresentingAnimationController: NSObject, UIViewControllerAnimatedTransitioning {
+class PushUpPresentingTransitioning: NSObject, UIViewControllerAnimatedTransitioning {
 
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
         return 0.5

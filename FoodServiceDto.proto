@@ -13,7 +13,7 @@ message DidUpdateTermsOfServicesDto {
 
 message MenuDto {
     int64 menuId = 1;
-	LocalityDto locality = 2;
+    LocalityDto locality = 2;
 }
 
 message LocalityDto {
@@ -26,23 +26,55 @@ message LocalityDto {
     double upperLatitude = 7;
     double upperLongitude = 8;
     string fiasId = 9;
-    string coatOfArmsUrl = 10;
 }
 
 message DidSelectMenuDto {
     int64 menuId = 1;
 }
 
+message CategoriesDto {
+    repeated CategoryDto categories = 1;
+}
+
+message CategoryDto {
+    string name = 1;
+    repeated ProductDto products = 2;
+}
+
+message RecommendationsDto {
+    repeated ProductDto products = 1;
+}
+
+message ProductDto {
+    string name = 1;
+    string subheading = 2;
+    repeated PriceDto pricing = 3;
+    PhotoDto photo = 4;
+}
+
+message PriceDto {
+    double value = 1;
+    string modifier = 2;
+}
+
+message PhotoDto {
+    int32 height = 1;
+    int32 width = 2;
+    string url = 3;
+}
+
 message UserMessage {
-    oneof msg {
+    oneof type {
         DidSelectMenuDto didSelectMenu = 1;
-		GetMenuDto getMenu = 2;
+        GetMenuDto getMenu = 2;
     }
 }
 
 message FoodServiceMessage {
-    oneof msg {
+    oneof type {
         SelectMenuDto selectMenu = 1;
-		DidUpdateTermsOfServicesDto didUpdateTermsOfServices = 2;
+        DidUpdateTermsOfServicesDto didUpdateTermsOfServices = 2;
+        CategoriesDto categories = 3;
+        RecommendationsDto recommendations = 4;
     }
 }

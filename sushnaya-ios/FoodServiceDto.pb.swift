@@ -181,8 +181,6 @@ struct LocalityDto: SwiftProtobuf.Message {
 
   var fiasID: String = String()
 
-  var coatOfArmsURL: String = String()
-
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
   init() {}
@@ -203,7 +201,6 @@ struct LocalityDto: SwiftProtobuf.Message {
       case 7: try decoder.decodeSingularDoubleField(value: &self.upperLatitude)
       case 8: try decoder.decodeSingularDoubleField(value: &self.upperLongitude)
       case 9: try decoder.decodeSingularStringField(value: &self.fiasID)
-      case 10: try decoder.decodeSingularStringField(value: &self.coatOfArmsURL)
       default: break
       }
     }
@@ -240,9 +237,6 @@ struct LocalityDto: SwiftProtobuf.Message {
     }
     if !self.fiasID.isEmpty {
       try visitor.visitSingularStringField(value: self.fiasID, fieldNumber: 9)
-    }
-    if !self.coatOfArmsURL.isEmpty {
-      try visitor.visitSingularStringField(value: self.coatOfArmsURL, fieldNumber: 10)
     }
     try unknownFields.traverse(visitor: &visitor)
   }
@@ -282,37 +276,306 @@ struct DidSelectMenuDto: SwiftProtobuf.Message {
   }
 }
 
+struct CategoriesDto: SwiftProtobuf.Message {
+  static let protoMessageName: String = "CategoriesDto"
+
+  var categories: [CategoryDto] = []
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+
+  /// Used by the decoding initializers in the SwiftProtobuf library, not generally
+  /// used directly. `init(serializedData:)`, `init(jsonUTF8Data:)`, and other decoding
+  /// initializers are defined in the SwiftProtobuf library. See the Message and
+  /// Message+*Additions` files.
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      switch fieldNumber {
+      case 1: try decoder.decodeRepeatedMessageField(value: &self.categories)
+      default: break
+      }
+    }
+  }
+
+  /// Used by the encoding methods of the SwiftProtobuf library, not generally
+  /// used directly. `Message.serializedData()`, `Message.jsonUTF8Data()`, and
+  /// other serializer methods are defined in the SwiftProtobuf library. See the
+  /// `Message` and `Message+*Additions` files.
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.categories.isEmpty {
+      try visitor.visitRepeatedMessageField(value: self.categories, fieldNumber: 1)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+}
+
+struct CategoryDto: SwiftProtobuf.Message {
+  static let protoMessageName: String = "CategoryDto"
+
+  var name: String = String()
+
+  var products: [ProductDto] = []
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+
+  /// Used by the decoding initializers in the SwiftProtobuf library, not generally
+  /// used directly. `init(serializedData:)`, `init(jsonUTF8Data:)`, and other decoding
+  /// initializers are defined in the SwiftProtobuf library. See the Message and
+  /// Message+*Additions` files.
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      switch fieldNumber {
+      case 1: try decoder.decodeSingularStringField(value: &self.name)
+      case 2: try decoder.decodeRepeatedMessageField(value: &self.products)
+      default: break
+      }
+    }
+  }
+
+  /// Used by the encoding methods of the SwiftProtobuf library, not generally
+  /// used directly. `Message.serializedData()`, `Message.jsonUTF8Data()`, and
+  /// other serializer methods are defined in the SwiftProtobuf library. See the
+  /// `Message` and `Message+*Additions` files.
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.name.isEmpty {
+      try visitor.visitSingularStringField(value: self.name, fieldNumber: 1)
+    }
+    if !self.products.isEmpty {
+      try visitor.visitRepeatedMessageField(value: self.products, fieldNumber: 2)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+}
+
+struct RecommendationsDto: SwiftProtobuf.Message {
+  static let protoMessageName: String = "RecommendationsDto"
+
+  var products: [ProductDto] = []
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+
+  /// Used by the decoding initializers in the SwiftProtobuf library, not generally
+  /// used directly. `init(serializedData:)`, `init(jsonUTF8Data:)`, and other decoding
+  /// initializers are defined in the SwiftProtobuf library. See the Message and
+  /// Message+*Additions` files.
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      switch fieldNumber {
+      case 1: try decoder.decodeRepeatedMessageField(value: &self.products)
+      default: break
+      }
+    }
+  }
+
+  /// Used by the encoding methods of the SwiftProtobuf library, not generally
+  /// used directly. `Message.serializedData()`, `Message.jsonUTF8Data()`, and
+  /// other serializer methods are defined in the SwiftProtobuf library. See the
+  /// `Message` and `Message+*Additions` files.
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.products.isEmpty {
+      try visitor.visitRepeatedMessageField(value: self.products, fieldNumber: 1)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+}
+
+struct ProductDto: SwiftProtobuf.Message {
+  static let protoMessageName: String = "ProductDto"
+
+  var name: String {
+    get {return _storage._name}
+    set {_uniqueStorage()._name = newValue}
+  }
+
+  var subheading: String {
+    get {return _storage._subheading}
+    set {_uniqueStorage()._subheading = newValue}
+  }
+
+  var pricing: [PriceDto] {
+    get {return _storage._pricing}
+    set {_uniqueStorage()._pricing = newValue}
+  }
+
+  var photo: PhotoDto {
+    get {return _storage._photo ?? PhotoDto()}
+    set {_uniqueStorage()._photo = newValue}
+  }
+  /// Returns true if `photo` has been explicitly set.
+  var hasPhoto: Bool {return _storage._photo != nil}
+  /// Clears the value of `photo`. Subsequent reads from it will return its default value.
+  mutating func clearPhoto() {_storage._photo = nil}
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+
+  /// Used by the decoding initializers in the SwiftProtobuf library, not generally
+  /// used directly. `init(serializedData:)`, `init(jsonUTF8Data:)`, and other decoding
+  /// initializers are defined in the SwiftProtobuf library. See the Message and
+  /// Message+*Additions` files.
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    _ = _uniqueStorage()
+    try withExtendedLifetime(_storage) { (_storage: _StorageClass) in
+      while let fieldNumber = try decoder.nextFieldNumber() {
+        switch fieldNumber {
+        case 1: try decoder.decodeSingularStringField(value: &_storage._name)
+        case 2: try decoder.decodeSingularStringField(value: &_storage._subheading)
+        case 3: try decoder.decodeRepeatedMessageField(value: &_storage._pricing)
+        case 4: try decoder.decodeSingularMessageField(value: &_storage._photo)
+        default: break
+        }
+      }
+    }
+  }
+
+  /// Used by the encoding methods of the SwiftProtobuf library, not generally
+  /// used directly. `Message.serializedData()`, `Message.jsonUTF8Data()`, and
+  /// other serializer methods are defined in the SwiftProtobuf library. See the
+  /// `Message` and `Message+*Additions` files.
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    try withExtendedLifetime(_storage) { (_storage: _StorageClass) in
+      if !_storage._name.isEmpty {
+        try visitor.visitSingularStringField(value: _storage._name, fieldNumber: 1)
+      }
+      if !_storage._subheading.isEmpty {
+        try visitor.visitSingularStringField(value: _storage._subheading, fieldNumber: 2)
+      }
+      if !_storage._pricing.isEmpty {
+        try visitor.visitRepeatedMessageField(value: _storage._pricing, fieldNumber: 3)
+      }
+      if let v = _storage._photo {
+        try visitor.visitSingularMessageField(value: v, fieldNumber: 4)
+      }
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  fileprivate var _storage = _StorageClass.defaultInstance
+}
+
+struct PriceDto: SwiftProtobuf.Message {
+  static let protoMessageName: String = "PriceDto"
+
+  var value: Double = 0
+
+  var modifier: String = String()
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+
+  /// Used by the decoding initializers in the SwiftProtobuf library, not generally
+  /// used directly. `init(serializedData:)`, `init(jsonUTF8Data:)`, and other decoding
+  /// initializers are defined in the SwiftProtobuf library. See the Message and
+  /// Message+*Additions` files.
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      switch fieldNumber {
+      case 1: try decoder.decodeSingularDoubleField(value: &self.value)
+      case 2: try decoder.decodeSingularStringField(value: &self.modifier)
+      default: break
+      }
+    }
+  }
+
+  /// Used by the encoding methods of the SwiftProtobuf library, not generally
+  /// used directly. `Message.serializedData()`, `Message.jsonUTF8Data()`, and
+  /// other serializer methods are defined in the SwiftProtobuf library. See the
+  /// `Message` and `Message+*Additions` files.
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if self.value != 0 {
+      try visitor.visitSingularDoubleField(value: self.value, fieldNumber: 1)
+    }
+    if !self.modifier.isEmpty {
+      try visitor.visitSingularStringField(value: self.modifier, fieldNumber: 2)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+}
+
+struct PhotoDto: SwiftProtobuf.Message {
+  static let protoMessageName: String = "PhotoDto"
+
+  var height: Int32 = 0
+
+  var width: Int32 = 0
+
+  var url: String = String()
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+
+  /// Used by the decoding initializers in the SwiftProtobuf library, not generally
+  /// used directly. `init(serializedData:)`, `init(jsonUTF8Data:)`, and other decoding
+  /// initializers are defined in the SwiftProtobuf library. See the Message and
+  /// Message+*Additions` files.
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      switch fieldNumber {
+      case 1: try decoder.decodeSingularInt32Field(value: &self.height)
+      case 2: try decoder.decodeSingularInt32Field(value: &self.width)
+      case 3: try decoder.decodeSingularStringField(value: &self.url)
+      default: break
+      }
+    }
+  }
+
+  /// Used by the encoding methods of the SwiftProtobuf library, not generally
+  /// used directly. `Message.serializedData()`, `Message.jsonUTF8Data()`, and
+  /// other serializer methods are defined in the SwiftProtobuf library. See the
+  /// `Message` and `Message+*Additions` files.
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if self.height != 0 {
+      try visitor.visitSingularInt32Field(value: self.height, fieldNumber: 1)
+    }
+    if self.width != 0 {
+      try visitor.visitSingularInt32Field(value: self.width, fieldNumber: 2)
+    }
+    if !self.url.isEmpty {
+      try visitor.visitSingularStringField(value: self.url, fieldNumber: 3)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+}
+
 struct UserMessage: SwiftProtobuf.Message {
   static let protoMessageName: String = "UserMessage"
 
-  var msg: OneOf_Msg? {
-    get {return _storage._msg}
-    set {_uniqueStorage()._msg = newValue}
+  var type: OneOf_Type? {
+    get {return _storage._type}
+    set {_uniqueStorage()._type = newValue}
   }
 
   var didSelectMenu: DidSelectMenuDto {
     get {
-      if case .didSelectMenu(let v)? = _storage._msg {return v}
+      if case .didSelectMenu(let v)? = _storage._type {return v}
       return DidSelectMenuDto()
     }
-    set {_uniqueStorage()._msg = .didSelectMenu(newValue)}
+    set {_uniqueStorage()._type = .didSelectMenu(newValue)}
   }
 
   var getMenu: GetMenuDto {
     get {
-      if case .getMenu(let v)? = _storage._msg {return v}
+      if case .getMenu(let v)? = _storage._type {return v}
       return GetMenuDto()
     }
-    set {_uniqueStorage()._msg = .getMenu(newValue)}
+    set {_uniqueStorage()._type = .getMenu(newValue)}
   }
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
-  enum OneOf_Msg: Equatable {
+  enum OneOf_Type: Equatable {
     case didSelectMenu(DidSelectMenuDto)
     case getMenu(GetMenuDto)
 
-    static func ==(lhs: UserMessage.OneOf_Msg, rhs: UserMessage.OneOf_Msg) -> Bool {
+    static func ==(lhs: UserMessage.OneOf_Type, rhs: UserMessage.OneOf_Type) -> Bool {
       switch (lhs, rhs) {
       case (.didSelectMenu(let l), .didSelectMenu(let r)): return l == r
       case (.getMenu(let l), .getMenu(let r)): return l == r
@@ -334,20 +597,20 @@ struct UserMessage: SwiftProtobuf.Message {
         switch fieldNumber {
         case 1:
           var v: DidSelectMenuDto?
-          if let current = _storage._msg {
+          if let current = _storage._type {
             try decoder.handleConflictingOneOf()
             if case .didSelectMenu(let m) = current {v = m}
           }
           try decoder.decodeSingularMessageField(value: &v)
-          if let v = v {_storage._msg = .didSelectMenu(v)}
+          if let v = v {_storage._type = .didSelectMenu(v)}
         case 2:
           var v: GetMenuDto?
-          if let current = _storage._msg {
+          if let current = _storage._type {
             try decoder.handleConflictingOneOf()
             if case .getMenu(let m) = current {v = m}
           }
           try decoder.decodeSingularMessageField(value: &v)
-          if let v = v {_storage._msg = .getMenu(v)}
+          if let v = v {_storage._type = .getMenu(v)}
         default: break
         }
       }
@@ -360,7 +623,7 @@ struct UserMessage: SwiftProtobuf.Message {
   /// `Message` and `Message+*Additions` files.
   func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
     try withExtendedLifetime(_storage) { (_storage: _StorageClass) in
-      switch _storage._msg {
+      switch _storage._type {
       case .didSelectMenu(let v)?:
         try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
       case .getMenu(let v)?:
@@ -377,37 +640,57 @@ struct UserMessage: SwiftProtobuf.Message {
 struct FoodServiceMessage: SwiftProtobuf.Message {
   static let protoMessageName: String = "FoodServiceMessage"
 
-  var msg: OneOf_Msg? {
-    get {return _storage._msg}
-    set {_uniqueStorage()._msg = newValue}
+  var type: OneOf_Type? {
+    get {return _storage._type}
+    set {_uniqueStorage()._type = newValue}
   }
 
   var selectMenu: SelectMenuDto {
     get {
-      if case .selectMenu(let v)? = _storage._msg {return v}
+      if case .selectMenu(let v)? = _storage._type {return v}
       return SelectMenuDto()
     }
-    set {_uniqueStorage()._msg = .selectMenu(newValue)}
+    set {_uniqueStorage()._type = .selectMenu(newValue)}
   }
 
   var didUpdateTermsOfServices: DidUpdateTermsOfServicesDto {
     get {
-      if case .didUpdateTermsOfServices(let v)? = _storage._msg {return v}
+      if case .didUpdateTermsOfServices(let v)? = _storage._type {return v}
       return DidUpdateTermsOfServicesDto()
     }
-    set {_uniqueStorage()._msg = .didUpdateTermsOfServices(newValue)}
+    set {_uniqueStorage()._type = .didUpdateTermsOfServices(newValue)}
+  }
+
+  var categories: CategoriesDto {
+    get {
+      if case .categories(let v)? = _storage._type {return v}
+      return CategoriesDto()
+    }
+    set {_uniqueStorage()._type = .categories(newValue)}
+  }
+
+  var recommendations: RecommendationsDto {
+    get {
+      if case .recommendations(let v)? = _storage._type {return v}
+      return RecommendationsDto()
+    }
+    set {_uniqueStorage()._type = .recommendations(newValue)}
   }
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
-  enum OneOf_Msg: Equatable {
+  enum OneOf_Type: Equatable {
     case selectMenu(SelectMenuDto)
     case didUpdateTermsOfServices(DidUpdateTermsOfServicesDto)
+    case categories(CategoriesDto)
+    case recommendations(RecommendationsDto)
 
-    static func ==(lhs: FoodServiceMessage.OneOf_Msg, rhs: FoodServiceMessage.OneOf_Msg) -> Bool {
+    static func ==(lhs: FoodServiceMessage.OneOf_Type, rhs: FoodServiceMessage.OneOf_Type) -> Bool {
       switch (lhs, rhs) {
       case (.selectMenu(let l), .selectMenu(let r)): return l == r
       case (.didUpdateTermsOfServices(let l), .didUpdateTermsOfServices(let r)): return l == r
+      case (.categories(let l), .categories(let r)): return l == r
+      case (.recommendations(let l), .recommendations(let r)): return l == r
       default: return false
       }
     }
@@ -426,20 +709,36 @@ struct FoodServiceMessage: SwiftProtobuf.Message {
         switch fieldNumber {
         case 1:
           var v: SelectMenuDto?
-          if let current = _storage._msg {
+          if let current = _storage._type {
             try decoder.handleConflictingOneOf()
             if case .selectMenu(let m) = current {v = m}
           }
           try decoder.decodeSingularMessageField(value: &v)
-          if let v = v {_storage._msg = .selectMenu(v)}
+          if let v = v {_storage._type = .selectMenu(v)}
         case 2:
           var v: DidUpdateTermsOfServicesDto?
-          if let current = _storage._msg {
+          if let current = _storage._type {
             try decoder.handleConflictingOneOf()
             if case .didUpdateTermsOfServices(let m) = current {v = m}
           }
           try decoder.decodeSingularMessageField(value: &v)
-          if let v = v {_storage._msg = .didUpdateTermsOfServices(v)}
+          if let v = v {_storage._type = .didUpdateTermsOfServices(v)}
+        case 3:
+          var v: CategoriesDto?
+          if let current = _storage._type {
+            try decoder.handleConflictingOneOf()
+            if case .categories(let m) = current {v = m}
+          }
+          try decoder.decodeSingularMessageField(value: &v)
+          if let v = v {_storage._type = .categories(v)}
+        case 4:
+          var v: RecommendationsDto?
+          if let current = _storage._type {
+            try decoder.handleConflictingOneOf()
+            if case .recommendations(let m) = current {v = m}
+          }
+          try decoder.decodeSingularMessageField(value: &v)
+          if let v = v {_storage._type = .recommendations(v)}
         default: break
         }
       }
@@ -452,11 +751,15 @@ struct FoodServiceMessage: SwiftProtobuf.Message {
   /// `Message` and `Message+*Additions` files.
   func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
     try withExtendedLifetime(_storage) { (_storage: _StorageClass) in
-      switch _storage._msg {
+      switch _storage._type {
       case .selectMenu(let v)?:
         try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
       case .didUpdateTermsOfServices(let v)?:
         try visitor.visitSingularMessageField(value: v, fieldNumber: 2)
+      case .categories(let v)?:
+        try visitor.visitSingularMessageField(value: v, fieldNumber: 3)
+      case .recommendations(let v)?:
+        try visitor.visitSingularMessageField(value: v, fieldNumber: 4)
       case nil: break
       }
     }
@@ -552,7 +855,6 @@ extension LocalityDto: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._
     7: .same(proto: "upperLatitude"),
     8: .same(proto: "upperLongitude"),
     9: .same(proto: "fiasId"),
-    10: .same(proto: "coatOfArmsUrl"),
   ]
 
   func _protobuf_generated_isEqualTo(other: LocalityDto) -> Bool {
@@ -565,7 +867,6 @@ extension LocalityDto: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._
     if self.upperLatitude != other.upperLatitude {return false}
     if self.upperLongitude != other.upperLongitude {return false}
     if self.fiasID != other.fiasID {return false}
-    if self.coatOfArmsURL != other.coatOfArmsURL {return false}
     if unknownFields != other.unknownFields {return false}
     return true
   }
@@ -583,6 +884,125 @@ extension DidSelectMenuDto: SwiftProtobuf._MessageImplementationBase, SwiftProto
   }
 }
 
+extension CategoriesDto: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .same(proto: "categories"),
+  ]
+
+  func _protobuf_generated_isEqualTo(other: CategoriesDto) -> Bool {
+    if self.categories != other.categories {return false}
+    if unknownFields != other.unknownFields {return false}
+    return true
+  }
+}
+
+extension CategoryDto: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .same(proto: "name"),
+    2: .same(proto: "products"),
+  ]
+
+  func _protobuf_generated_isEqualTo(other: CategoryDto) -> Bool {
+    if self.name != other.name {return false}
+    if self.products != other.products {return false}
+    if unknownFields != other.unknownFields {return false}
+    return true
+  }
+}
+
+extension RecommendationsDto: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .same(proto: "products"),
+  ]
+
+  func _protobuf_generated_isEqualTo(other: RecommendationsDto) -> Bool {
+    if self.products != other.products {return false}
+    if unknownFields != other.unknownFields {return false}
+    return true
+  }
+}
+
+extension ProductDto: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .same(proto: "name"),
+    2: .same(proto: "subheading"),
+    3: .same(proto: "pricing"),
+    4: .same(proto: "photo"),
+  ]
+
+  fileprivate class _StorageClass {
+    var _name: String = String()
+    var _subheading: String = String()
+    var _pricing: [PriceDto] = []
+    var _photo: PhotoDto? = nil
+
+    static let defaultInstance = _StorageClass()
+
+    private init() {}
+
+    init(copying source: _StorageClass) {
+      _name = source._name
+      _subheading = source._subheading
+      _pricing = source._pricing
+      _photo = source._photo
+    }
+  }
+
+  fileprivate mutating func _uniqueStorage() -> _StorageClass {
+    if !isKnownUniquelyReferenced(&_storage) {
+      _storage = _StorageClass(copying: _storage)
+    }
+    return _storage
+  }
+
+  func _protobuf_generated_isEqualTo(other: ProductDto) -> Bool {
+    if _storage !== other._storage {
+      let storagesAreEqual: Bool = withExtendedLifetime((_storage, other._storage)) { (_args: (_StorageClass, _StorageClass)) in
+        let _storage = _args.0
+        let other_storage = _args.1
+        if _storage._name != other_storage._name {return false}
+        if _storage._subheading != other_storage._subheading {return false}
+        if _storage._pricing != other_storage._pricing {return false}
+        if _storage._photo != other_storage._photo {return false}
+        return true
+      }
+      if !storagesAreEqual {return false}
+    }
+    if unknownFields != other.unknownFields {return false}
+    return true
+  }
+}
+
+extension PriceDto: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .same(proto: "value"),
+    2: .same(proto: "modifier"),
+  ]
+
+  func _protobuf_generated_isEqualTo(other: PriceDto) -> Bool {
+    if self.value != other.value {return false}
+    if self.modifier != other.modifier {return false}
+    if unknownFields != other.unknownFields {return false}
+    return true
+  }
+}
+
+extension PhotoDto: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .same(proto: "height"),
+    2: .same(proto: "width"),
+    3: .same(proto: "url"),
+  ]
+
+  func _protobuf_generated_isEqualTo(other: PhotoDto) -> Bool {
+    if self.height != other.height {return false}
+    if self.width != other.width {return false}
+    if self.url != other.url {return false}
+    if unknownFields != other.unknownFields {return false}
+    return true
+  }
+}
+
 extension UserMessage: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     1: .same(proto: "didSelectMenu"),
@@ -590,14 +1010,14 @@ extension UserMessage: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._
   ]
 
   fileprivate class _StorageClass {
-    var _msg: UserMessage.OneOf_Msg?
+    var _type: UserMessage.OneOf_Type?
 
     static let defaultInstance = _StorageClass()
 
     private init() {}
 
     init(copying source: _StorageClass) {
-      _msg = source._msg
+      _type = source._type
     }
   }
 
@@ -613,7 +1033,7 @@ extension UserMessage: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._
       let storagesAreEqual: Bool = withExtendedLifetime((_storage, other._storage)) { (_args: (_StorageClass, _StorageClass)) in
         let _storage = _args.0
         let other_storage = _args.1
-        if _storage._msg != other_storage._msg {return false}
+        if _storage._type != other_storage._type {return false}
         return true
       }
       if !storagesAreEqual {return false}
@@ -627,17 +1047,19 @@ extension FoodServiceMessage: SwiftProtobuf._MessageImplementationBase, SwiftPro
   static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     1: .same(proto: "selectMenu"),
     2: .same(proto: "didUpdateTermsOfServices"),
+    3: .same(proto: "categories"),
+    4: .same(proto: "recommendations"),
   ]
 
   fileprivate class _StorageClass {
-    var _msg: FoodServiceMessage.OneOf_Msg?
+    var _type: FoodServiceMessage.OneOf_Type?
 
     static let defaultInstance = _StorageClass()
 
     private init() {}
 
     init(copying source: _StorageClass) {
-      _msg = source._msg
+      _type = source._type
     }
   }
 
@@ -653,7 +1075,7 @@ extension FoodServiceMessage: SwiftProtobuf._MessageImplementationBase, SwiftPro
       let storagesAreEqual: Bool = withExtendedLifetime((_storage, other._storage)) { (_args: (_StorageClass, _StorageClass)) in
         let _storage = _args.0
         let other_storage = _args.1
-        if _storage._msg != other_storage._msg {return false}
+        if _storage._type != other_storage._type {return false}
         return true
       }
       if !storagesAreEqual {return false}
