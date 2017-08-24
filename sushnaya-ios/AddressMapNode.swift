@@ -45,10 +45,7 @@ class AddressMapNode: ASCellNode {
     
     weak var delegate: AddressMapDelegate?
     
-    var locality: Locality
-    
     init(locality: Locality) {
-        self.locality = locality
         super.init()
         
         self.automaticallyManagesSubnodes = true

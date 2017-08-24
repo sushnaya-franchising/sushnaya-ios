@@ -9,7 +9,17 @@
 import Foundation
 import pop
 
-class CartPresentingAnimationController: NSObject, UIViewControllerAnimatedTransitioning {
+class SlideUpPresentingTransitioning: NSObject, UIViewControllerAnimatedTransitioning {
+
+    var applyAlpha:Bool
+    
+    convenience override init() {
+        self.init(applyAlpha: true)
+    }
+    
+    init(applyAlpha: Bool) {
+        self.applyAlpha = applyAlpha
+    }
     
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
         return 0.5
@@ -37,10 +47,13 @@ class CartPresentingAnimationController: NSObject, UIViewControllerAnimatedTrans
             transitionContext.completeTransition(true)
         }
         
-        let fromViewAlphaAnimation = POPBasicAnimation(propertyNamed: kPOPViewAlpha)
-        fromViewAlphaAnimation?.toValue = 0.6
-        
         toView.layer.pop_add(positionAnimation, forKey: "positionAnimation")
-        fromView.pop_add(fromViewAlphaAnimation, forKey: "alphaAnimation")
+        
+        if applyAlpha {
+            let fromViewAlphaAnimation = POPBasicAnimation(propertyNamed: kPOPViewAlpha)
+            fromViewAlphaAnimation?.toValue = 0.6
+        
+            fromView.pop_add(fromViewAlphaAnimation, forKey: "alphaAnimation")
+        }
     }
 }

@@ -15,7 +15,6 @@ struct Locality {
     var description: String
     var boundedBy: (lowerCorner: CLLocation, upperCorner: CLLocation)
     var fiasId: String
-    var coatOfArmsUrl: String?
         
     func includes(location: CLLocation) -> Bool {
         let (lower, upper) = boundedBy

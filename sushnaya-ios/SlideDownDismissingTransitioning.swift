@@ -9,7 +9,7 @@
 import Foundation
 import pop
 
-class CartDismissingAnimationController: NSObject, UIViewControllerAnimatedTransitioning {
+class SlideDownDismissingTransitioning: NSObject, UIViewControllerAnimatedTransitioning {
 
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
         return 0.5

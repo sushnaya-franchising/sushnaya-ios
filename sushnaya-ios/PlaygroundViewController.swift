@@ -10,54 +10,54 @@ import Foundation
 import AsyncDisplayKit
 
 class PlaygroundViewController: ASViewController<ASDisplayNode> {
-    let field1 = FormFieldNode(label: "First")
-    let field2 = FormFieldNode(label: "Second")
-    var started: Bool = false
     
-    convenience init() {
+    var playgroundContentNode = PlaygroundContentNode(v: "OK")
+    
+    convenience init() {        
         self.init(node: ASDisplayNode())
         
-        self.node.backgroundColor = PaperColor.White
         self.node.automaticallyManagesSubnodes = true
         
         self.node.layoutSpecBlock = { [unowned self] (node, constrainedSize) in
-            let layout = ASStackLayoutSpec.vertical()
-            layout.children = [self.field1, self.field2]
+            let frontLayout = ASStackLayoutSpec.vertical()
+            frontLayout.style.preferredSize = constrainedSize.max
             
-            return ASInsetLayoutSpec(insets: UIEdgeInsetsMake(40, 0, 0, 0), child: layout)
+            let frontPusher = ASLayoutSpec()
+            let frontPusherHeight: CGFloat = 78
+            frontPusher.style.height = ASDimension(unit: .points, value: frontPusherHeight)
+            
+            let contentSize = CGSize(width: constrainedSize.max.width,
+                                     height: constrainedSize.max.height - frontPusherHeight)
+            let contentLayout = self.contentLayoutSpecThatFits(ASSizeRange(min: contentSize, max: contentSize))
+            
+            frontLayout.children = [frontPusher, contentLayout]
+            
+            return frontLayout
         }
-    }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
         
-        if !started && self.field1.isNodeLoaded {
-            let origin = self.field1.view.frame.origin
-            let size = self.field1.view.bounds.size
-            
-            addDropdownNodeAsync(containerRect: CGRect(origin: CGPoint(x: 0, y: origin.y + size.height), size: CGSize(width: size.width, height: 80)))
-            
-            started = true
-        }
-    }
-    
-    private func createDropdownNode(containerRect: CGRect) -> ASDisplayNode {
-        let dropdown = ASDisplayNode()
-        dropdown.backgroundColor = PaperColor.Gray100.withAlphaComponent(0.5)
-        dropdown.style.preferredSize = containerRect.size
-        dropdown.layoutThatFits(ASSizeRange(min: CGSize.zero, max: containerRect.size))
-        dropdown.frame = containerRect
         
-        return dropdown
     }
     
-    private func addDropdownNodeAsync(containerRect: CGRect) {
-        DispatchQueue.global().async {
-            let dropdownNode = self.createDropdownNode(containerRect: containerRect)
-            
-            DispatchQueue.main.async {
-                self.view.addSubview(dropdownNode.view)
-            }
-        }
+    func contentLayoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
+        playgroundContentNode.style.preferredSize = constrainedSize.max
+        
+        return ASWrapperLayoutSpec(layoutElement: playgroundContentNode)
+    }
+}
+
+class PlaygroundContentNode: ASDisplayNode {
+    init(v: String) {
+        super.init()
+        
+        self.automaticallyManagesSubnodes = true
+        self.backgroundColor = PaperColor.White
+    }
+    
+    override func layoutDidFinish() {
+        super.layoutDidFinish()
+        
+        layer.shadowOffset = CGSize(width: 0, height: 0)
+        layer.shadowOpacity = 0.3
+        layer.shadowRadius = 3
     }
 }

@@ -1,9 +1,13 @@
 //
-//  DataModel.pb.swift
+//  RestAPI.swift
 //  sushnaya-ios
 //
-//  Created by Igor Kurylenko on 8/4/17.
+//  Created by Igor Kurylenko on 8/5/17.
 //  Copyright © 2017 igor kurilenko. All rights reserved.
 //
 
 import Foundation
+
+class FoodServiceRest {
+    
+}

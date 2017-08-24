@@ -12,12 +12,12 @@ target 'sushnaya-ios' do
     pod 'pop'    
     pod 'Alamofire'
     pod 'SwiftEventBus', :tag => '2.2.0', :git => 'https://github.com/cesarferreira/SwiftEventBus.git'
-    pod 'SwiftWebSocket'
     pod 'Texture', '2.2'
     pod 'PaperFold'    
     pod 'YandexMapKit'
     pod 'SwiftyJSON'
     pod 'SwiftProtobuf', '~> 0.9.903'
+    pod 'Starscream', '~> 2.0.3'
     
     target 'sushnaya-ios-tests' do
         inherit! :search_paths

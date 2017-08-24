@@ -23,7 +23,12 @@ class UserSession: NSObject {
     }
 
     var menu: Menu? {
-        return settings.menu
+        get {
+            return settings.menu
+        }
+        set {
+            settings.menu = newValue
+        }
     }
     
     let settings = UserSettings()
@@ -33,11 +38,11 @@ class UserSession: NSObject {
     override init() {
         super.init()
         
-        // todo: query the auth token
-        authToken = "NTJiZTJmNjVhNTBjNDY3OTIwMjAyMTdjMjA4YTA0NGNhNzMxNjg3Zi0xNTAwMDM3OTE4MjA3LS0x"
+        // todo: get the auth token from datastorage
+        // todo: get the menu locality from datastorage
         
-        // todo: query locality
-//        locality = ...
+        authToken = "YzUwNzM1YTU2MDgxYjU3Mjg3NGFmM2U5YzRmNWE3Mjk3NGJlNmY2NS0xNTAxOTI0ODExNjM1LTU4MDYzMDQ4NjgxODg2MzcyNzk"
+        menu = FakeMenus[0]
         
     }
 }

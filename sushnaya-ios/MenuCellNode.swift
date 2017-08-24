@@ -50,10 +50,8 @@ class MenuCellNode: ASCellNode {
 
     private func setupImageNode(_ menu: Menu) {
         imageNode.defaultImage = UIImage(color: PaperColor.Gray300, size: Constants.LocalityCellLayout.CoatOfArmsImageSize)
-
-        if let url = menu.locality.coatOfArmsUrl {
-            imageNode.url = URL(string: url)
-        }
+        print(FoodServiceImages.getCoatOfArmsImageUrl(location: menu.locality.location).absoluteString)
+        imageNode.url = FoodServiceImages.getCoatOfArmsImageUrl(location: menu.locality.location)
     }
 
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {

@@ -91,7 +91,7 @@ class OrderWithDeliveryFormNode: ASCellNode {
     
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
         var rows = [ASLayoutElement]()
-        rows.append(self.addressSectionNode)
+//        rows.append(self.addressSectionNode)
         
         self.paymentSectionNode.style.flexGrow = 1
         self.paymentSectionNode.style.flexShrink = 1

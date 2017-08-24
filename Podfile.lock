@@ -34,9 +34,9 @@ PODS:
     - PromiseKit/CorePromise
   - PromiseKit/UIKit (4.2.0):
     - PromiseKit/CorePromise
+  - Starscream (2.0.4)
   - SwiftEventBus (2.2.0)
   - SwiftProtobuf (0.9.903)
-  - SwiftWebSocket (2.6.5)
   - SwiftyJSON (3.1.4)
   - Texture (2.2):
     - Texture/PINRemoteImage (= 2.2)
@@ -57,9 +57,9 @@ DEPENDENCIES:
   - pop
   - PromiseKit
   - PromiseKit/CoreLocation
+  - Starscream (~> 2.0.3)
   - SwiftEventBus (from `https://github.com/cesarferreira/SwiftEventBus.git`, tag `2.2.0`)
   - SwiftProtobuf (~> 0.9.903)
-  - SwiftWebSocket
   - SwiftyJSON
   - Texture (= 2.2)
   - YandexMapKit
@@ -86,13 +86,13 @@ SPEC CHECKSUMS:
   PINRemoteImage: c4f9f16932840c597f32e69dd288e10e111a1929
   pop: f667631a5108a2e60d9e8797c9b32ddaf2080bce
   PromiseKit: 08dfb783c161ddcd95b7912421f14c5113fd8318
+  Starscream: df5974ee928b157c8eda8af8de7c620276b7dfcc
   SwiftEventBus: 39cde57d1881f9d6e8afb1f9e41f973e331bf847
   SwiftProtobuf: d7efc9bea9d3c3bdfc8f6664fe19ee5dc19c04a8
-  SwiftWebSocket: 1ef8a0efb023544643bdf480c1ec4a62b204f293
   SwiftyJSON: c2842d878f95482ffceec5709abc3d05680c0220
   Texture: 3e4664479225216198c29bdb9621664de390534d
   YandexMapKit: 70c6e0819e88f742e3800711f7aedecaf3029300
 
-PODFILE CHECKSUM: 0cb45bc88c89a6789e29d2afdf8cf8c6c761078b
+PODFILE CHECKSUM: e1e41902b008e2e2ed627039a0cdd3bb312c7c30
 
 COCOAPODS: 1.2.0

@@ -92,10 +92,10 @@ class VerificationCodeViewController: ASViewController<ASTableNode> {
         firstly {
             onNetworkActivity.apply()
             
-            return Authentication.requestAuthToken(phoneNumber: e154PhoneNumber, code: verificationCodeText)
+            return FoodServiceAuth.requestAuthToken(phoneNumber: e154PhoneNumber, code: verificationCodeText)
             
         }.then { (authToken: String) -> () in
-            AuthenticationEvent.fire(authToken: authToken)
+            DidAuthenticateEvent.fire(authToken: authToken)
                 
         }.always { () -> () in
             onNetworkActivity.cancel()

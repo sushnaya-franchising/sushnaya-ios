@@ -6,6 +6,10 @@
 import Foundation
 import AsyncDisplayKit
 
+protocol MenusNodeDelegate: class {
+    func menusNode(_ node: MenusNode, didSelectMenu menu: Menu)
+}
+
 class MenusNode: ASDisplayNode {
 
     var menus: [Menu]
@@ -14,6 +18,8 @@ class MenusNode: ASDisplayNode {
     var subheadingNode = ASTextNode()
     var tableNode = ASTableNode()
 
+    weak var delegate: MenusNodeDelegate?
+    
     lazy var headerStringAttributes: [String: AnyObject] = {
         return [
                 NSForegroundColorAttributeName: PaperColor.Gray600,
@@ -82,5 +88,9 @@ extension MenusNode: ASTableDataSource, ASTableDelegate {
         return {
             return MenuCellNode(menu: menu)
         }
+    }
+    
+    func tableNode(_ tableNode: ASTableNode, didSelectRowAt indexPath: IndexPath) {
+        delegate?.menusNode(self, didSelectMenu: menus[indexPath.row])
     }
 }

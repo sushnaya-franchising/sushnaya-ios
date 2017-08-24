@@ -8,7 +8,7 @@ import AsyncDisplayKit
 import PaperFold
 import UIKit
 
-class MainController: ASTabBarController {
+class MainViewController: ASTabBarController {
 
     static let NarrowSideControllerWidth = CGFloat(96)
 
@@ -31,7 +31,6 @@ class MainController: ASTabBarController {
     private func createCartButtonNode(containerRect: CGRect) -> CartButton {
         let button = CartButton()
         let layout = button.layoutThatFits(ASSizeRange(min: CGSize.zero, max: containerRect.size))
-        
         let size = layout.size
         let origin = CGPoint(x: containerRect.midX - 32/2, y: containerRect.midY - CGFloat(size.height / 2))
         button.frame = CGRect(origin: origin, size: size)
@@ -53,7 +52,7 @@ class MainController: ASTabBarController {
 
     func addChildViewController(_ childController: UIViewController, narrowSideController: UIViewController) {
         let narrowNC = PaperFoldNavigationController(rootViewController: childController)
-        narrowNC.setLeftViewController(leftViewController: narrowSideController, width: MainController.NarrowSideControllerWidth)
+        narrowNC.setLeftViewController(leftViewController: narrowSideController, width: MainViewController.NarrowSideControllerWidth)
         narrowNC.tabBarItem = childController.tabBarItem
         paperFoldNCs.append(narrowNC)
 
@@ -91,13 +90,13 @@ class MainController: ASTabBarController {
     }
 }
 
-extension MainController: UIViewControllerTransitioningDelegate {
+extension MainViewController: UIViewControllerTransitioningDelegate {
     func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return CartPresentingAnimationController()
+        return SlideUpPresentingTransitioning()
     }
     
     func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return CartDismissingAnimationController()
+        return SlideDownDismissingTransitioning()
     }
 }
 

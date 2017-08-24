@@ -24,7 +24,12 @@ protocol AddressFormDelegate: class {
 }
 
 class AddressFormNode: ASCellNode {
-    var locality: Locality
+    var locality: Locality? {
+        didSet {
+            adjustLocalityTextNode()
+            adjustLocalityImageNode()
+        }
+    }
     
     weak var delegate: AddressFormDelegate?
     
@@ -49,8 +54,7 @@ class AddressFormNode: ASCellNode {
     
     fileprivate let navbarBackgroundNode = ASDisplayNode()
     
-    init(locality: Locality) {
-        self.locality = locality
+    override init() {
         super.init()
         self.automaticallyManagesSubnodes = true
         setupNodes()
@@ -79,6 +83,12 @@ class AddressFormNode: ASCellNode {
     }
     
     private func setupLocalityTextNode() {
+        adjustLocalityTextNode()
+    }
+    
+    private func adjustLocalityTextNode() {
+        guard let locality = locality else { return }
+        
         localityTextNode.attributedText = NSAttributedString(string: locality.name, attributes:  [
             NSForegroundColorAttributeName: PaperColor.Gray800,
             NSFontAttributeName: UIFont.boldSystemFont(ofSize: 14)
@@ -88,9 +98,13 @@ class AddressFormNode: ASCellNode {
     private func setupLocalityImageNode() {
         localityImageNode.defaultImage = UIImage(color: PaperColor.Gray300, size: CGSize(width: 32, height: 32))
         
-        if let url = locality.coatOfArmsUrl {
-            localityImageNode.url = URL(string: url)
-        }
+        adjustLocalityImageNode()
+    }
+    
+    private func adjustLocalityImageNode() {
+        guard let locality = locality else { return }
+        
+        localityImageNode.url = FoodServiceImages.getCoatOfArmsImageUrl(location: locality.location)
     }
     
     private func setupStreetAndHouseFormFieldNode() {

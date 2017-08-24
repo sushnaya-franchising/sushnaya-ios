@@ -1,8 +1,8 @@
 //
-//  OrderWithDeliveryViewController.swift
+//  OrderViewController.swift
 //  sushnaya-ios
 //
-//  Created by Igor Kurylenko on 5/15/17.
+//  Created by Igor Kurylenko on 8/24/17.
 //  Copyright © 2017 igor kurilenko. All rights reserved.
 //
 
@@ -10,21 +10,39 @@ import Foundation
 import AsyncDisplayKit
 import pop
 
-class OrderViewController: ASViewController<ASDisplayNode> {
+
+protocol OrderViewControllerDelegate: class {
+    func orderViewController(_ vc: OrderViewController, didSubmitOrder order: NSObject?)
     
-    fileprivate let tableNode = ASTableNode()
-    fileprivate let navbarNode = OrderNavbarNode()
+    func orderViewControllerDidTapBackButton(_ vc: OrderViewController)
+}
+
+
+class OrderViewController: ASViewController<OrderNode> {
+    
+    weak var delegate: OrderViewControllerDelegate?
     
     fileprivate var tapRecognizer: UITapGestureRecognizer!
     fileprivate var keyboardHeight: CGFloat = 0
     
+    fileprivate var navbarNode: OrderNavbarNode {
+        return node.navbarNode
+    }
+    
+    fileprivate var tableNode: ASTableNode {
+        return node.tableNode
+    }
+    
+    fileprivate var addresses: [Address] {
+        return self.app.userSession.settings.addresses
+    }
+    
     convenience init() {
-        self.init(node: ASDisplayNode())
+        self.init(node: OrderNode())
         
-        tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleSingleTap(recognizer:)))
-        tapRecognizer.numberOfTapsRequired = 1
+        self.tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleSingleTap(recognizer:)))
+        self.tapRecognizer.numberOfTapsRequired = 1
         
-        self.node.backgroundColor = PaperColor.White
         self.node.automaticallyManagesSubnodes = true
         
         setupNodes()
@@ -32,27 +50,12 @@ class OrderViewController: ASViewController<ASDisplayNode> {
     
     private func setupNodes() {
         self.navbarNode.delegate = self
-        self.navbarNode.title = "Заказ с доставкой"
-        tableNode.delegate = self
-        tableNode.dataSource = self
-        tableNode.allowsSelection = false
-        tableNode.view.separatorStyle = .none
-        
-        self.node.layoutSpecBlock = { [unowned self] _ in
-            return ASOverlayLayoutSpec(child: self.tableNode, overlay: self.navbarNode)
-        }
+        self.tableNode.delegate = self
+        self.tableNode.dataSource = self
     }
     
-    func handleSingleTap(recognizer: UITapGestureRecognizer) {        
+    func handleSingleTap(recognizer: UITapGestureRecognizer) {
         self.view.endEditing(true)
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        tableNode.view.showsVerticalScrollIndicator = false
-        tableNode.view.showsHorizontalScrollIndicator = false
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -70,8 +73,8 @@ class OrderViewController: ASViewController<ASDisplayNode> {
 
 extension OrderViewController: OrderNavbarDelegate {
     func orderNavbarDidTapBackButton(node: OrderNavbarNode) {
-        self.dismiss(animated: true, completion: nil)        
         self.view.endEditing(true)
+        delegate?.orderViewControllerDidTapBackButton(self)
     }
 }
 
@@ -97,6 +100,7 @@ extension OrderViewController: ASTableDataSource, ASTableDelegate {
 extension OrderViewController: OrderWithDeliveryFormDelegate {
     func orderWithDeliveryFormDidSubmit(_ node: OrderWithDeliveryFormNode) {
         // todo: implement
+        delegate?.orderViewController(self, didSubmitOrder: nil)
     }
     
     func orderWithDeliveryForm(_ node: OrderWithDeliveryFormNode, didChangePaymentTypeTo paymentType: PaymentType) {
@@ -170,5 +174,36 @@ extension OrderViewController {
         let keyboardSize = userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue
         
         return keyboardSize.cgRectValue.height
+    }
+}
+
+class OrderNode: ASDisplayNode {
+    fileprivate let tableNode = ASTableNode()
+    fileprivate let navbarNode = OrderNavbarNode()
+    
+    override init() {
+        super.init()
+        
+        self.automaticallyManagesSubnodes = true
+        
+        setupNodes()
+    }
+    
+    func setupNodes() {
+        self.navbarNode.title = "Заказ с доставкой"
+        
+        self.tableNode.allowsSelection = false
+    }
+    
+    override func didLoad() {
+        super.didLoad()
+        
+        tableNode.view.showsVerticalScrollIndicator = false
+        tableNode.view.showsHorizontalScrollIndicator = false
+        tableNode.view.separatorStyle = .none
+    }
+    
+    override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
+        return ASOverlayLayoutSpec(child: self.tableNode, overlay: self.navbarNode)
     }
 }
