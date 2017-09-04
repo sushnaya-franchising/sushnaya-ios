@@ -26,7 +26,6 @@ class OrderWithDeliveryFormNode: ASCellNode {
     
     weak var delegate: OrderWithDeliveryFormDelegate?    
     
-    fileprivate let addressSectionNode = OrderFormAddressSectionNode()
     fileprivate let paymentSectionNode = OrderFormPaymentSectionNode()
     fileprivate let cashOptionsSectionNode: CashOptionsSectionNode
     
@@ -37,9 +36,6 @@ class OrderWithDeliveryFormNode: ASCellNode {
     fileprivate var userSession: UserSession
     fileprivate var cart: Cart {
         return self.userSession.cart
-    }
-    fileprivate var addresses: [Address]? {
-        return self.userSession.settings.addresses
     }
     
     init(userSession: UserSession) {
@@ -53,13 +49,8 @@ class OrderWithDeliveryFormNode: ASCellNode {
     }
     
     private func setupNodes() {
-        setupAddressSectionNode()
         setupSubmitButtonNode()
         setupPaymentSectionNode()
-    }
-    
-    private func setupAddressSectionNode() {
-        addressSectionNode.addresses = self.addresses
     }
     
     private func setupPaymentSectionNode() {
@@ -91,10 +82,7 @@ class OrderWithDeliveryFormNode: ASCellNode {
     
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
         var rows = [ASLayoutElement]()
-//        rows.append(self.addressSectionNode)
         
-        self.paymentSectionNode.style.flexGrow = 1
-        self.paymentSectionNode.style.flexShrink = 1
         rows.append(self.paymentSectionNode)
         
         if(self.paymentSectionNode.paymentType == .cash) {

@@ -21,32 +21,33 @@ class CartToolbarNode: ASDisplayNode {
     private(set) var recommendationsCollection: ASCollectionNode!
 
     lazy var contexts: [DefaultCellContext]? = {
-        func applyStyleForRecommendationCell(_ ctx: DefaultCellContext) -> DefaultCellContext {
-            ctx.style.imageSize = Constants.CartLayout.RecommendationImageSize
-            ctx.style.imageCornerRadius = Constants.CartLayout.RecommendationCornerRadius
-            ctx.style.titleStringAttributes = Constants.CartLayout.RecommendationTitleStringAttributes
-
-            return ctx
-        }
-
-        let categories = [
-                MenuCategory(title: "Салаты", subtitle: nil, photoUrl: "category_s_3", photoSize: UIImage(named: "category_s_3")?.size),
-                MenuCategory(title: "Напитки", subtitle: nil, photoUrl: "category_s_5", photoSize: UIImage(named: "category_s_5")?.size)
-        ]
-
-        let giftIconImage = UIImage.fontAwesomeIcon(name: .gift, textColor: PaperColor.Gray800,
-                size: CGSize(width: 32, height: 32))
-        let giftCellContext = DefaultCellContext(title: "Подарок")
-        giftCellContext.image = giftIconImage
-
-        var contexts = [giftCellContext]
-        categories.forEach {
-            contexts.append(CategoryCellContext($0))
-        }
-
-        return contexts.map {
-            applyStyleForRecommendationCell($0)
-        }
+//        func applyStyleForRecommendationCell(_ ctx: DefaultCellContext) -> DefaultCellContext {
+//            ctx.style.imageSize = Constants.CartLayout.RecommendationImageSize
+//            ctx.style.imageCornerRadius = Constants.CartLayout.RecommendationCornerRadius
+//            ctx.style.titleStringAttributes = Constants.CartLayout.RecommendationTitleStringAttributes
+//
+//            return ctx
+//        }
+//
+//        let categories = [
+//            MenuCategory(title: "Салаты", subtitle: nil, photoUrl: "category_s_3", photoSize: UIImage(named: "category_s_3")?.size),
+//            MenuCategory(title: "Напитки", subtitle: nil, photoUrl: "category_s_5", photoSize: UIImage(named: "category_s_5")?.size)
+//        ]
+//
+//        let giftIconImage = UIImage.fontAwesomeIcon(name: .gift, textColor: PaperColor.Gray800,
+//                size: CGSize(width: 32, height: 32))
+//        let giftCellContext = DefaultCellContext(title: "Подарок")
+//        giftCellContext.image = giftIconImage
+//
+//        var contexts = [giftCellContext]
+//        categories.forEach {
+//            contexts.append(CategoryCellContext($0))
+//        }
+//
+//        return contexts.map {
+//            applyStyleForRecommendationCell($0)
+//        }
+        return []
     }()
 
     lazy var biggestCellHeight: CGFloat = { [unowned self] in
@@ -125,7 +126,7 @@ class CartToolbarNode: ASDisplayNode {
     }
 
     private func setupChangeOrderTypeButton() {
-        let title = NSAttributedString(string: String.fontAwesomeIcon(name: .ellipsisH), attributes: [
+        let title = NSAttributedString(string: String.fontAwesomeIcon(name: .ellipsisV), attributes: [
                 NSFontAttributeName: UIFont.fontAwesome(ofSize: 16),
                 NSForegroundColorAttributeName: PaperColor.Gray800
         ])

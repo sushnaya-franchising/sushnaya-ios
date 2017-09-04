@@ -1,11 +1,3 @@
-//
-//  OrderWithDeliveryViewController.swift
-//  sushnaya-ios
-//
-//  Created by Igor Kurylenko on 5/15/17.
-//  Copyright © 2017 igor kurilenko. All rights reserved.
-//
-
 import Foundation
 import AsyncDisplayKit
 import pop
@@ -14,32 +6,86 @@ import pop
 class CheckoutViewController: ASViewController<CheckoutContentNode> {
     
     fileprivate var orderVC: OrderViewController!
-    fileprivate var addressVC: AddressViewController!
+    fileprivate var editAddressVC: EditAddressViewController!
+    fileprivate var selectAddressVC: SelectAddressViewController!
     
     fileprivate var tapRecognizer: UITapGestureRecognizer!
     fileprivate var keyboardHeight: CGFloat = 0
     
     fileprivate var addresses: [Address] {
-        return self.app.userSession.settings.addresses
-    }
+        return []
+    }        
     
     convenience init() {
-        let addressVC = AddressViewController()
+        let editAddressVC = EditAddressViewController()
+        let selectAddressVC = SelectAddressViewController()
         let orderVC = OrderViewController()
         
-        self.init(node: CheckoutContentNode(orderNode: orderVC.node, addressNode: addressVC.node))
+        self.init(node: CheckoutContentNode(orderNode: orderVC.node,
+                                            editAddressNode: editAddressVC.node,
+                                            selectAddressNode: selectAddressVC.node))
         
         self.orderVC = orderVC
         self.orderVC.delegate = self
         
-        self.addressVC = addressVC
-        self.addressVC.delegate = self
+        self.editAddressVC = editAddressVC
+        self.editAddressVC.delegate = self
+        
+        self.selectAddressVC = selectAddressVC
+        self.selectAddressVC.delegate = self
         
         self.tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleSingleTap(recognizer:)))
         self.tapRecognizer.numberOfTapsRequired = 1
         
         self.node.automaticallyManagesSubnodes = true
-        self.node.state = addresses.isEmpty ? .editAddress : .initial
+        
+        updateState()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        EventBus.onMainThread(self, name: ShowEditAddressViewControllerEvent.name) { [unowned self] (notification) in
+            self.editAddressVC.addressToEdit = (notification.object as! ShowEditAddressViewControllerEvent).address
+            self.node.state = .editAddress
+            self.node.transitionLayout(withAnimation: true, shouldMeasureAsync: false)
+        }
+        
+        EventBus.onMainThread(self, name: DidCreateAddressEvent.name) { [unowned self] _ in
+            self.node.state = .order
+            self.node.transitionLayout(withAnimation: true, shouldMeasureAsync: false)
+        }
+        
+        EventBus.onMainThread(self, name: DidUpdateAddressEvent.name) { [unowned self] (notification) in
+            self.node.state = .order
+            self.node.transitionLayout(withAnimation: true, shouldMeasureAsync: false)
+        }
+        
+//        EventBus.onMainThread(self, name: DidRemoveAddressEvent.name) { [unowned self] (notification) in
+//            if self.addresses.isEmpty {
+//                self.node.state = .editAddress
+//                self.node.transitionLayout(withAnimation: true, shouldMeasureAsync: false)
+//            }
+//        }
+        
+        updateState()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        EventBus.unregister(self)
+    }
+    
+    func updateState() {
+        if addresses.isEmpty {
+            self.node.state = .editAddress
+            editAddressVC.node.setNeedsLayout()
+            
+        } else {
+            self.node.state = .selectAddress
+            selectAddressVC.node.setNeedsLayout()
+        }
     }
     
     func handleSingleTap(recognizer: UITapGestureRecognizer) {        
@@ -47,23 +93,34 @@ class CheckoutViewController: ASViewController<CheckoutContentNode> {
     }
 }
 
-extension CheckoutViewController: AddressViewControllerDelegate {
-    func addressViewControllerDidTapBackButton(_ vc: AddressViewController) {
+extension CheckoutViewController: EditAddressViewControllerDelegate {
+    func editAddressViewControllerDidTapBackButton(_ vc: EditAddressViewController) {
         if addresses.isEmpty {
             self.dismiss(animated: true)
             
         } else {
-            self.node.state = .initial
+            self.node.state = .selectAddress
             node.transitionLayout(withAnimation: true, shouldMeasureAsync: false)
         }
+    }        
+}
+
+extension CheckoutViewController: SelectAddressViewControllerDelegate {
+    func selectAddressViewControllerDidTapBackButton(_ vc: SelectAddressViewController) {
+        self.dismiss(animated: true)
     }
-    
-    func addressViewController(_ vc: AddressViewController, didSubmitAddress address: Address) {
-        guard !addresses.isEmpty else { return }
-        
-        self.node.state = .initial
+
+    func selectAddressViewControllerDapTapAddAddressButton(_ vc: SelectAddressViewController) {
+        editAddressVC.addressToEdit = nil
+        node.state = .editAddress
         node.transitionLayout(withAnimation: true, shouldMeasureAsync: false)
     }
+    
+    func selectAddressViewController(_ vc: SelectAddressViewController, didSelectAddress address: Address) {
+        // todo: pass selected address to the order node
+        self.node.state = .order
+        node.transitionLayout(withAnimation: true, shouldMeasureAsync: false)
+    }        
 }
 
 extension CheckoutViewController: OrderViewControllerDelegate {
@@ -77,19 +134,26 @@ extension CheckoutViewController: OrderViewControllerDelegate {
 }
 
 enum CheckoutContentNodeState {
-    case initial, editAddress
+    case order, editAddress, selectAddress
 }
 
 class CheckoutContentNode: ASDisplayNode {
-    fileprivate var state: CheckoutContentNodeState!
     fileprivate var orderNode: OrderNode!
-    fileprivate var addressNode: AddressContentNode!
-    
-    
-    init(orderNode: OrderNode, addressNode: AddressContentNode) {
+    fileprivate var editAddressNode: EditAddressContentNode!
+    fileprivate var selectAddressNode: SelectAddressNode!
+    fileprivate var state: CheckoutContentNodeState = .editAddress {
+        didSet {
+            guard state != oldValue else { return }
+            
+            self.setNeedsLayout()
+        }
+    }
+        
+    init(orderNode: OrderNode, editAddressNode: EditAddressContentNode, selectAddressNode: SelectAddressNode) {
         super.init()
         self.orderNode = orderNode
-        self.addressNode = addressNode
+        self.editAddressNode = editAddressNode
+        self.selectAddressNode = selectAddressNode
         self.automaticallyManagesSubnodes = true
     }
     
@@ -114,10 +178,14 @@ class CheckoutContentNode: ASDisplayNode {
         
         let contentNode: ASDisplayNode!
         
-        if self.state == .initial {
+        if self.state == .order {
             contentNode = self.orderNode
-        }else {
-            contentNode = self.addressNode
+            
+        } else if self.state == .editAddress {
+            contentNode = self.editAddressNode
+            
+        } else {
+            contentNode = self.selectAddressNode
         }
         
         contentNode.style.preferredSize = contentSize
@@ -127,44 +195,37 @@ class CheckoutContentNode: ASDisplayNode {
         return layout
     }
     
-    override func animateLayoutTransition(_ context: ASContextTransitioning) {
-        if self.state == .initial {
-            let initialOrderFrame = context.initialFrame(for: addressNode)
-            
-            orderNode.frame = initialOrderFrame
-//            orderNode.alpha = 0
-            
-            var finalAddressFrame = context.finalFrame(for: orderNode)
-            finalAddressFrame.origin.x -= finalAddressFrame.size.width
-            
-            // todo: use pop to animate transitioning
-            UIView.animate(withDuration: 0.4, animations: {
-                self.orderNode.frame = context.finalFrame(for: self.orderNode)
-//                self.orderNode.alpha = 1
-                self.addressNode.frame = finalAddressFrame
-//                self.addressNode.alpha = 0
-            }, completion: { finished in
-                context.completeTransition(finished)
-            })
-            
-        } else {
-            var initialAddressFrame = context.initialFrame(for: orderNode)
-            initialAddressFrame.origin.x += initialAddressFrame.size.width
-            
-            addressNode.frame = initialAddressFrame
-//            addressNode.alpha = 0
-            
-            var finalOrderFrame = context.finalFrame(for: addressNode)
-            finalOrderFrame.origin.x -= finalOrderFrame.size.width
-            
-            UIView.animate(withDuration: 0.4, animations: {
-                self.addressNode.frame = context.finalFrame(for: self.addressNode)
-//                self.addressNode.alpha = 1
-                self.orderNode.frame = finalOrderFrame
-//                self.orderNode.alpha = 0
-            }, completion: { finished in
-                context.completeTransition(finished)
-            })
-        }
-    }
+//    override func animateLayoutTransition(_ context: ASContextTransitioning) {
+//        if self.state == order {
+//            let initialOrderFrame = contextorderFrame(for: editAddressNode)
+//            orderNode.frame = initialOrderFrame
+//            
+//            var finalEditAddressFrame = context.finalFrame(for: orderNode)
+//            finalEditAddressFrame.origin.x -= finalEditAddressFrame.size.width
+//            
+//            // todo: use pop to animate transitioning
+//            UIView.animate(withDuration: 0.4, animations: {
+//                self.orderNode.frame = context.finalFrame(for: self.orderNode)
+//                self.editAddressNode.frame = finalEditAddressFrame
+//            }, completion: { finished in
+//                context.completeTransition(finished)
+//            })
+//            
+//        } else {
+//            var initialEditAddressFrame = contextorderFrame(for: orderNode)
+//            initialEditAddressFrame.origin.x += initialEditAddressFrame.size.width
+//            
+//            editAddressNode.frame = initialEditAddressFrame
+//            
+//            var finalOrderFrame = context.finalFrame(for: editAddressNode)
+//            finalOrderFrame.origin.x -= finalOrderFrame.size.width
+//            
+//            UIView.animate(withDuration: 0.4, animations: {
+//                self.editAddressNode.frame = context.finalFrame(for: self.editAddressNode)
+//                self.orderNode.frame = finalOrderFrame
+//            }, completion: { finished in
+//                context.completeTransition(finished)
+//            })
+//        }
+//    }
 }

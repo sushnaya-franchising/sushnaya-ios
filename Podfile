@@ -18,6 +18,7 @@ target 'sushnaya-ios' do
     pod 'SwiftyJSON'
     pod 'SwiftProtobuf', '~> 0.9.903'
     pod 'Starscream', '~> 2.0.3'
+	pod 'CoreStore', '~> 4.0'
     
     target 'sushnaya-ios-tests' do
         inherit! :search_paths

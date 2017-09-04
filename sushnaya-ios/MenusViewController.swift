@@ -9,13 +9,13 @@ import UIKit
 
 class MenusViewController: ASViewController<MenusNode> {
 
-    var menus: [Menu] {
+    var menus: [MenuDto] {
         get {
             return node.menus
         }
     }
     
-    convenience init(menus: [Menu]) {
+    convenience init(menus: [MenuDto]) {
         self.init(node: MenusNode(menus: menus))
         
         self.node.delegate = self
@@ -24,15 +24,15 @@ class MenusViewController: ASViewController<MenusNode> {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        if let indexPath = node.tableNode.indexPathForSelectedRow {
-            node.tableNode.deselectRow(at: indexPath, animated: true)
-        }
+//        if let indexPath = node.tableNode.indexPathForSelectedRow {
+//            node.tableNode.deselectRow(at: indexPath, animated: true)
+//        }
     }
 }
 
 extension MenusViewController: MenusNodeDelegate {
-    func menusNode(_ node: MenusNode, didSelectMenu menu: Menu) {
-        DidSelectMenuEvent.fire(menu: menu)
+    func menusNode(_ node: MenusNode, didSelectMenu menuDto: MenuDto) {
+        DidSelectMenuEvent.fire(menuDto: menuDto)
         
         self.dismiss(animated: true, completion: nil)
     }

@@ -7,22 +7,22 @@ import Foundation
 import AsyncDisplayKit
 
 protocol MenusNodeDelegate: class {
-    func menusNode(_ node: MenusNode, didSelectMenu menu: Menu)
+    func menusNode(_ node: MenusNode, didSelectMenu menu: MenuDto)
 }
 
 class MenusNode: ASDisplayNode {
 
-    var menus: [Menu]
+    var menus: [MenuDto]
 
-    var headerNode = ASTextNode()
-    var subheadingNode = ASTextNode()
-    var tableNode = ASTableNode()
+    fileprivate var headerTextNode = ASTextNode()
+    fileprivate var subheadingTextNode = ASTextNode()
+    fileprivate var tableNode = ASTableNode()
 
     weak var delegate: MenusNodeDelegate?
     
     lazy var headerStringAttributes: [String: AnyObject] = {
         return [
-                NSForegroundColorAttributeName: PaperColor.Gray600,
+                NSForegroundColorAttributeName: PaperColor.Gray800,
                 NSFontAttributeName: UIFont.boldSystemFont(ofSize: 17)
         ]
     }()
@@ -34,7 +34,7 @@ class MenusNode: ASDisplayNode {
         ]
     }()
 
-    init(menus: [Menu]) {
+    init(menus: [MenuDto]) {
         self.menus = menus
         super.init()
 
@@ -50,8 +50,8 @@ class MenusNode: ASDisplayNode {
     }
 
     private func setupHeading() {
-        headerNode.attributedText = NSAttributedString(string: "Выберите город", attributes: headerStringAttributes)
-        subheadingNode.attributedText = NSAttributedString(string: "В каком городе вы хотите сделать заказ?", attributes: subheadingStringAttributes)
+        headerTextNode.attributedText = NSAttributedString(string: "Выберите город", attributes: headerStringAttributes)
+        subheadingTextNode.attributedText = NSAttributedString(string: "В каком городе вы хотите сделать заказ?", attributes: subheadingStringAttributes)
     }
 
     private func setupTableNode() {
@@ -59,19 +59,19 @@ class MenusNode: ASDisplayNode {
         tableNode.dataSource = self
         tableNode.view.separatorStyle = .none
     }
-
+    
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let stack = ASStackLayoutSpec.vertical()
-        stack.alignItems = .center
         stack.justifyContent = .start
         stack.spacing = 16
 
-        tableNode.style.flexGrow = 1.0
+        let headerLayout = ASInsetLayoutSpec(insets: UIEdgeInsets(top: 64, left: 64, bottom: 0, right: 64), child: headerTextNode)
+        let subheadingLayout = ASInsetLayoutSpec(insets: UIEdgeInsets(top: 0, left: 64, bottom: 0, right: 64), child: subheadingTextNode)
+        tableNode.style.preferredSize = constrainedSize.max
 
-        stack.children = [headerNode, subheadingNode, tableNode]
-
-        let rowInsets = UIEdgeInsets(top: 44, left: 0, bottom: 16, right: 0)
-        return ASInsetLayoutSpec(insets: rowInsets, child: stack)
+        stack.children = [headerLayout, subheadingLayout, tableNode]
+        
+        return stack
     }
 }
 
@@ -83,10 +83,10 @@ extension MenusNode: ASTableDataSource, ASTableDelegate {
     func tableNode(_ tableNode: ASTableNode, nodeBlockForRowAt indexPath: IndexPath) -> ASCellNodeBlock {
         guard menus.count > indexPath.row else { return { ASCellNode() } }
 
-        let menu = self.menus[indexPath.row]
+        let menuDto = self.menus[indexPath.row]
 
         return {
-            return MenuCellNode(menu: menu)
+            return MenuCellNode(menuDto: menuDto)
         }
     }
     

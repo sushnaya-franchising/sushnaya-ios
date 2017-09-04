@@ -23,7 +23,7 @@ class Cart: NSObject {
     }
 
     var sum: Price {
-        var sumValue: CGFloat = 0
+        var sumValue: Double = 0
         // todo: use app default locale
         // todo: implement support for multicurrency
         let currencyLocale = history.count == 0 ? "ru_RU" : history[0].price.currencyLocale
@@ -34,7 +34,7 @@ class Cart: NSObject {
             sumValue = sumValue + $0.price.value
         }
 
-        return Price(value: sumValue, currencyLocale: currencyLocale)
+        return Price(value: sumValue, currencyLocale: currencyLocale, modifierName: nil)
     }
 
     override init() {

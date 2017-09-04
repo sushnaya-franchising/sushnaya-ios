@@ -44,7 +44,7 @@ class CashOptionsSectionNode: ASDisplayNode {
             let cashCalculator = CashCalculator(faces: Constants.NominalValues,
                                                 monetaryUnitCentsCount: 1)
             let cashValues = cashCalculator.getPossibleCashValues(price: self.cart.sum.value)?.map {
-                Price(value: $0, currencyLocale: "ru_RU")
+                Price(value: $0, currencyLocale: "ru_RU", modifierName: nil)
             }
             
             DispatchQueue.main.async { [unowned self] _ in

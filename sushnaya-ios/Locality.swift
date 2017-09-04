@@ -1,27 +1,38 @@
-//
-//  Locality.swift
-//  sushnaya-ios
-//
-//  Created by Igor Kurylenko on 3/22/17.
-//  Copyright © 2017 igor kurilenko. All rights reserved.
-//
-
 import Foundation
-import CoreLocation
 
 struct Locality {
-    var location: CLLocation
     var name: String
-    var description: String
-    var boundedBy: (lowerCorner: CLLocation, upperCorner: CLLocation)
+    var descr: String
     var fiasId: String
+    var latitude: Double
+    var longitude: Double
+    var lowerLatitude: Double
+    var lowerLongitude: Double
+    var upperLatitude: Double
+    var upperLongitude: Double
+    
+    var boundedBy: (lowerCorner: CLLocationCoordinate2D, upperCorner: CLLocationCoordinate2D) {
+        get {
+            return (lowerCorner: CLLocationCoordinate2D(latitude: lowerLatitude, longitude: lowerLongitude),
+                    upperCorner: CLLocationCoordinate2D(latitude: upperLatitude, longitude: upperLongitude))
+        }
         
-    func includes(location: CLLocation) -> Bool {
-        let (lower, upper) = boundedBy
+        set {
+            self.lowerLatitude = newValue.lowerCorner.latitude
+            self.lowerLongitude = newValue.lowerCorner.longitude
+            self.upperLatitude = newValue.upperCorner.latitude
+            self.upperLongitude = newValue.upperCorner.longitude
+        }
+    }
+    
+    var coordinate: CLLocationCoordinate2D {
+        get {
+            return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+        }
         
-        return lower.coordinate.latitude <= location.coordinate.latitude &&
-                location.coordinate.latitude <= upper.coordinate.latitude &&
-                lower.coordinate.longitude <= location.coordinate.longitude &&
-                location.coordinate.longitude <= upper.coordinate.longitude
+        set {
+            self.latitude = newValue.latitude
+            self.longitude = newValue.longitude
+        }
     }
 }

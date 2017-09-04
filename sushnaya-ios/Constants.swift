@@ -1,8 +1,3 @@
-//
-// Created by Igor Kurylenko on 3/30/17.
-// Copyright (c) 2017 igor kurilenko. All rights reserved.
-//
-
 import Foundation
 import UIKit
 
@@ -11,7 +6,7 @@ struct Constants {
     
     static let CartButtonDragDistanceToPopCartItem: CGFloat = 5
     
-    static let NominalValues: Set<CGFloat> = [10, 50, 100, 500, 1000, 5000]
+    static let NominalValues: Set<Double> = [10, 50, 100, 500, 1000, 5000]
     
     static let MonetaryUnitCentsCount: Int = 100
     

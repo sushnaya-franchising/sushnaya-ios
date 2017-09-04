@@ -25,7 +25,7 @@ class VerificationCodeViewController: ASViewController<ASTableNode> {
         return verificationCodeNode.textNode
     }
     
-    var verificationCodeText: String {
+    var verificationCode: String {
         set {
             verificationCodeTextNode.setTextWhileKeepingAttributes(text: newValue)
         }
@@ -34,15 +34,21 @@ class VerificationCodeViewController: ASViewController<ASTableNode> {
         }
     }
     
-    init(phoneNumber: NBPhoneNumber) {
-        self.phoneNumber = phoneNumber        
-        self.verificationCodeNode = VerificationCodeNode(phoneNumber: try! phoneNumberUtil.format(phoneNumber, numberFormat: .INTERNATIONAL))
+    private var disableRightBarButtonDebouncer: Debouncer!
+    
+    init(phoneNumber: String) {
+        self.phoneNumber = try! phoneNumberUtil.parse(phoneNumber, defaultRegion: "RU")
+        self.verificationCodeNode = VerificationCodeNode(phoneNumber: try! phoneNumberUtil.format(self.phoneNumber, numberFormat: .INTERNATIONAL))
         super.init(node: ASTableNode())
         
         tableNode.delegate = self
         tableNode.dataSource = self
         tableNode.view.separatorStyle = .none
         tableNode.backgroundColor = UIColor.white
+        
+        disableRightBarButtonDebouncer = debounce {
+            self.navigationItem.rightBarButtonItem?.isEnabled = false
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -60,6 +66,30 @@ class VerificationCodeViewController: ASViewController<ASTableNode> {
         navigationItem.setRightBarButton(nextBarButtonItem, animated: false)        
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        EventBus.onMainThread(self, name: RequestAuthenticationTokenEvent.name) { [unowned self] _ in
+            self.disableRightBarButtonDebouncer.apply()
+        }
+        
+        EventBus.onMainThread(self, name: DidRequestAuthenticationTokenEvent.name) { [unowned self] _ in
+            self.disableRightBarButtonDebouncer.cancel()
+            
+            self.navigationItem.rightBarButtonItem?.isEnabled = true
+        }
+        
+        EventBus.onMainThread(self, name: DidNotRequestAuthenticationTokenEvent.name) {[unowned self] notification in
+            print((notification.object as! DidNotRequestAuthenticationTokenEvent).error)
+            
+            self.onInvalidCode(description: "Вы указали неправильный код.")
+            
+            self.disableRightBarButtonDebouncer.cancel()
+            
+            self.navigationItem.rightBarButtonItem?.isEnabled = true
+        }
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
@@ -72,39 +102,21 @@ class VerificationCodeViewController: ASViewController<ASTableNode> {
         verificationCodeTextNode.resignFirstResponder()
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        EventBus.unregister(self)
+    }
+    
     func onNextButtonTapped() {
-        guard !verificationCodeText.isEmpty else {
+        guard !verificationCode.isEmpty else {
             onEmptyCode()
             return
         }
         
         let e154PhoneNumber = try! phoneNumberUtil.format(phoneNumber, numberFormat: .E164)
         
-        let onNetworkActivity = debounce {
-            UIApplication.shared.isNetworkActivityIndicatorVisible = true
-            self.navigationItem.rightBarButtonItem?.isEnabled = false
-            
-        }.onCancel {
-            UIApplication.shared.isNetworkActivityIndicatorVisible = false
-            self.navigationItem.rightBarButtonItem?.isEnabled = true
-        }
-        
-        firstly {
-            onNetworkActivity.apply()
-            
-            return FoodServiceAuth.requestAuthToken(phoneNumber: e154PhoneNumber, code: verificationCodeText)
-            
-        }.then { (authToken: String) -> () in
-            DidAuthenticateEvent.fire(authToken: authToken)
-                
-        }.always { () -> () in
-            onNetworkActivity.cancel()
-                
-        }.catch { error in
-            // todo: handle all error cases
-            self.onInvalidCode(description: "Вы указали неправильный код.")
-            debugPrint(error.localizedDescription)
-        }
+        RequestAuthenticationTokenEvent.fire(phoneNumber: e154PhoneNumber, code: verificationCode)
     }
     
     private func onEmptyCode() {
@@ -152,14 +164,14 @@ extension VerificationCodeViewController: ASTableDataSource, ASTableDelegate {
 
 extension VerificationCodeViewController: ASEditableTextNodeDelegate {
     func editableTextNode(_ editableTextNode: ASEditableTextNode, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        let oldText = verificationCodeText as NSString
-        let newText = oldText.replacingCharacters(in: range, with: text).digits
+        let oldCode = verificationCode as NSString
+        let newCode = oldCode.replacingCharacters(in: range, with: text).digits
         
-        guard newText.characters.count <= 10 else {
+        guard newCode.characters.count <= 10 else {
             return false
         }
         
-        verificationCodeText = newText
+        verificationCode = newCode
         
         return false
     }

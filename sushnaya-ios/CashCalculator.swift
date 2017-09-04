@@ -1,11 +1,3 @@
-//
-//  CashCalculator.swift
-//  sushnaya-ios
-//
-//  Created by Igor Kurylenko on 6/29/17.
-//  Copyright © 2017 igor kurilenko. All rights reserved.
-//
-
 import Foundation
 
 
@@ -18,17 +10,17 @@ class CashCalculator {
     fileprivate let monetaryUnitCentsCount: Int
     fileprivate var changeMatrix: Matrix?
     
-    init(faces: Set<CGFloat>, monetaryUnitCentsCount: Int, initialMaxPrice: CGFloat = 5000) {
+    init(faces: Set<Double>, monetaryUnitCentsCount: Int, initialMaxPrice: Double = 5000) {
         self.monetaryUnitCentsCount = monetaryUnitCentsCount
         self.faces = faces.map { $0.getCents(monetaryUnitCentsCount) }.sorted(by: >)
         self.changeMatrix = computeChangeMatrix(initialMaxPrice.getCents(monetaryUnitCentsCount))
     }
     
-    func getPossibleCashValues(price: CGFloat) -> [CGFloat]? {
+    func getPossibleCashValues(price: Double) -> [Double]? {
         return getPossibleCashValues(priceCents: price.getCents(monetaryUnitCentsCount))
     }
     
-    private func getPossibleCashValues(priceCents: Int) -> [CGFloat]? {
+    private func getPossibleCashValues(priceCents: Int) -> [Double]? {
         guard let firstRow = changeMatrix?.first else { return nil }
         guard let firstFaceCents = faces.first else { return nil }
         
@@ -55,7 +47,7 @@ class CashCalculator {
             }
         }
         
-        return result.map { CGFloat($0) / CGFloat(monetaryUnitCentsCount) }
+        return result.map { Double($0) / Double(monetaryUnitCentsCount) }
     }
 }
 
@@ -112,8 +104,8 @@ fileprivate extension CashCalculator {
     }
 }
 
-fileprivate extension CGFloat {
+fileprivate extension Double {
     func getCents(_ monetaryUnitCentsCount: Int) -> Int {
-        return Int(floor(self * CGFloat(monetaryUnitCentsCount)))
+        return Int(floor(self * Double(monetaryUnitCentsCount)))
     }
 }
