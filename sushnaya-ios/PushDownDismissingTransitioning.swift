@@ -15,7 +15,7 @@ class PushDownDismissingTransitioning: NSObject, UIViewControllerAnimatedTransit
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         guard var toVC = transitionContext.viewController(forKey: .to) else { return }
         
-        if toVC is AddressViewController {
+        if toVC is EditAddressViewController {
             toVC.dismiss(animated: false, completion: nil)
             toVC = toVC.presentingViewController!
         }

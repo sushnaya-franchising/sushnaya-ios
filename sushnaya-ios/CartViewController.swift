@@ -1,11 +1,3 @@
-//
-//  CartViewController.swift
-//  sushnaya-ios
-//
-//  Created by Igor Kurylenko on 4/7/17.
-//  Copyright © 2017 igor kurilenko. All rights reserved.
-//
-
 import Foundation
 import AsyncDisplayKit
 

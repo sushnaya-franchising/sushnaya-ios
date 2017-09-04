@@ -1,5 +1,6 @@
 PODS:
   - Alamofire (4.4.0)
+  - CoreStore (4.0.3)
   - Crashlytics (3.8.4):
     - Fabric (~> 1.6.3)
   - Fabric (1.6.11)
@@ -49,6 +50,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire
+  - CoreStore (~> 4.0)
   - Crashlytics
   - Fabric
   - FontAwesome.swift
@@ -76,6 +78,7 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   Alamofire: dc44b1600b800eb63da6a19039a0083d62a6a62d
+  CoreStore: 1a1d452be84de445011d1c4c547b98e728287d38
   Crashlytics: 79e236942ca1e7fc641df1feb9a275360a78ab6a
   Fabric: 5911403591946b8228ab1c51d98f1d7137e863c6
   FontAwesome.swift: f4ff5a9199dc3b510eba5bb377e834f159aef358
@@ -93,6 +96,6 @@ SPEC CHECKSUMS:
   Texture: 3e4664479225216198c29bdb9621664de390534d
   YandexMapKit: 70c6e0819e88f742e3800711f7aedecaf3029300
 
-PODFILE CHECKSUM: e1e41902b008e2e2ed627039a0cdd3bb312c7c30
+PODFILE CHECKSUM: bd6b53a465f2bf0340826ac0163b8074c9bbfc85
 
 COCOAPODS: 1.2.0

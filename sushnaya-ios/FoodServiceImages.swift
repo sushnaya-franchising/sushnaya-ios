@@ -9,12 +9,12 @@
 import Foundation
 
 class FoodServiceImages {
-    static let baseUrl = "http://img.sushnaya.com:8888"
+    static let baseUrl = "http://img.appnbot.ngrok.io"
     static let coatOfArmsUrl = "/coatofarms"
     
-    class func getCoatOfArmsImageUrl(location: CLLocation) -> URL {
-        let queryItems = [URLQueryItem(name: "lat", value: "\(location.coordinate.latitude)"),
-                          URLQueryItem(name: "lon", value: "\(location.coordinate.longitude)")]
+    class func getCoatOfArmsImageUrl(coordinate: CLLocationCoordinate2D) -> URL {
+        let queryItems = [URLQueryItem(name: "lat", value: "\(coordinate.latitude)"),
+                          URLQueryItem(name: "lon", value: "\(coordinate.longitude)")]
         let urlComponents = NSURLComponents(string: "\(baseUrl)\(coatOfArmsUrl)")!
         urlComponents.queryItems = queryItems
         

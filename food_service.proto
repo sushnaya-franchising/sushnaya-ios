@@ -1,0 +1,102 @@
+syntax = "proto3";
+
+option java_package = "com.appnbot.food.apiserver";
+option java_outer_classname = "FoodServiceProto";
+
+message GetMenuDto {
+}
+
+message SelectMenuDto {
+    repeated MenuDto menus = 1;
+}
+
+message DidUpdateTermsOfServicesDto {
+}
+
+message GetRecommendationsDto {
+    int32 userId = 1;
+}
+
+message GetCategoryProductsDto {
+    int32 categoryId = 1;
+}
+
+message MenuDto {
+    int32 menuId = 1;
+    LocalityDto locality = 2;
+}
+
+message LocalityDto {
+    string name = 1;
+    string descr = 2;
+    double latitude = 3;
+    double longitude = 4;
+    double lowerLatitude = 5;
+    double lowerLongitude = 6;
+    double upperLatitude = 7;
+    double upperLongitude = 8;
+    string fiasId = 9;
+}
+
+message DidSelectMenuDto {
+    int32 menuId = 1;
+}
+
+message CategoriesDto {
+    repeated CategoryDto categories = 1;
+}
+
+message CategoryDto {
+    int32 id = 1;
+    string name = 2;
+    repeated ProductDto products = 3;
+    PhotoDto photo = 4;
+}
+
+message RecommendationsDto {
+    repeated ProductDto products = 1;
+}
+
+message ProductsDto {
+    repeated ProductDto products = 1;
+}
+
+message ProductDto {
+    string name = 1;
+    string subheading = 2;
+    repeated PriceDto pricing = 3;
+    PhotoDto photo = 4;
+    int32 id = 5;
+}
+
+message PriceDto {
+    double value = 1;
+    string modifier = 2;
+    int32 id = 3;
+}
+
+message PhotoDto {
+    int32 height = 1;
+    int32 width = 2;
+    string url = 3;
+    int32 id = 4;
+}
+
+message UserMessage {
+    oneof type {
+        DidSelectMenuDto didSelectMenu = 1;
+        GetMenuDto getMenu = 2;
+        GetRecommendationsDto getRecommendations = 3;
+        GetCategoryProductsDto getCategoryProducts = 4;
+    }
+}
+
+message FoodServiceMessage {
+    oneof type {
+        SelectMenuDto selectMenu = 1;
+        DidUpdateTermsOfServicesDto didUpdateTermsOfServices = 2;
+        CategoriesDto categories = 3;
+        RecommendationsDto recommendations = 4;
+        ProductsDto products = 5;
+    }
+}

@@ -15,7 +15,7 @@ import SwiftEventBus
 
 class HomeViewController: ASViewController<ASDisplayNode> {
 
-    private let isFakeMode = true
+    private let isFakeMode = false
     
     let cellInsets = Constants.ProductCellLayout.CellInsets
     let titleLabelInsets = Constants.ProductCellLayout.TitleLabelInsets
@@ -47,7 +47,7 @@ class HomeViewController: ASViewController<ASDisplayNode> {
             return ASInsetLayoutSpec(insets: UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0), child: self._collectionNode)
         }                        
         
-        SwiftEventBus.onMainThread(self, name: ConnectionDidOpenAPIChatEvent.name) { [unowned self] (notification) in
+        SwiftEventBus.onMainThread(self, name: DidOpenConnectionEvent.name) { [unowned self] (notification) in
             if self.products == nil {
                 GetMenuEvent.fire()
             }
@@ -68,46 +68,46 @@ class HomeViewController: ASViewController<ASDisplayNode> {
     }
 
     private func initFakeData() {
-        products = []
-        let titles = [
-            "C беконом и авокадо",
-            "Белый самурай",
-            "С креветками и авокадо",
-            "Четыре сыра",
-            "Пепперони",
-            "С грибами"
-        ]
-        let subtitles = [
-            "Бекон, авокадо, рис, нори",
-            "Креветка, кунжут, рис, нори, сыр филадельфия",
-            "Авокадо, креветка, сыр филадельфия, нори",
-            "Сыр дор блю, пармезан, моцарелла, копченый сыр",
-            "Салями, моцарелла",
-            "Грибы, моцарелла, томаты"
-        ]
-        let categories = ["Роллы", "Пицца"]
-        for idx in 0..<6 {
-            let photoUrl = "product_\(idx)"
-            let photoSize = UIImage(named: photoUrl)?.size
-            var pricing = [Price] ()
-            var category: MenuCategory!
-            
-            if idx < 3 {
-                pricing.append(Price(value: 120, currencyLocale: "ru_RU", modifierName: "3 шт."))
-                pricing.append(Price(value: 240, currencyLocale: "ru_RU", modifierName: "6 шт."))
-                pricing.append(Price(value: 360, currencyLocale: "ru_RU", modifierName: "9 шт."))
-                
-            } else {
-                pricing.append(Price(value: 240, currencyLocale: "ru_RU"))
-            }
-            
-            category = MenuCategory(title: categories[idx < 3 ? 0 : 1])
-
-            let product = Product(title: titles[idx], pricing: pricing, category: category,
-                                  subtitle: subtitles[idx], photoUrl: photoUrl, photoSize: photoSize)
-
-            products?.append(product)
-        }
+//        products = []
+//        let titles = [
+//            "C беконом и авокадо",
+//            "Белый самурай",
+//            "С креветками и авокадо",
+//            "Четыре сыра",
+//            "Пепперони",
+//            "С грибами"
+//        ]
+//        let subtitles = [
+//            "Бекон, авокадо, рис, нори",
+//            "Креветка, кунжут, рис, нори, сыр филадельфия",
+//            "Авокадо, креветка, сыр филадельфия, нори",
+//            "Сыр дор блю, пармезан, моцарелла, копченый сыр",
+//            "Салями, моцарелла",
+//            "Грибы, моцарелла, томаты"
+//        ]
+//        let categories = ["Роллы", "Пицца"]
+//        for idx in 0..<6 {
+//            let photoUrl = "product_\(idx)"
+//            let photoSize = UIImage(named: photoUrl)?.size
+//            var pricing = [Price] ()
+//            var category: MenuCategory!
+//            
+//            if idx < 3 {
+//                pricing.append(Price(value: 120, currencyLocale: "ru_RU", modifierName: "3 шт."))
+//                pricing.append(Price(value: 240, currencyLocale: "ru_RU", modifierName: "6 шт."))
+//                pricing.append(Price(value: 360, currencyLocale: "ru_RU", modifierName: "9 шт."))
+//                
+//            } else {
+//                pricing.append(Price(value: 240, currencyLocale: "ru_RU"))
+//            }
+//            
+//            category = MenuCategory(title: categories[idx < 3 ? 0 : 1])
+//
+//            let product = Product(title: titles[idx], pricing: pricing, category: category,
+//                                  subtitle: subtitles[idx], photoUrl: photoUrl, photoSize: photoSize)
+//
+//            products?.append(product)
+//        }
     }
 
     deinit {
@@ -133,7 +133,7 @@ class HomeViewController: ASViewController<ASDisplayNode> {
 
         navigationController?.setNavigationBarHidden(true, animated: false)
 
-        if products == nil && app.isAPIChatConnected {
+        if products == nil && app.isWebsocketConnected {
             GetMenuEvent.fire()
         }
     }
@@ -176,12 +176,12 @@ extension HomeViewController: ProductsMosaicLayoutDelegate {
     func collectionView(_ collectionView: UICollectionView, heightForPhotoAtIndexPath indexPath: IndexPath, withWidth width: CGFloat) -> CGFloat {
         let maxWidth = width - (cellInsets.left + cellInsets.right)
 
-        guard let photoSize = products?[indexPath.item].photoSize else {
+        guard let imageSize = products?[indexPath.item].imageSize else {
             return cellInsets.top + (maxWidth) * Constants.GoldenRatio
         }
 
         let boundingRect = CGRect(x: 0, y: 0, width: maxWidth, height: CGFloat(MAXFLOAT))
-        let rect = AVMakeRect(aspectRatio: photoSize, insideRect: boundingRect)
+        let rect = AVMakeRect(aspectRatio: imageSize, insideRect: boundingRect)
 
         return cellInsets.top + rect.size.height
     }

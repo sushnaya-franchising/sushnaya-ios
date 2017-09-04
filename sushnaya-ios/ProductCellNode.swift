@@ -46,7 +46,7 @@ class ProductCellNode: ASCellNode {
     private func setupImageNode() {
         //imageNode.defaultImage = UIImage(color: PaperColor.Gray300, size: Constants.CellLayout.CoatOfArmsImageSize)
 
-        if let url = product.photoUrl {
+        if let url = product.imageUrl {
             //    imageNode.url = URL(string: url)
             imageNode.image = UIImage(named: url)
             imageNode.addTarget(self, action: #selector(didTouchDownRepeatImage), forControlEvents: .touchDownRepeat)

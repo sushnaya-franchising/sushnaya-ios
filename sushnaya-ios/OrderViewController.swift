@@ -33,10 +33,6 @@ class OrderViewController: ASViewController<OrderNode> {
         return node.tableNode
     }
     
-    fileprivate var addresses: [Address] {
-        return self.app.userSession.settings.addresses
-    }
-    
     convenience init() {
         self.init(node: OrderNode())
         
@@ -141,7 +137,7 @@ extension OrderViewController {
     func adjustScrollNodeOffset() {
         if  let view = getFirstResponderAsFormFieldView(),
             let originY = view.superview?.convert(view.frame.origin, to: nil).y {
-            let destOriginY:CGFloat = 72 //self.navbarBackgroundNode.bounds.height // todo: move navbar height to constants
+            let destOriginY:CGFloat = 72 + 78 //self.navbarBackgroundNode.bounds.height // todo: move navbar height to constants
             let maxOffsetY = tableNode.view.contentSize.height - (self.view.bounds.height - keyboardHeight)
             let delta = (destOriginY + view.bounds.height) - (self.view.bounds.height - keyboardHeight)
             
@@ -178,8 +174,8 @@ extension OrderViewController {
 }
 
 class OrderNode: ASDisplayNode {
-    fileprivate let tableNode = ASTableNode()
     fileprivate let navbarNode = OrderNavbarNode()
+    fileprivate let tableNode = ASTableNode()
     
     override init() {
         super.init()
@@ -203,7 +199,9 @@ class OrderNode: ASDisplayNode {
         tableNode.view.separatorStyle = .none
     }
     
-    override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
+    override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {        
+        self.tableNode.style.preferredSize = constrainedSize.max
+        
         return ASOverlayLayoutSpec(child: self.tableNode, overlay: self.navbarNode)
     }
 }

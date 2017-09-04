@@ -101,7 +101,7 @@ class DefaultCellContext {
     var style = DefaultCellStyle()
     
     init(title: String) {
-        self.title = title
+        self.title = title        
     }
     
     convenience init(title: String, style: DefaultCellStyle) {

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="12141" systemVersion="16G29" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="AddressEntity" representedClassName=".AddressEntity" syncable="YES">
+        <attribute name="apartment" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="comment" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="entrance" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="floor" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="latitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="longitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="needsSynchronization" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="ordersCount" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="serverId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="streetAndHouse" attributeType="String" syncable="YES"/>
+        <relationship name="locality" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="LocalityEntity" syncable="YES"/>
+    </entity>
+    <entity name="LocalityEntity" representedClassName=".LocalityEntity" syncable="YES">
+        <attribute name="descr" attributeType="String" syncable="YES"/>
+        <attribute name="fiasId" attributeType="String" syncable="YES"/>
+        <attribute name="latitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="longitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="lowerLatitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="lowerLongitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="name" attributeType="String" syncable="YES"/>
+        <attribute name="upperLatitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="upperLongitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+    </entity>
+    <entity name="MenuCategoryEntity" representedClassName=".MenuCategoryEntity" syncable="YES">
+        <attribute name="imageHeight" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="imageUrl" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="imageWidth" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="serverId" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="title" attributeType="String" syncable="YES"/>
+        <relationship name="menu" maxCount="1" deletionRule="Nullify" destinationEntity="MenuEntity" syncable="YES"/>
+        <relationship name="products" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ProductEntity" inverseName="menuCategory" inverseEntity="ProductEntity" syncable="YES"/>
+    </entity>
+    <entity name="MenuEntity" representedClassName=".MenuEntity" syncable="YES">
+        <attribute name="serverId" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <relationship name="locality" maxCount="1" deletionRule="Nullify" destinationEntity="LocalityEntity" syncable="YES"/>
+    </entity>
+    <entity name="PriceEntity" representedClassName=".PriceEntity" syncable="YES">
+        <attribute name="currencyLocale" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="modifierName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="serverId" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="value" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+    </entity>
+    <entity name="ProductEntity" representedClassName=".ProductEntity" syncable="YES">
+        <attribute name="imageHeight" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="imageUrl" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="imageWidth" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="serverId" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="subtitle" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="title" attributeType="String" syncable="YES"/>
+        <relationship name="menuCategory" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MenuCategoryEntity" inverseName="products" inverseEntity="MenuCategoryEntity" syncable="YES"/>
+        <relationship name="pricing" toMany="YES" deletionRule="Nullify" destinationEntity="PriceEntity" syncable="YES"/>
+    </entity>
+    <entity name="UserSettingsEntity" representedClassName=".UserSettingsEntity" syncable="YES">
+        <attribute name="authToken" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="menu" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MenuEntity" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="AddressEntity" positionX="-54" positionY="-9" width="128" height="210"/>
+        <element name="LocalityEntity" positionX="-36" positionY="81" width="128" height="180"/>
+        <element name="MenuEntity" positionX="-18" positionY="90" width="128" height="75"/>
+        <element name="UserSettingsEntity" positionX="0" positionY="99" width="128" height="75"/>
+        <element name="MenuCategoryEntity" positionX="-27" positionY="108" width="128" height="150"/>
+        <element name="ProductEntity" positionX="-18" positionY="117" width="128" height="165"/>
+        <element name="PriceEntity" positionX="-9" positionY="126" width="128" height="105"/>
+    </elements>
+</model>

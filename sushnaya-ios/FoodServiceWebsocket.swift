@@ -1,18 +1,10 @@
-//
-//  API.swift
-//  sushnaya-ios
-//
-//  Created by Igor Kurylenko on 3/22/17.
-//  Copyright © 2017 igor kurilenko. All rights reserved.
-//
-
 import Foundation
 import PromiseKit
 import SwiftyJSON
 import Starscream
 
 class FoodServiceWebSocket: NSObject {
-    static let webSocketUrl = "ws://api.sushnaya.com:8080/0.1.0"
+    static let webSocketUrl = "ws://appnbot.ngrok.io/0.1.0"
 
     private var socket: WebSocket?
     
@@ -20,6 +12,8 @@ class FoodServiceWebSocket: NSObject {
         return socket?.isConnected ?? false
     }
 
+    // todo: map of requests to counters
+    
     override init() {
         super.init()
 
@@ -32,6 +26,12 @@ class FoodServiceWebSocket: NSObject {
     }
 
     private func registerEventHandlers() {
+        EventBus.onBackgroundThread(self, name: OpenConnectionEvent.name) { [unowned self] notification in
+            let authToken = (notification.object as! OpenConnectionEvent).authToken
+            
+            self.connect(authToken: authToken)
+        }
+        
         EventBus.onBackgroundThread(self, name: GetMenuEvent.name) { [unowned self] _ in
             var msg = UserMessage()
             msg.type = .getMenu(GetMenuDto())
@@ -39,10 +39,10 @@ class FoodServiceWebSocket: NSObject {
         }
 
         EventBus.onBackgroundThread(self, name: DidSelectMenuEvent.name) { [unowned self] notification in
-            if let menu = (notification.object as? DidSelectMenuEvent)?.menu {
+            if let menuDto = (notification.object as? DidSelectMenuEvent)?.menuDto {
                 var msg = UserMessage()
                 msg.type = .didSelectMenu(DidSelectMenuDto())
-                msg.didSelectMenu.menuID = menu.menuId
+                msg.didSelectMenu.menuID = menuDto.menuID
                 
                 self.socket?.write(data: (try! msg.serializedData()))
             }
@@ -53,32 +53,25 @@ class FoodServiceWebSocket: NSObject {
         EventBus.unregister(self)
     }
 
-    func connect(authToken: String) -> Promise<()> {
-        let (promise, fulfill, _) = Promise<()>.pending()
-
+    func connect(authToken: String) {
         socket = WebSocket(url: URL(string: FoodServiceWebSocket.webSocketUrl)!)
         socket?.headers["Authorization"] = authToken
         
         socket?.onConnect = {
-            fulfill()
-            ConnectionDidOpenAPIChatEvent.fire()
+            DidOpenConnectionEvent.fire()
         }
         
         socket?.onDisconnect = { (error: NSError?) in
             if let error = error {
-                APIChatErrorEvent.fire(error)
+                DidCloseConnectionWithErrorEvent.fire(error)
             }
             
-            ConnectionDidCloseAPIChatEvent.fire()
+            DidCloseConnectionEvent.fire()
         }
         
-        socket?.onData = handleData
-        
-        OpeningConnectionAPIChatEvent.fire()
+        socket?.onData = handleData                
 
         socket?.connect()
-        
-        return promise
     }
 
     private func handleData(data: Data) {
@@ -88,17 +81,20 @@ class FoodServiceWebSocket: NSObject {
             switch msgType {
             
             case .selectMenu(let dto):
-                SelectMenuEvent.fire(menus: map(dto.menus))
+                SelectMenuServerEvent.fire(menus: dto.menus)
             
             case .didUpdateTermsOfServices:
                 return
                 
             case .categories(let dto):
-                print("Categories count: \(dto.categories.count)")
+                CategoriesServerEvent.fire(categories: dto.categories)
                 return
                 
             case .recommendations(let dto):
-                print("Recommended products count: \(dto.products.count)")
+                RecommendationsServerEvent.fire(products: dto.products)
+                return
+                
+            default:
                 return
             }
         }
@@ -106,22 +102,5 @@ class FoodServiceWebSocket: NSObject {
 
     func disconnect() {
         socket?.disconnect()
-    }
-}
-
-extension FoodServiceWebSocket {
-    func map(_ dtos: [MenuDto]) -> [Menu] {
-        return dtos.map { dto in
-            return Menu(menuId: dto.menuID, locality: map(dto.locality))
-        }
-    }
-    
-    func map(_ dto: LocalityDto) -> Locality {
-        return Locality(location: CLLocation(latitude: dto.latitude, longitude: dto.longitude),
-                                name: dto.name,
-                                description: dto.descr,
-                                boundedBy: (lowerCorner: CLLocation(latitude: dto.lowerLatitude, longitude: dto.lowerLongitude),
-                                            upperCorner: CLLocation(latitude: dto.upperLatitude, longitude: dto.upperLongitude)),
-                                fiasId: dto.fiasID)
     }
 }

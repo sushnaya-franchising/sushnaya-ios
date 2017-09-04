@@ -1,15 +1,9 @@
-//
-// Created by Igor Kurylenko on 4/8/17.
-// Copyright (c) 2017 igor kurilenko. All rights reserved.
-//
-
 import Foundation
 
-class Price: Hashable {
-    
-    var value: CGFloat
-    var modifierName: String?
+struct Price {
+    var value: Double
     var currencyLocale: String
+    var modifierName: String?
     
     var formattedValue: String {
         let formatter = NumberFormatter()
@@ -17,15 +11,12 @@ class Price: Hashable {
         formatter.numberStyle = .currency
         formatter.minimumFractionDigits = 0
         formatter.maximumFractionDigits = 2
-        return formatter.string(from: value.asNSNumber)!
+        
+        return formatter.string(from: NSNumber(value: self.value))!
     }
+}
 
-    init(value: CGFloat, currencyLocale: String, modifierName: String? = nil) {
-        self.value = value
-        self.modifierName = modifierName
-        self.currencyLocale = currencyLocale
-    }
-
+extension Price: Hashable {
     var hashValue: Int {
         var result = 1
         result = 31 &* result &+ value.hashValue
@@ -33,10 +24,6 @@ class Price: Hashable {
         result = 31 &* result &+ currencyLocale.hashValue
         
         return result
-    }
-    
-    static func zero(currencyLocale: String, modifierName: String?) -> Price {
-        return Price(value: 0, currencyLocale: currencyLocale, modifierName: modifierName)
     }
 }
 
@@ -46,11 +33,8 @@ func +(lhs: Price, rhs: Price) -> Price {
     return Price(value: lhs.value + rhs.value, currencyLocale: lhs.currencyLocale, modifierName: lhs.modifierName)
 }
 
+
 func ==(lhs: Price, rhs: Price) -> Bool {
-    if lhs === rhs {
-        return true
-    }
-    
     return lhs.value == rhs.value &&
         lhs.modifierName == rhs.modifierName &&
         lhs.currencyLocale == rhs.currencyLocale

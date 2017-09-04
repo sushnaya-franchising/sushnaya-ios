@@ -1,11 +1,3 @@
-//
-//  PhoneViewController.swift
-//  Food
-//
-//  Created by Igor Kurylenko on 3/29/17.
-//  Copyright © 2017 igor kurilenko. All rights reserved.
-//
-
 import Foundation
 import AsyncDisplayKit
 import libPhoneNumber_iOS
@@ -38,6 +30,8 @@ class PhoneNumberViewController: ASViewController<ASTableNode> {
         return node
     }
     
+    private var disableRightBarButtonDebouncer: Debouncer!
+    
     init() {
         super.init(node: ASTableNode())
         
@@ -45,6 +39,10 @@ class PhoneNumberViewController: ASViewController<ASTableNode> {
         tableNode.dataSource = self
         tableNode.view.separatorStyle = .none
         tableNode.backgroundColor = UIColor.white
+        
+        disableRightBarButtonDebouncer = debounce {
+            self.navigationItem.rightBarButtonItem?.isEnabled = false
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -61,6 +59,30 @@ class PhoneNumberViewController: ASViewController<ASTableNode> {
         super.viewWillAppear(animated)
         
         setupNavbar()
+        
+        EventBus.onMainThread(self, name: RequestSMSWithVerificationCodeEvent.name) { [unowned self] _ in
+            self.disableRightBarButtonDebouncer.apply()
+        }
+        
+        EventBus.onMainThread(self, name: DidRequestSMSWithVerificationCodeEvent.name) { [unowned self] notification in
+            let phoneNumber = (notification.object as! DidRequestSMSWithVerificationCodeEvent).phoneNumber
+            
+            self.disableRightBarButtonDebouncer.cancel()
+            
+            self.navigationItem.rightBarButtonItem?.isEnabled = true
+            
+            self.pushVerificationCodeController(phoneNumber: phoneNumber)
+        }
+        
+        EventBus.onMainThread(self, name: DidNotRequestSMSWithVerificationCodeEvent.name) {[unowned self] notification in
+            print((notification.object as! DidNotRequestSMSWithVerificationCodeEvent).error)
+            
+            self.onInvalidPhoneNumber()
+            
+            self.disableRightBarButtonDebouncer.cancel()
+            
+            self.navigationItem.rightBarButtonItem?.isEnabled = true
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -73,6 +95,12 @@ class PhoneNumberViewController: ASViewController<ASTableNode> {
         super.viewWillDisappear(animated)
         
         phoneNumberTextNode.textView.resignFirstResponder()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        EventBus.unregister(self)
     }
     
     private func setupPhoneNumberNode() {
@@ -103,36 +131,12 @@ class PhoneNumberViewController: ASViewController<ASTableNode> {
             return
         }
         
-        let e154PhoneNumber = try! phoneNumberUtil.format(phoneNumber, numberFormat: .E164)
+        let e154PhoneNumber = try! phoneNumberUtil.format(phoneNumber, numberFormat: .E164)                
         
-        let onNetworkActivity = debounce {
-            UIApplication.shared.isNetworkActivityIndicatorVisible = true
-            self.navigationItem.rightBarButtonItem?.isEnabled = false
-            
-        }.onCancel {
-            UIApplication.shared.isNetworkActivityIndicatorVisible = false
-            self.navigationItem.rightBarButtonItem?.isEnabled = true
-        }
-        
-        firstly {
-            onNetworkActivity.apply()
-            
-            return FoodServiceAuth.requestSMSWithVerificationCode(phoneNumber: e154PhoneNumber)
-            
-        }.then { () -> () in
-            self.pushVerificationCodeController(phoneNumber: phoneNumber!)
-                
-        }.always { () -> () in
-            onNetworkActivity.cancel()
-                
-        }.catch { error in
-            // todo: handle error gently
-            self.onInvalidPhoneNumber()
-            debugPrint(error)
-        }
+        RequestSMSWithVerificationCodeEvent.fire(phoneNumber: e154PhoneNumber)
     }
     
-    private func pushVerificationCodeController(phoneNumber: NBPhoneNumber) {
+    private func pushVerificationCodeController(phoneNumber: String) {
         let verificationCodeVC = VerificationCodeViewController(phoneNumber: phoneNumber)
         
         navigationController?.pushViewController(verificationCodeVC, animated: true)

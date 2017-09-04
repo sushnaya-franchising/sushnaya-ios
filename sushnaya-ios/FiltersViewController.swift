@@ -1,11 +1,3 @@
-//
-//  CategoriesSideViewController.swift
-//  Food
-//
-//  Created by Igor Kurylenko on 3/31/17.
-//  Copyright © 2017 igor kurilenko. All rights reserved.
-//
-
 import Foundation
 import AsyncDisplayKit
 
@@ -17,16 +9,17 @@ class FiltersViewController: ASViewController<ASDisplayNode>, PaperFoldAsyncView
     let imageSize = Constants.DefaultCellLayout.ImageSize
 
     lazy var contexts: [DefaultCellContext]? = {
-        let categories = [
-            MenuCategory(title:"Пицца", subtitle: nil, photoUrl: "category_s_0", photoSize: UIImage(named: "category_s_0")?.size),
-            MenuCategory(title:"Роллы", subtitle: nil, photoUrl: "category_s_1", photoSize: UIImage(named: "category_s_1")?.size),
-            MenuCategory(title:"Супы", subtitle: nil, photoUrl: "category_s_2", photoSize: UIImage(named: "category_s_2")?.size),
-            MenuCategory(title:"Пельмени", subtitle: nil, photoUrl: "category_s_4", photoSize: UIImage(named: "category_s_4")?.size),
-            MenuCategory(title:"Салаты", subtitle: nil, photoUrl: "category_s_3", photoSize: UIImage(named: "category_s_3")?.size),
-            MenuCategory(title:"Напитки", subtitle: nil, photoUrl: "category_s_5", photoSize: UIImage(named: "category_s_5")?.size)
-        ]
-        
-        return categories.map{ CategoryCellContext($0) }
+//        let categories = [
+//            MenuCategory(title:"Пицца", subtitle: nil, photoUrl: "category_s_0", photoSize: UIImage(named: "category_s_0")?.size),
+//            MenuCategory(title:"Роллы", subtitle: nil, photoUrl: "category_s_1", photoSize: UIImage(named: "category_s_1")?.size),
+//            MenuCategory(title:"Супы", subtitle: nil, photoUrl: "category_s_2", photoSize: UIImage(named: "category_s_2")?.size),
+//            MenuCategory(title:"Пельмени", subtitle: nil, photoUrl: "category_s_4", photoSize: UIImage(named: "category_s_4")?.size),
+//            MenuCategory(title:"Салаты", subtitle: nil, photoUrl: "category_s_3", photoSize: UIImage(named: "category_s_3")?.size),
+//            MenuCategory(title:"Напитки", subtitle: nil, photoUrl: "category_s_5", photoSize: UIImage(named: "category_s_5")?.size)
+//        ]
+//        
+//        return categories.map{ CategoryCellContext($0) }
+        return []
     }()
     
     var _collectionNode: ASCollectionNode!
@@ -122,26 +115,26 @@ class CategoryCellContext: DefaultCellContext {
     }
     
     override var imageSize: CGSize? {
-        set {
-            category.photoSize = newValue
+        set {            
+            category.imageSize = newValue
         }
         
         get{
-            return category.photoSize
+            return category.imageSize
         }
     }
     
     override var imageUrl: String? {
         set {
-            category.photoUrl = newValue
+            category.imageUrl = newValue
         }
         
         get {
-            return category.photoUrl
+            return category.imageUrl
         }
     }
     
-    let category: MenuCategory
+    var category: MenuCategory
     
     init(_ category: MenuCategory) {
         self.category = category

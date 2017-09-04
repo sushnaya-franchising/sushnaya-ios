@@ -131,7 +131,7 @@ class CartItemCellNode: ASCellNode {
     }
     
     private func setupOptionsButtonNode() {
-        let title = NSAttributedString(string: String.fontAwesomeIcon(name: .ellipsisH), attributes: [
+        let title = NSAttributedString(string: String.fontAwesomeIcon(name: .ellipsisV), attributes: [
                 NSFontAttributeName: UIFont.fontAwesome(ofSize: 16),
                 NSForegroundColorAttributeName: PaperColor.Gray
             ])

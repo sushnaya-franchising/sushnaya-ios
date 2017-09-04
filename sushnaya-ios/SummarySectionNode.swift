@@ -66,7 +66,7 @@ class OrderFormSummarySectionNode: ASDisplayNode {
     }
     
     private func setupDeliveryPriceValueTextNode() {
-        deliveryPriceValueTextNode.attributedText = NSAttributedString.attributedString(string: Price(value: 0, currencyLocale: "ru_RU").formattedValue, fontSize: 14, color: PaperColor.Gray, bold: false)
+        deliveryPriceValueTextNode.attributedText = NSAttributedString.attributedString(string: Price(value: 0, currencyLocale: "ru_RU", modifierName: nil).formattedValue, fontSize: 14, color: PaperColor.Gray, bold: false)
     }
     
     private func setupTotalTitleTextNode() {

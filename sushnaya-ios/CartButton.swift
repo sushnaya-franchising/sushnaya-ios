@@ -1,11 +1,3 @@
-//
-//  CartButton2.swift
-//  sushnaya-ios
-//
-//  Created by Igor Kurylenko on 4/8/17.
-//  Copyright © 2017 igor kurilenko. All rights reserved.
-//
-
 import Foundation
 import AsyncDisplayKit
 import FontAwesome_swift
@@ -101,7 +93,7 @@ class CartButton: ASControlNode {
     }
     
     private func setupPriceBadgeNode() {
-        updatePriceBadgeText(sum: Price.zero(currencyLocale: "ru_RU", modifierName: nil))// todo: use currency locale from settings
+        updatePriceBadgeText(sum: Price(value: 0, currencyLocale: "ru_RU", modifierName: nil))// todo: use currency locale from settings
         priceBadgeNode.backgroundColor = PaperColor.Gray300
         priceBadgeNode.cornerRadius = 10
         priceBadgeNode.clipsToBounds = true
