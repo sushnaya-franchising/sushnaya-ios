@@ -111,7 +111,7 @@ class Cart: NSObject {
             DidAddToCartEvent.fire(cart: self, sectionIdx: sectionIdx, productIdx: productIdx)
 
         } else {
-            let section = CartSection(title: cartUnit.categoryTitle)
+            let section = CartSection(title: cartUnit.categoryTitle ?? "")
             let productIdx = section.append(unit: cartUnit)
             let sectionIdx = sections.count
             sections.append(section)
@@ -252,7 +252,7 @@ fileprivate class CartUnit: Hashable {
     let price: Price
     var isConfirmed = false
 
-    var categoryTitle: String {
+    var categoryTitle: String? {
         return product.categoryTitle
     }
 

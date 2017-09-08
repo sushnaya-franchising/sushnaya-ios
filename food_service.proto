@@ -1,5 +1,6 @@
 syntax = "proto3";
 
+
 option java_package = "com.appnbot.food.apiserver";
 option java_outer_classname = "FoodServiceProto";
 
@@ -19,6 +20,56 @@ message GetRecommendationsDto {
 
 message GetCategoryProductsDto {
     int32 categoryId = 1;
+}
+
+message CreateAddressDto {
+    AddressDto address = 1;
+    int32 trackId = 2;
+}
+
+message DidCreateAddressDto {
+    int32 trackId = 1;
+}
+
+message DidNotCreateAddressDto {
+    int32 trackId = 1;
+    string error = 2;
+}
+
+message GetUserAddressesDto {
+    int32 userId = 1;
+}
+
+message UserAddressesDto {
+    repeated AddressDto addresses = 1;
+}
+
+message UpdateAddressDto {
+    int32 trackId = 1;
+    AddressDto address = 2;
+}
+
+message DidUpdateAddressDto {
+    int32 trackId = 1;
+}
+
+message DidNotUpdateAddressDto {
+    int32 trackId = 1;
+    string error = 2;
+}
+
+message DeleteAddressDto {
+    int32 addressId = 1;
+    int32 trackId = 2;
+}
+
+message DidDeleteAddressDto {
+    int32 trackId = 1;
+}
+
+message DidNotDeleteAddressDto {
+    int32 trackId = 1;
+    string error = 2;
 }
 
 message MenuDto {
@@ -49,8 +100,7 @@ message CategoriesDto {
 message CategoryDto {
     int32 id = 1;
     string name = 2;
-    repeated ProductDto products = 3;
-    PhotoDto photo = 4;
+    PhotoDto photo = 3;
 }
 
 message RecommendationsDto {
@@ -67,12 +117,14 @@ message ProductDto {
     repeated PriceDto pricing = 3;
     PhotoDto photo = 4;
     int32 id = 5;
+    int32 categoryId = 6;
 }
 
 message PriceDto {
     double value = 1;
     string modifier = 2;
     int32 id = 3;
+    string currencyLocale = 4;
 }
 
 message PhotoDto {
@@ -82,12 +134,31 @@ message PhotoDto {
     int32 id = 4;
 }
 
+message AddressDto {
+    int32 id = 1;
+    LocalityDto locality = 2;
+    double latitude = 3;
+    double longitude = 4;
+    string streetAndHouse = 5;
+    string apartment = 6;
+    string entrance = 7;
+    string floor = 8;
+    string comment = 9;
+    string displayName = 10;
+    int32 orderCount = 11;
+}
+
 message UserMessage {
     oneof type {
         DidSelectMenuDto didSelectMenu = 1;
         GetMenuDto getMenu = 2;
         GetRecommendationsDto getRecommendations = 3;
         GetCategoryProductsDto getCategoryProducts = 4;
+
+        CreateAddressDto createAddress = 5;
+        GetUserAddressesDto getUserAddresses = 6;
+        UpdateAddressDto updateAddress = 7;
+        DeleteAddressDto deleteAddress = 8;
     }
 }
 
@@ -98,5 +169,13 @@ message FoodServiceMessage {
         CategoriesDto categories = 3;
         RecommendationsDto recommendations = 4;
         ProductsDto products = 5;
+
+        DidCreateAddressDto didCreateAddress = 6;
+        DidNotCreateAddressDto didNotCreateAddress = 7;
+        UserAddressesDto userAddresses = 8;
+        DidUpdateAddressDto didUpdateAddress = 9;
+        DidNotUpdateAddressDto didNotUpdateAddress = 10;
+        DidDeleteAddressDto didDeleteAddress = 11;
+        DidNotDeleteAddressDto didNotDeleteAddress = 12;
     }
 }

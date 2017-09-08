@@ -2,15 +2,16 @@ import Foundation
 import CoreData
 
 class ProductEntity: NSManagedObject {
-    @NSManaged var serverId: Int
+    @NSManaged var serverId: Int32
     @NSManaged var title: String
     @NSManaged var subtitle: String?
     @NSManaged var imageUrl: String?
     @NSManaged var imageWidth: NSNumber?
     @NSManaged var imageHeight: NSNumber?
+    @NSManaged var isRecommended: Bool
     
     @NSManaged var pricing: [PriceEntity]
-    @NSManaged var category: MenuCategoryEntity
+    @NSManaged var menuCategory: MenuCategoryEntity?
 
     var imageSize: CGSize? {
         get {
@@ -28,7 +29,36 @@ class ProductEntity: NSManagedObject {
         }
     }
     
-    var categoryTitle:String {
-        return category.title
-    }                
+    var highestPrice: PriceEntity? {
+        var result: PriceEntity?
+        var highestValue: Double = 0
+        
+        pricing.forEach {
+            if $0.value >= highestValue {
+                highestValue = $0.value
+                result = $0
+            }
+        }
+        
+        return result
+    }
+    
+    var categoryTitle:String? {
+        return menuCategory?.title
+    }
+    
+    var plain: Product {
+        return Product(serverId: serverId,
+                       title: title,
+                       subtitle: subtitle,
+                       imageUrl: imageUrl,
+                       imageWidth: imageWidth,
+                       imageHeight: imageHeight,
+                       pricing: plainPricing,
+                       menuCategory: menuCategory?.plainCategory)
+    }
+    
+    var plainPricing: [Price] {
+        return pricing.map{ $0.plain }
+    }
 }

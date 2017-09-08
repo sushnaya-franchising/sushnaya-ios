@@ -1,17 +1,9 @@
-//
-//  PriceCellNode.swift
-//  sushnaya-ios
-//
-//  Created by Igor Kurylenko on 4/9/17.
-//  Copyright © 2017 igor kurilenko. All rights reserved.
-//
-
 import Foundation
 import AsyncDisplayKit
 import pop
 
 protocol PriceNodeDelegate: class {
-    func priceNode(_ node: PriceNode, didTouchPrice price: Price)
+    func priceNode(_ node: PriceNode, didTouchPrice price: PriceEntity)
 }
 
 class PriceNode: ASDisplayNode {
@@ -20,9 +12,9 @@ class PriceNode: ASDisplayNode {
     let checkIconNode = ASImageNode()
     
     weak var delegate: PriceNodeDelegate?
-    let price: Price
+    let price: PriceEntity
     
-    init(price: Price) {
+    init(price: PriceEntity) {
         self.price = price
         super.init()
         

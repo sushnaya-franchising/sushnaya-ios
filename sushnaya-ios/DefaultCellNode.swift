@@ -1,26 +1,21 @@
-//
-//  CategorySideTableCellNode.swift
-//  sushnaya-ios
-//
-//  Created by Igor Kurylenko on 4/1/17.
-//  Copyright © 2017 igor kurilenko. All rights reserved.
-//
-
 import Foundation
 import AsyncDisplayKit
 
 class DefaultCellNode: ASCellNode {
-    let imageNode: ASImageNode = {// todo: make it ASNetworkingNode
-        let imageNode = ASImageNode()
+    let imageNode: ASNetworkImageNode = {
+        let imageNode = ASNetworkImageNode()
         imageNode.contentMode = .scaleAspectFit
-//        imageNode.imageModificationBlock = ImageNodePrecompositedCornerModification(
-//            cornerRadius: Constants.LocalityCellLayout.ImageCornerRadius)
+        imageNode.imageModificationBlock = ImageNodePrecompositedCornerModification(cornerRadius: 20)
         return imageNode
     }()
 
-    let titleLabel = ASTextNode()    
+    let titleLabel = ASTextNode()
     
-    let context: DefaultCellContext
+    var context: DefaultCellContext {
+        didSet {
+            setupNodes()
+        }
+    }
     
     override var isSelected: Bool {
         didSet {
@@ -46,48 +41,34 @@ class DefaultCellNode: ASCellNode {
     }
     
     private func setupImageNode() {
-        //imageNode.defaultImage = UIImage(color: PaperColor.Gray300, size: Constants.CellLayout.CoatOfArmsImageSize)
+        imageNode.defaultImage = UIImage(color: PaperColor.Gray300)
         
-        if let image = context.image {
-            let size = image.size
-            if size.width < context.style.imageSize.width ||
-                size.height < context.style.imageSize.height {
-                imageNode.backgroundColor = PaperColor.Gray300
-                imageNode.contentMode = .center
-            }
-            
-            imageNode.image = image
-        
-        } else if let url = context.imageUrl {
-        //    imageNode.url = URL(string: url)
-            imageNode.image = UIImage(named: url)
+        if let url = context.imageUrl {
+            imageNode.url = URL(string: url)
         }
     }
 
-    override func didLoad() {
-        super.didLoad()
-        
-        imageNode.layer.cornerRadius = context.style.imageCornerRadius // todo: use optimized corner radius, update corner radius in ASNetworkImageNodeDelegate
-        imageNode.clipsToBounds = true
-    }
-    
     private func setupTitleLabel() {
         titleLabel.attributedText = NSAttributedString(string: context.title, attributes: context.style.titleStringAttributes)
     }
 
-    override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec { 
+    override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {        
         let stack = ASStackLayoutSpec.vertical()
+        var children = [ASLayoutElement]()
         stack.alignItems = .center
         stack.justifyContent = .start
         
-        imageNode.style.preferredSize = context.style.imageSize
+        if let imageSize = context.preferredImageSize {
+            imageNode.style.preferredSize = imageSize
+            
+            children.append(imageNode)
+        }
         
         titleLabel.style.maxWidth = ASDimension(unit: .points, value: context.style.imageSize.width)
+        let titleLayout = ASInsetLayoutSpec(insets: UIEdgeInsets(top: 4, left: 0, bottom: 0, right: 0), child: titleLabel)
+        children.append(titleLayout)
         
-        stack.children = [
-                imageNode,
-                ASInsetLayoutSpec(insets: context.style.titleInsets, child: titleLabel)
-        ]
+        stack.children = children
         
         return ASInsetLayoutSpec(insets: context.style.insets, child: stack)
     }
@@ -99,6 +80,7 @@ class DefaultCellContext {
     var imageUrl: String?
     var image: UIImage?
     var style = DefaultCellStyle()
+    var preferredImageSize: CGSize?
     
     init(title: String) {
         self.title = title        
@@ -116,7 +98,6 @@ struct DefaultCellStyle {
     var backgroundColor = Constants.DefaultCellLayout.BackgroundColor
     var selectedBackground = Constants.DefaultCellLayout.SelectedBackgroundColor
     var insets = Constants.DefaultCellLayout.CellInsets
-    var titleInsets = Constants.DefaultCellLayout.TitleLabelInsets
     var titleStringAttributes = Constants.DefaultCellLayout.TitleStringAttributes
 }
 

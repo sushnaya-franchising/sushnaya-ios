@@ -31,8 +31,8 @@ class MenusViewController: ASViewController<MenusNode> {
 }
 
 extension MenusViewController: MenusNodeDelegate {
-    func menusNode(_ node: MenusNode, didSelectMenu menuDto: MenuDto) {
-        DidSelectMenuEvent.fire(menuDto: menuDto)
+    func menusNode(_ node: MenusNode, didSelectMenu menuDto: MenuDto) {        
+        self.app.selectMenu(menuDto: menuDto)
         
         self.dismiss(animated: true, completion: nil)
     }
