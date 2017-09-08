@@ -153,9 +153,9 @@ class App: UIResponder, UIApplicationDelegate {
                 }.first
             }
             
-            CLLocationManager.promise().then { location -> () in
+            CLLocationManager.promise().then { [unowned self] location -> () in
                 if let menuDto = getMenu(by: location) {
-                    DidSelectMenuEvent.fire(menuDto: menuDto)
+                    self.selectMenu(menuDto: menuDto)
 
                 } else {
                     presentLocalitiesController()
@@ -167,8 +167,9 @@ class App: UIResponder, UIApplicationDelegate {
         }
 
         EventBus.onMainThread(self, name: DidOpenConnectionEvent.name) { [unowned self] (notification) in
-            print("API chat connected")
+            print("Websocket connected")
             self.restartWebsocketConnectionDelay = 1
+            GetMenuEvent.fire()
         }
 
         EventBus.onMainThread(self, name: DidCloseConnectionEvent.name) { [unowned self] (notification) in
@@ -202,43 +203,92 @@ class App: UIResponder, UIApplicationDelegate {
         EventBus.onMainThread(self, name: CategoriesServerEvent.name) { notification in
             let categories = (notification.object as! CategoriesServerEvent).categories
             
-            
+            print("Categories received")
             
             do {
                 try CoreStore.perform(synchronous: { [unowned self] (transaction) in
-                    
                     for categoryDto in categories {
+                        let categoryEntity = transaction.fetchOne(From<MenuCategoryEntity>(), Where("serverId", isEqualTo: categoryDto.id)) ??
+                            transaction.create(Into<MenuCategoryEntity>())
                         
-                        print(categoryDto.name)
-//                        transaction.fetchOne(From<MenuCategory>, Where("title", isEqualTo: categoryDto.name))
-                    }
-                    
-//                    let menu = transaction.edit(self.menu) ?? transaction.create(Into<Menu>())
-//                    menu.locality = transaction.edit(menu.locality) ?? transaction.create(Into<Locality>())
-//                    
-//                    menu.serverId = NSNumber.init(value: menuDto.menuID)
-//                    menu.locality.name = menuDto.locality.name
-//                    menu.locality.descr = menuDto.locality.descr
-//                    menu.locality.fiasId = menuDto.locality.fiasID
-//                    menu.locality.latitude = menuDto.locality.latitude
-//                    menu.locality.longitude = menuDto.locality.longitude
-//                    menu.locality.lowerLatitude = menuDto.locality.lowerLatitude
-//                    menu.locality.lowerLongitude = menuDto.locality.lowerLongitude
-//                    menu.locality.upperLatitude = menuDto.locality.upperLatitude
-//                    menu.locality.upperLongitude = menuDto.locality.upperLongitude
+                        categoryEntity.serverId = categoryDto.id
+                        categoryEntity.title = categoryDto.name
+                        categoryEntity.imageUrl = categoryDto.photo.url
+                        categoryEntity.imageSize = CGSize(width: CGFloat(categoryDto.photo.width),
+                                                          height: CGFloat(categoryDto.photo.height))
+                        let menu = transaction.edit(self.userSession.settings.menu)
+                        categoryEntity.menu = menu
+                    }                    
                 })
             } catch {
 //                 todo: log error
             }
-            
-            print("Categories received")
         }
         
         EventBus.onMainThread(self, name: RecommendationsServerEvent.name) { notification in
             let products = (notification.object as! RecommendationsServerEvent).products
             
             print("Recommendations received")
+            
+            do {
+                try CoreStore.perform(synchronous: { [unowned self] (transaction) in
+                    for productDto in products {
+                        let productEntity = transaction.fetchOne(From<ProductEntity>(), Where("serverId", isEqualTo: productDto.id)) ??
+                            transaction.create(Into<ProductEntity>())
+                        
+                        productEntity.serverId = productDto.id
+                        productEntity.title = productDto.name
+                        productEntity.subtitle = productDto.subheading
+                        productEntity.imageUrl = productDto.photo.url
+                        productEntity.imageSize = CGSize(width: CGFloat(productDto.photo.width),
+                                                          height: CGFloat(productDto.photo.height))
+                        productEntity.isRecommended = true
+                        productEntity.menuCategory = transaction.fetchOne(From<MenuCategoryEntity>(), Where("serverId", isEqualTo: productDto.categoryID))
+                        
+                        for priceDto in productDto.pricing {
+                            let priceEntity = transaction.fetchOne(From<PriceEntity>(), Where("serverId", isEqualTo: priceDto.id)) ??
+                                transaction.create(Into<PriceEntity>())
+                            
+                            priceEntity.serverId = priceDto.id
+                            priceEntity.value = priceDto.value
+                            priceEntity.modifierName = priceDto.modifier
+                            priceEntity.currencyLocale = priceDto.currencyLocale
+                            priceEntity.product = productEntity
+                        }
+                    }
+                })
+            } catch {
+                //                 todo: log error
+            }
         }
+    }
+    
+    func selectMenu(menuDto: MenuDto)  {
+        do {
+            try CoreStore.perform(synchronous: { [unowned self] (transaction) in
+                let menu = transaction.fetchOne(From<MenuEntity>(), Where("serverId", isEqualTo: menuDto.menuID)) ??
+transaction.create(Into<MenuEntity>())
+                menu.locality = transaction.edit(menu.locality) ?? transaction.create(Into<LocalityEntity>())
+                
+                menu.serverId = NSNumber.init(value: menuDto.menuID)
+                menu.locality.name = menuDto.locality.name
+                menu.locality.descr = menuDto.locality.descr
+                menu.locality.fiasId = menuDto.locality.fiasID
+                menu.locality.latitude = menuDto.locality.latitude
+                menu.locality.longitude = menuDto.locality.longitude
+                menu.locality.lowerLatitude = menuDto.locality.lowerLatitude
+                menu.locality.lowerLongitude = menuDto.locality.lowerLongitude
+                menu.locality.upperLatitude = menuDto.locality.upperLatitude
+                menu.locality.upperLongitude = menuDto.locality.upperLongitude
+                
+                let userSettings = transaction.edit(self.userSession.settings)
+                userSettings?.menu = menu
+            })
+        } catch {
+            // todo: log error
+        }
+        
+        DidSelectMenuEvent.fire(menuDto: menuDto)
     }
 }
 
@@ -274,7 +324,7 @@ extension App {
         rootTBC.tabBar.itemSpacing = UIScreen.main.bounds.width/2
         rootTBC.tabBar.backgroundImage = drawTabBarImage()
         
-        let homeNC = ASNavigationController(rootViewController: HomeViewController())
+        let homeNC = ASNavigationController(rootViewController: ProductsViewController())
         homeNC.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
         let image = UIImage(named: "logo")!
         homeNC.tabBarItem.image = image.convertToGrayScale().tranlucentWithAlpha(alpha: 0.5).withRenderingMode(.alwaysOriginal)
@@ -284,7 +334,7 @@ extension App {
         settingsNC.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
         settingsNC.tabBarItem.image = UIImage.fontAwesomeIcon(name: .ellipsisH, textColor: PaperColor.Gray400, size: CGSize(width: 32, height: 32))
         
-        rootTBC.addChildViewController(homeNC, narrowSideController: FiltersViewController())
+        rootTBC.addChildViewController(homeNC, narrowSideController: CategoriesViewController())
         rootTBC.addChildViewController(settingsNC)
         
         return rootTBC

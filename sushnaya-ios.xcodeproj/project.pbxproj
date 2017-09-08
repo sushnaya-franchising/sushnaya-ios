@@ -51,6 +51,7 @@
 		2E81AA911F5B38DE003F8D27 /* intro_video.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 2E81AA901F5B38DE003F8D27 /* intro_video.mp4 */; };
 		2E9147011EB32DFC00E0D312 /* SegmentedControlNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9147001EB32DFC00E0D312 /* SegmentedControlNode.swift */; };
 		2E9147031EB3388400E0D312 /* ASControlNodeExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9147021EB3388400E0D312 /* ASControlNodeExt.swift */; };
+		2E915F171F6031EF00F03344 /* FoodService.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E915F161F6031EF00F03344 /* FoodService.pb.swift */; };
 		2E926DE21E8E53D100070538 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E926DDE1E8E53D100070538 /* App.swift */; };
 		2E926DE31E8E53D100070538 /* UserSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E926DDF1E8E53D100070538 /* UserSession.swift */; };
 		2E926DE51E8E53D100070538 /* FoodServiceWebsocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E926DE11E8E53D100070538 /* FoodServiceWebsocket.swift */; };
@@ -62,10 +63,10 @@
 		2E926DFF1E8E53F700070538 /* PhoneNumberViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E926DFB1E8E53F700070538 /* PhoneNumberViewController.swift */; };
 		2E926E001E8E53F700070538 /* VerificationCodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E926DFC1E8E53F700070538 /* VerificationCodeViewController.swift */; };
 		2E926E011E8E53F700070538 /* TermsOfUseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E926DFD1E8E53F700070538 /* TermsOfUseViewController.swift */; };
-		2E926E071E8E540000070538 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E926E021E8E540000070538 /* HomeViewController.swift */; };
+		2E926E071E8E540000070538 /* ProductsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E926E021E8E540000070538 /* ProductsViewController.swift */; };
 		2E926E081E8E540000070538 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E926E031E8E540000070538 /* SettingsViewController.swift */; };
 		2E926E091E8E540000070538 /* MenusViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E926E041E8E540000070538 /* MenusViewController.swift */; };
-		2E926E0B1E8E540000070538 /* FiltersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E926E061E8E540000070538 /* FiltersViewController.swift */; };
+		2E926E0B1E8E540000070538 /* CategoriesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E926E061E8E540000070538 /* CategoriesViewController.swift */; };
 		2E926E0D1E8E540900070538 /* PaperFold.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E926E0C1E8E540900070538 /* PaperFold.swift */; };
 		2E926E131E8E544300070538 /* PaperButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E926E101E8E544300070538 /* PaperButton.swift */; };
 		2E926E141E8E544300070538 /* PaperElevation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E926E111E8E544300070538 /* PaperElevation.swift */; };
@@ -112,7 +113,6 @@
 		2EB9383B1F5D3A8E00A6F9A4 /* Locality.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EB9383A1F5D3A8E00A6F9A4 /* Locality.swift */; };
 		2EB9383D1F5D3AF000A6F9A4 /* MenuCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EB9383C1F5D3AF000A6F9A4 /* MenuCategory.swift */; };
 		2EB9383F1F5D3ECA00A6F9A4 /* Address.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EB9383E1F5D3ECA00A6F9A4 /* Address.swift */; };
-		2EB938411F5D94B700A6F9A4 /* FoodServiceDto.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EB938401F5D94B700A6F9A4 /* FoodServiceDto.pb.swift */; };
 		2ECB50771ECC7A4500AF1204 /* OrderNavbarNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ECB50761ECC7A4500AF1204 /* OrderNavbarNode.swift */; };
 		2ECB50791ECCA20F00AF1204 /* OrderWithDeliveryFormNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ECB50781ECCA20F00AF1204 /* OrderWithDeliveryFormNode.swift */; };
 		2ECB507D1ECCE8B400AF1204 /* PaymentSectionNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ECB507C1ECCE8B400AF1204 /* PaymentSectionNode.swift */; };
@@ -193,6 +193,7 @@
 		2E81AA901F5B38DE003F8D27 /* intro_video.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = intro_video.mp4; sourceTree = "<group>"; };
 		2E9147001EB32DFC00E0D312 /* SegmentedControlNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SegmentedControlNode.swift; sourceTree = "<group>"; };
 		2E9147021EB3388400E0D312 /* ASControlNodeExt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ASControlNodeExt.swift; sourceTree = "<group>"; };
+		2E915F161F6031EF00F03344 /* FoodService.pb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FoodService.pb.swift; sourceTree = "<group>"; };
 		2E926DDE1E8E53D100070538 /* App.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		2E926DDF1E8E53D100070538 /* UserSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserSession.swift; sourceTree = "<group>"; };
 		2E926DE11E8E53D100070538 /* FoodServiceWebsocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FoodServiceWebsocket.swift; sourceTree = "<group>"; };
@@ -204,10 +205,10 @@
 		2E926DFB1E8E53F700070538 /* PhoneNumberViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhoneNumberViewController.swift; sourceTree = "<group>"; };
 		2E926DFC1E8E53F700070538 /* VerificationCodeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VerificationCodeViewController.swift; sourceTree = "<group>"; };
 		2E926DFD1E8E53F700070538 /* TermsOfUseViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TermsOfUseViewController.swift; sourceTree = "<group>"; };
-		2E926E021E8E540000070538 /* HomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
+		2E926E021E8E540000070538 /* ProductsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductsViewController.swift; sourceTree = "<group>"; };
 		2E926E031E8E540000070538 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		2E926E041E8E540000070538 /* MenusViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenusViewController.swift; sourceTree = "<group>"; };
-		2E926E061E8E540000070538 /* FiltersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FiltersViewController.swift; sourceTree = "<group>"; };
+		2E926E061E8E540000070538 /* CategoriesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategoriesViewController.swift; sourceTree = "<group>"; };
 		2E926E0C1E8E540900070538 /* PaperFold.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaperFold.swift; sourceTree = "<group>"; };
 		2E926E101E8E544300070538 /* PaperButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaperButton.swift; sourceTree = "<group>"; };
 		2E926E111E8E544300070538 /* PaperElevation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaperElevation.swift; sourceTree = "<group>"; };
@@ -258,7 +259,6 @@
 		2EB9383A1F5D3A8E00A6F9A4 /* Locality.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Locality.swift; sourceTree = "<group>"; };
 		2EB9383C1F5D3AF000A6F9A4 /* MenuCategory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuCategory.swift; sourceTree = "<group>"; };
 		2EB9383E1F5D3ECA00A6F9A4 /* Address.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Address.swift; sourceTree = "<group>"; };
-		2EB938401F5D94B700A6F9A4 /* FoodServiceDto.pb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FoodServiceDto.pb.swift; sourceTree = "<group>"; };
 		2ECB50761ECC7A4500AF1204 /* OrderNavbarNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderNavbarNode.swift; sourceTree = "<group>"; };
 		2ECB50781ECCA20F00AF1204 /* OrderWithDeliveryFormNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderWithDeliveryFormNode.swift; sourceTree = "<group>"; };
 		2ECB507C1ECCE8B400AF1204 /* PaymentSectionNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaymentSectionNode.swift; sourceTree = "<group>"; };
@@ -334,7 +334,7 @@
 			children = (
 				2EB938351F5D393200A6F9A4 /* Entity */,
 				2E926E2F1E8E54F200070538 /* User.swift */,
-				2EB938401F5D94B700A6F9A4 /* FoodServiceDto.pb.swift */,
+				2E915F161F6031EF00F03344 /* FoodService.pb.swift */,
 				2E48F2781E98EB5000DCBBC6 /* Cart.swift */,
 				2EB938361F5D396800A6F9A4 /* Price.swift */,
 				2EB938381F5D3A3500A6F9A4 /* Product.swift */,
@@ -424,10 +424,10 @@
 			children = (
 				2E0E05D01F49B718005CFF6B /* Checkout */,
 				2ECB50801ECCEEAD00AF1204 /* Order */,
-				2E926E021E8E540000070538 /* HomeViewController.swift */,
+				2E926E021E8E540000070538 /* ProductsViewController.swift */,
 				2E926E031E8E540000070538 /* SettingsViewController.swift */,
 				2E926E041E8E540000070538 /* MenusViewController.swift */,
-				2E926E061E8E540000070538 /* FiltersViewController.swift */,
+				2E926E061E8E540000070538 /* CategoriesViewController.swift */,
 				19BB4BC0CF6F2C3200B99AEE /* MainViewController.swift */,
 				2EB2992A1E98E2CB00189D4B /* Cart */,
 				19BB419A2D69FA26887D6433 /* Address */,
@@ -926,7 +926,7 @@
 				2E926E001E8E53F700070538 /* VerificationCodeViewController.swift in Sources */,
 				2E2FF1281EA65963006B9321 /* CartEvent.swift in Sources */,
 				2E926DF81E8E53E100070538 /* MenuEvent.swift in Sources */,
-				2E926E071E8E540000070538 /* HomeViewController.swift in Sources */,
+				2E926E071E8E540000070538 /* ProductsViewController.swift in Sources */,
 				2ECB50771ECC7A4500AF1204 /* OrderNavbarNode.swift in Sources */,
 				2E2FF1221EA391AE006B9321 /* CartToolbarNode.swift in Sources */,
 				2E926E4A1E8E551600070538 /* NSAttributedStringExt.swift in Sources */,
@@ -944,9 +944,9 @@
 				2E926E2D1E8E54E800070538 /* MenuCellNode.swift in Sources */,
 				2E926E011E8E53F700070538 /* TermsOfUseViewController.swift in Sources */,
 				2ECB50791ECCA20F00AF1204 /* OrderWithDeliveryFormNode.swift in Sources */,
-				2EB938411F5D94B700A6F9A4 /* FoodServiceDto.pb.swift in Sources */,
 				2E218B5D1F51BD9E00B5213C /* ConnectionEvent.swift in Sources */,
 				2E2FF1261EA65845006B9321 /* DataStructure.swift in Sources */,
+				2E915F171F6031EF00F03344 /* FoodService.pb.swift in Sources */,
 				2EB9383F1F5D3ECA00A6F9A4 /* Address.swift in Sources */,
 				2E926E0D1E8E540900070538 /* PaperFold.swift in Sources */,
 				2ED4C7181EC2301E00374132 /* AddressSuggestionsWidget.swift in Sources */,
@@ -984,7 +984,7 @@
 				2ED4C7001EB4978B00374132 /* YandexGeocoder.swift in Sources */,
 				2E926E4E1E8E551600070538 /* ASEditableTextNodeExt.swift in Sources */,
 				2EF2D7471F052A3D001B241A /* CashCalculator.swift in Sources */,
-				2E926E0B1E8E540000070538 /* FiltersViewController.swift in Sources */,
+				2E926E0B1E8E540000070538 /* CategoriesViewController.swift in Sources */,
 				2E80ACEA1E8FAC9B00D0DBCF /* DefaultCellNode.swift in Sources */,
 				2E218B631F51BF2F00B5213C /* NetworkActivityIndicatorManager.swift in Sources */,
 				2E926DFE1E8E53F700070538 /* SignInViewController.swift in Sources */,

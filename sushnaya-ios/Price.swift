@@ -1,9 +1,22 @@
 import Foundation
+import CoreStore
 
 struct Price {
     var value: Double
     var currencyLocale: String
     var modifierName: String?
+    var serverId: Int32
+    
+    init(value: Double, currencyLocale: String, modifierName: String?) {
+        self.init(value: value, currencyLocale: currencyLocale, modifierName: modifierName, serverId: -1)
+    }
+    
+    init(value: Double, currencyLocale: String, modifierName: String?, serverId: Int32) {
+        self.value = value
+        self.currencyLocale = currencyLocale
+        self.modifierName = modifierName
+        self.serverId = serverId
+    }
     
     var formattedValue: String {
         let formatter = NumberFormatter()
@@ -13,7 +26,7 @@ struct Price {
         formatter.maximumFractionDigits = 2
         
         return formatter.string(from: NSNumber(value: self.value))!
-    }
+    }    
 }
 
 extension Price: Hashable {

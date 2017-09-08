@@ -3,7 +3,7 @@ import AsyncDisplayKit
 import pop
 
 protocol ProductCellNodeDelegate: class {
-    func productCellNode(_ node: ProductCellNode, didSelectProduct product: Product, withPrice price: Price)
+    func productCellNode(_ node: ProductCellNode, didSelectProduct product: ProductEntity, withPrice price: PriceEntity)
 }
 
 class ProductCellNode: ASCellNode {
@@ -13,21 +13,26 @@ class ProductCellNode: ASCellNode {
     let selectedCellBackground = Constants.ProductCellLayout.SelectedBackgroundColor
     let imageCornerRadius = Constants.ProductCellLayout.ImageCornerRadius
     
-    let imageNode: ASImageNode = {// todo: make it ASNetworkingNode
-        let imageNode = ASImageNode()
+    let imageNode: ASNetworkImageNode = {
+        let imageNode = ASNetworkImageNode()
         imageNode.contentMode = .scaleAspectFit
-//        imageNode.imageModificationBlock = ImageNodePrecompositedCornerModification(
-//            cornerRadius: Constants.CategoryCellLayout.ImageCornerRadius)
+//        imageNode.imageModificationBlock = ImageNodePrecompositedCornerModification(cornerRadius: 15)
         return imageNode
     }()
 
     private(set) var titleLabel = ASTextNode()
     private(set) var subtitleLabel: ASTextNode?
     private(set) var priceNodes = [PriceNode]()
-    var product: Product
+    
     weak var delegate: ProductCellNodeDelegate?
     
-    init(product: Product) {
+    var product: ProductEntity {
+        didSet {
+            setupNodes()
+        }
+    }
+    
+    init(product: ProductEntity) {
         self.product = product
         super.init()
         self.automaticallyManagesSubnodes = true
@@ -44,14 +49,12 @@ class ProductCellNode: ASCellNode {
     }
 
     private func setupImageNode() {
-        //imageNode.defaultImage = UIImage(color: PaperColor.Gray300, size: Constants.CellLayout.CoatOfArmsImageSize)
+        imageNode.defaultImage = UIImage(color: PaperColor.Gray300)
 
         if let url = product.imageUrl {
-            //    imageNode.url = URL(string: url)
-            imageNode.image = UIImage(named: url)
+            imageNode.url = URL(string: url)
             imageNode.addTarget(self, action: #selector(didTouchDownRepeatImage), forControlEvents: .touchDownRepeat)
-        }
-        // todo: setup gray color placeholder image if no image provided
+        }        
     }
     
     func didTouchDownRepeatImage() {
@@ -85,8 +88,8 @@ class ProductCellNode: ASCellNode {
     }
 
     private func setupPriceNodes() {
-        product.pricing.forEach {
-            let priceNode = PriceNode(price: $0)
+        for price in product.pricing {
+            let priceNode = PriceNode(price: price)
             priceNode.delegate = self
             priceNodes.append(priceNode)
         }
@@ -95,9 +98,9 @@ class ProductCellNode: ASCellNode {
     override func didLoad() {
         super.didLoad()
         
-        imageNode.cornerRadius = imageCornerRadius // todo: use optimized corner radius, update corner radius in ASNetworkImageNodeDelegate
-        imageNode.clipsToBounds = true
-    }        
+//        imageNode.cornerRadius = imageCornerRadius // todo: use optimized corner radius, update corner radius in ASNetworkImageNodeDelegate
+//        imageNode.clipsToBounds = true
+    }
     
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let resultStack = ASStackLayoutSpec.vertical()
@@ -150,7 +153,7 @@ class ProductCellNode: ASCellNode {
 }
 
 extension ProductCellNode: PriceNodeDelegate {
-    func priceNode(_ node: PriceNode, didTouchPrice price: Price) {
+    func priceNode(_ node: PriceNode, didTouchPrice price: PriceEntity) {
         delegate?.productCellNode(self, didSelectProduct: product, withPrice: price)
     }
 }

@@ -1,7 +1,8 @@
 import Foundation
+import CoreStore
 
 struct Product {
-    var serverId: Int
+    var serverId: Int32
     var title: String
     var subtitle: String?
     var imageUrl: String?
@@ -9,7 +10,7 @@ struct Product {
     var imageHeight: NSNumber?
     
     var pricing: [Price]
-    var category: MenuCategory
+    var menuCategory: MenuCategory?
     
     var imageSize: CGSize? {
         get {
@@ -41,21 +42,21 @@ struct Product {
         return result
     }
     
-    var categoryTitle:String {
-        return category.title
-    }
+    var categoryTitle:String? {
+        return menuCategory?.title
+    }        
 }
 
 extension Product: Hashable {
     var hashValue: Int {
         var result = 1
-        result = 31 &* result &+ serverId
+        result = 31 &* result &+ Int(serverId)
         result = 31 &* result &+ title.hashValue
         result = 31 &* result &+ (subtitle?.hashValue ?? 0)
         result = 31 &* result &+ (imageUrl?.hashValue ?? 0)
         result = 31 &* result &+ (imageSize?.hashValue ?? 0)
         result = 31 &* result &+ HashValueUtil.hashValue(of: pricing)
-        result = 31 &* result &+ category.hashValue
+        result = 31 &* result &+ (menuCategory?.hashValue ?? 0)
         
         return result
     }
@@ -69,5 +70,5 @@ func ==(lhs: Product, rhs: Product) -> Bool {
         lhs.imageSize == rhs.imageSize &&
         lhs.imageUrl == rhs.imageUrl &&
         lhs.pricing == rhs.pricing &&
-        lhs.category == rhs.category
+        lhs.menuCategory == rhs.menuCategory
 }

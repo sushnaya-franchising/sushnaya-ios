@@ -8,8 +8,8 @@ class MenuCellNode: ASCellNode {
 
     var imageNode: ASNetworkImageNode = {
         let imageNode = ASNetworkImageNode()
-        imageNode.contentMode = .scaleAspectFit
-        imageNode.imageModificationBlock = ImageNodePrecompositedCornerModification(cornerRadius: 10)
+//        imageNode.contentMode = .scaleAspectFit
+//        imageNode.imageModificationBlock = ImageNodePrecompositedCornerModification(cornerRadius: 10)
         return imageNode
     }()
 
@@ -48,7 +48,7 @@ class MenuCellNode: ASCellNode {
         
         let coordinate = CLLocationCoordinate2D(latitude: menuDto.locality.latitude,
                                                 longitude: menuDto.locality.longitude)
-        print(FoodServiceImages.getCoatOfArmsImageUrl(coordinate: coordinate).absoluteString)
+        
         imageNode.url = FoodServiceImages.getCoatOfArmsImageUrl(coordinate: coordinate)
     }
 

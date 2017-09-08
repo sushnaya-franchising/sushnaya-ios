@@ -8,8 +8,6 @@ class UserSession: NSObject {
             return settings.authToken != nil
         }
     }
-
-    var menu: MenuEntity?
     
     let settings: UserSettingsEntity = {
         var settings = CoreStore.fetchOne(From<UserSettingsEntity>())
@@ -31,41 +29,7 @@ class UserSession: NSObject {
     
     override init() {
         super.init()
-        
-        self.menu = CoreStore.fetchOne(From<MenuEntity>())
-        
-        bindEventHandlers()
-    }
-        
-    deinit {
-        EventBus.unregister(self)
-    }
-        
-    private func bindEventHandlers() {
-        EventBus.onMainThread(self, name: DidSelectMenuEvent.name) { [unowned self] notification in
-            let menuDto = (notification.object as! DidSelectMenuEvent).menuDto
-            
-            do {
-                try CoreStore.perform(synchronous: { [unowned self] (transaction) in
-                    let menu = transaction.edit(self.menu) ?? transaction.create(Into<MenuEntity>())
-                    menu.locality = transaction.edit(menu.locality) ?? transaction.create(Into<LocalityEntity>())
-                    
-                    menu.serverId = NSNumber.init(value: menuDto.menuID)
-                    menu.locality.name = menuDto.locality.name
-                    menu.locality.descr = menuDto.locality.descr
-                    menu.locality.fiasId = menuDto.locality.fiasID                    
-                    menu.locality.latitude = menuDto.locality.latitude
-                    menu.locality.longitude = menuDto.locality.longitude
-                    menu.locality.lowerLatitude = menuDto.locality.lowerLatitude
-                    menu.locality.lowerLongitude = menuDto.locality.lowerLongitude
-                    menu.locality.upperLatitude = menuDto.locality.upperLatitude
-                    menu.locality.upperLongitude = menuDto.locality.upperLongitude
-                })
-            } catch {
-                // todo: log error
-            }
-        }
-    }
+    }            
 }
 
 
