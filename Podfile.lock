@@ -7,19 +7,20 @@ PODS:
   - FontAwesome.swift (1.1.1)
   - libPhoneNumber-iOS (0.9.6)
   - PaperFold (1.1)
-  - PINCache (3.0.1-beta.4):
-    - PINCache/Arc-exception-safe (= 3.0.1-beta.4)
-    - PINCache/Core (= 3.0.1-beta.4)
-  - PINCache/Arc-exception-safe (3.0.1-beta.4):
+  - PINCache (3.0.1-beta.5):
+    - PINCache/Arc-exception-safe (= 3.0.1-beta.5)
+    - PINCache/Core (= 3.0.1-beta.5)
+  - PINCache/Arc-exception-safe (3.0.1-beta.5):
     - PINCache/Core
-  - PINCache/Core (3.0.1-beta.4):
+  - PINCache/Core (3.0.1-beta.5):
     - PINOperation (= 1.0.3)
   - PINOperation (1.0.3)
-  - PINRemoteImage/Core (3.0.0-beta.8)
-  - PINRemoteImage/iOS (3.0.0-beta.8):
+  - PINRemoteImage/Core (3.0.0-beta.11):
+    - PINOperation
+  - PINRemoteImage/iOS (3.0.0-beta.11):
     - PINRemoteImage/Core
-  - PINRemoteImage/PINCache (3.0.0-beta.8):
-    - PINCache (= 3.0.1-beta.4)
+  - PINRemoteImage/PINCache (3.0.0-beta.11):
+    - PINCache (= 3.0.1-beta.5)
     - PINRemoteImage/Core
   - pop (1.0.9)
   - PromiseKit (4.2.0):
@@ -39,11 +40,11 @@ PODS:
   - SwiftEventBus (2.2.0)
   - SwiftProtobuf (0.9.903)
   - SwiftyJSON (3.1.4)
-  - Texture (2.2):
-    - Texture/PINRemoteImage (= 2.2)
-  - Texture/Core (2.2)
-  - Texture/PINRemoteImage (2.2):
-    - PINRemoteImage/iOS (= 3.0.0-beta.8)
+  - Texture (2.4):
+    - Texture/PINRemoteImage (= 2.4)
+  - Texture/Core (2.4)
+  - Texture/PINRemoteImage (2.4):
+    - PINRemoteImage/iOS (= 3.0.0-beta.11)
     - PINRemoteImage/PINCache
     - Texture/Core
   - YandexMapKit (1.0.11)
@@ -63,7 +64,7 @@ DEPENDENCIES:
   - SwiftEventBus (from `https://github.com/cesarferreira/SwiftEventBus.git`, tag `2.2.0`)
   - SwiftProtobuf (~> 0.9.903)
   - SwiftyJSON
-  - Texture (= 2.2)
+  - Texture
   - YandexMapKit
 
 EXTERNAL SOURCES:
@@ -84,18 +85,18 @@ SPEC CHECKSUMS:
   FontAwesome.swift: f4ff5a9199dc3b510eba5bb377e834f159aef358
   libPhoneNumber-iOS: 36044ed9658b5c11ee3cb3011751e47251d34992
   PaperFold: 8eb23a27e4b8a9ee945e56af1617ce98c93ef12c
-  PINCache: a89c8f609232afac77128557bd12c861844423d7
+  PINCache: 98e7b1ef782824ad231ade51987c218b758c30d8
   PINOperation: ac23db44796d4a564ecf9b5ea7163510f579b71d
-  PINRemoteImage: c4f9f16932840c597f32e69dd288e10e111a1929
+  PINRemoteImage: d71988f11914a050d6d4cf51efc4ad1de8c0a9d8
   pop: f667631a5108a2e60d9e8797c9b32ddaf2080bce
   PromiseKit: 08dfb783c161ddcd95b7912421f14c5113fd8318
   Starscream: df5974ee928b157c8eda8af8de7c620276b7dfcc
   SwiftEventBus: 39cde57d1881f9d6e8afb1f9e41f973e331bf847
   SwiftProtobuf: d7efc9bea9d3c3bdfc8f6664fe19ee5dc19c04a8
   SwiftyJSON: c2842d878f95482ffceec5709abc3d05680c0220
-  Texture: 3e4664479225216198c29bdb9621664de390534d
+  Texture: a5526314780eab35f642d956627f09316b9514e8
   YandexMapKit: 70c6e0819e88f742e3800711f7aedecaf3029300
 
-PODFILE CHECKSUM: bd6b53a465f2bf0340826ac0163b8074c9bbfc85
+PODFILE CHECKSUM: 0b89cc232f3ef30ed72bcce13f20a5b9e2b4b3da
 
 COCOAPODS: 1.2.0

@@ -1,6 +1,7 @@
 import Foundation
 import CoreLocation
-import CoreData
+import CoreStore
+import SwiftyJSON
 
 class LocalityEntity: NSManagedObject {
     @NSManaged var name: String
@@ -38,3 +39,18 @@ class LocalityEntity: NSManagedObject {
         }
     }    
 }
+
+extension LocalityEntity {
+    func update(from source: JSON, in transaction: BaseDataTransaction) throws {
+        self.name = source["name"].string!
+        self.descr = source["description"].string!
+        self.fiasId = source["fiasId"].string!
+        self.latitude = source["location"]["latitude"].double!
+        self.longitude = source["location"]["longitude"].double!
+        self.lowerLatitude = source["boundedBy"]["lowerCorner"]["latitude"].double!
+        self.lowerLongitude = source["boundedBy"]["lowerCorner"]["longitude"].double!
+        self.upperLatitude = source["boundedBy"]["upperCorner"]["latitude"].double!
+        self.upperLongitude = source["boundedBy"]["upperCorner"]["longitude"].double!
+    }
+}
+

@@ -7,7 +7,7 @@ class CartViewController: ASViewController<ASDisplayNode> {
     fileprivate var cartNode: CartNode!
     
     var cart: Cart {
-        return app.userSession.cart
+        return app.cart
     }
 
     convenience init() {

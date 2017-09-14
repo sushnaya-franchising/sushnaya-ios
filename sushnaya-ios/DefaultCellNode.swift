@@ -19,7 +19,7 @@ class DefaultCellNode: ASCellNode {
     
     override var isSelected: Bool {
         didSet {
-            backgroundColor = isSelected ? context.style.selectedBackground: context.style.backgroundColor
+            backgroundColor = PaperColor.White
         }
     }
     
@@ -41,7 +41,9 @@ class DefaultCellNode: ASCellNode {
     }
     
     private func setupImageNode() {
-        imageNode.defaultImage = UIImage(color: PaperColor.Gray300)
+        imageNode.placeholderEnabled = true
+        imageNode.placeholderColor = PaperColor.Gray100
+        imageNode.placeholderFadeDuration = 0.1
         
         if let url = context.imageUrl {
             imageNode.url = URL(string: url)

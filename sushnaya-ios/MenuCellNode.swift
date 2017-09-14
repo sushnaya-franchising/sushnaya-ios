@@ -4,12 +4,12 @@ import UIKit
 
 class MenuCellNode: ASCellNode {
 
-    var titleLabel = ASTextNode()
+    fileprivate var titleLabel = ASTextNode()
 
-    var imageNode: ASNetworkImageNode = {
+    fileprivate var imageNode: ASNetworkImageNode = {
         let imageNode = ASNetworkImageNode()
-//        imageNode.contentMode = .scaleAspectFit
-//        imageNode.imageModificationBlock = ImageNodePrecompositedCornerModification(cornerRadius: 10)
+        imageNode.contentMode = .scaleAspectFit
+        imageNode.imageModificationBlock = ImageNodePrecompositedCornerModification(cornerRadius: 10)
         return imageNode
     }()
 
@@ -25,29 +25,39 @@ class MenuCellNode: ASCellNode {
         }
     }
 
-    init(menuDto: MenuDto) {
+    var menu: MenuEntity {
+        didSet {
+            setupNodes()
+        }
+    }
+    
+    init(menu: MenuEntity) {
+        self.menu = menu
+        
         super.init()
 
         self.selectionStyle = .none
         self.automaticallyManagesSubnodes = true
 
-        setupNodes(menuDto)
+        setupNodes()
     }
 
-    private func setupNodes(_ menuDto: MenuDto) {
-        setupTitleLabel(menuDto)
-        setupImageNode(menuDto)
+    private func setupNodes() {
+        setupTitleLabel()
+        setupImageNode()
     }
 
-    private func setupTitleLabel(_ menuDto: MenuDto) {
-        titleLabel.attributedText = NSAttributedString(string: menuDto.locality.name, attributes: titleStringAttributes)
+    private func setupTitleLabel() {
+        titleLabel.attributedText = NSAttributedString(string: menu.locality.name, attributes: titleStringAttributes)
     }
 
-    private func setupImageNode(_ menuDto: MenuDto) {
-        imageNode.defaultImage = UIImage(color: PaperColor.Gray300, size: Constants.LocalityCellLayout.CoatOfArmsImageSize)
+    private func setupImageNode() {
+        imageNode.placeholderEnabled = true
+        imageNode.placeholderColor = PaperColor.Gray100
+        imageNode.placeholderFadeDuration = 0.1
         
-        let coordinate = CLLocationCoordinate2D(latitude: menuDto.locality.latitude,
-                                                longitude: menuDto.locality.longitude)
+        let coordinate = CLLocationCoordinate2D(latitude: menu.locality.latitude,
+                                                longitude: menu.locality.longitude)
         
         imageNode.url = FoodServiceImages.getCoatOfArmsImageUrl(coordinate: coordinate)
     }

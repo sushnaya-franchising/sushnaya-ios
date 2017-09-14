@@ -15,10 +15,6 @@ extension UIViewController {
         return UIApplication.shared.delegate as! App
     }
     
-    var userSettings: UserSettingsEntity {
-        return self.app.userSession.settings
-    }
-    
     func alert(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: "ОК", style: UIAlertActionStyle.default, handler: nil))

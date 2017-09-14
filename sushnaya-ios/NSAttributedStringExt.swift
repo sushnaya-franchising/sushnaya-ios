@@ -22,4 +22,12 @@ extension NSAttributedString {
         return attributedString
     }
     
+    func calculateHeight(width: CGFloat) -> CGFloat {
+        let attributes = self.attributes(at: 0, longestEffectiveRange: nil, in: NSRange(location: 0, length: self.length))
+
+        let rect = NSString(string: self.string).boundingRect(with: CGSize(width: width, height: CGFloat(MAXFLOAT)), options: .usesLineFragmentOrigin, attributes: attributes, context: nil)
+        
+        return ceil(rect.height)
+    }
+    
 }

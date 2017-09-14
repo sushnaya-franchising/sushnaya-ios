@@ -88,13 +88,17 @@ class EditAddressFormNode: ASCellNode {
     }
     
     private func setupLocalityImageNode() {
-        localityImageNode.defaultImage = UIImage(color: PaperColor.Gray300, size: CGSize(width: 32, height: 32))
+        localityImageNode.placeholderEnabled = true
+        localityImageNode.placeholderColor = PaperColor.Gray100
+        localityImageNode.placeholderFadeDuration = 0.1
         
         adjustLocalityImageNode()
     }
     
     private func adjustLocalityImageNode() {
         guard let locality = locality else { return }
+        
+        print(FoodServiceImages.getCoatOfArmsImageUrl(coordinate: locality.coordinate))
         
         localityImageNode.url = FoodServiceImages.getCoatOfArmsImageUrl(coordinate: locality.coordinate)
     }

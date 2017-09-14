@@ -54,7 +54,7 @@ class CartToolbarNode: ASDisplayNode {
         var biggestHeight: CGFloat = 0
 
         self.contexts?.forEach {
-            let titleHeight = $0.title.computeHeight(attributes: Constants.DefaultCellLayout.TitleStringAttributes,
+            let titleHeight = $0.title.calculateHeight(attributes: Constants.DefaultCellLayout.TitleStringAttributes,
                     width: Constants.CartLayout.RecommendationImageSize.width)
 
             let height = Constants.DefaultCellLayout.CellInsets.top +

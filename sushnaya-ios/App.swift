@@ -10,39 +10,43 @@ import CoreStore
 @UIApplicationMain
 class App: UIResponder, UIApplicationDelegate {
 
+    static let brandName = "Сушная" // todo: move to settings
+
     var window: UIWindow?
 
-    lazy var userSession = UserSession()
-    
-    private let foodServiceWebsocket = {
-        return FoodServiceWebSocket()
-    }()
+    let cart = Cart()
+    let core: Core = Core.Singleton
 
-    private let networkActivityIndicatorManager = NetworkActivityIndicatorManager.sharedInstance // todo: refactor
-    
+    private let foodServiceWebsocket = FoodServiceWebSocket()
+
     private var restartWebsocketConnectionDelay = 1
-    
+
     var isWebsocketConnected: Bool {
         return foodServiceWebsocket.isConnected
     }
-    
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        
-        registerEventHandlers()
 
-        YMKConfiguration.sharedInstance().apiKey = "eT8sMHf8HJ3h34nIeC5nzRCx2Ye6JOm9q-02lkLxX9BdERx9-itfjncZ2uWaI5~mdjMYweAA7FTHb44Z7VptmGlbzFKvVW3IZnM9TYBjjzg="
-        
-        CoreStore.defaultStack = DataStack(xcodeModelName: "Appnbot")
-        
-        do {
-            try CoreStore.addStorageAndWait(SQLiteStore(fileName: "Appnbot.sqlite"))
-        } catch {
-            // todo: report fatal error
-        }
-        
+    var selectedMenu: MenuEntity? {
+        return core.settings.object?.selectedMenu
+    }
+
+    var authToken: String? {
+        return core.settings.object?.authToken
+    }
+
+    var isLoggedIn: Bool {
+        return core.settings.object?.authToken != nil
+    }
+
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+        registerEventHandlers()
+        configureYandexMapKit()
         setupWindow()
-        
+
         return true
+    }
+
+    private func configureYandexMapKit() {
+        YMKConfiguration.sharedInstance().apiKey = "eT8sMHf8HJ3h34nIeC5nzRCx2Ye6JOm9q-02lkLxX9BdERx9-itfjncZ2uWaI5~mdjMYweAA7FTHb44Z7VptmGlbzFKvVW3IZnM9TYBjjzg="
     }
 
     private func setupWindow() {
@@ -54,7 +58,7 @@ class App: UIResponder, UIApplicationDelegate {
     }
 
     private func createRootViewController() -> UIViewController {
-        return userSession.isLoggedIn ? createDefaultRootViewController() :
+        return isLoggedIn ? createDefaultRootViewController() :
                 createSignInRootViewController()
     }
 
@@ -82,9 +86,10 @@ class App: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-        
-        if let authToken = userSession.settings.authToken {
+
+        if let authToken = authToken {
             OpenConnectionEvent.fire(authToken: authToken)
+            FoodServiceRest.requestMenus(authToken: authToken)
         }
     }
 
@@ -93,24 +98,77 @@ class App: UIResponder, UIApplicationDelegate {
 
         EventBus.unregister(self)
     }
-    
+
     private func connectWithDelay() {
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(self.restartWebsocketConnectionDelay), execute: {
-            OpenConnectionEvent.fire(authToken: self.userSession.settings.authToken!)
+            OpenConnectionEvent.fire(authToken: self.authToken!)
         })
-        
+
         if self.restartWebsocketConnectionDelay < 60 {
             self.restartWebsocketConnectionDelay = self.restartWebsocketConnectionDelay << 1
         }
     }
 
     private func registerEventHandlers() {
+
+        // MARK: Connection events
+
         EventBus.onMainThread(self, name: OpenConnectionEvent.name) { [unowned self] notification in
             let authToken = (notification.object as! OpenConnectionEvent).authToken
-                
+
             self.foodServiceWebsocket.connect(authToken: authToken)
         }
-        
+
+        EventBus.onMainThread(self, name: DidOpenConnectionEvent.name) { [unowned self] (notification) in
+            print("Websocket connected")
+
+            self.restartWebsocketConnectionDelay = 1
+        }
+
+        EventBus.onMainThread(self, name: DidCloseConnectionEvent.name) { [unowned self] (notification) in
+            print("Did close connection")
+
+            self.connectWithDelay()
+        }
+
+        EventBus.onMainThread(self, name: DidCloseConnectionWithErrorEvent.name) { notification in
+            let cause = (notification.object as! DidCloseConnectionWithErrorEvent).cause
+
+            print("Websocket connection error: \(cause)")
+
+            self.connectWithDelay()
+        }
+
+        // MARK: Authentication events
+
+        EventBus.onMainThread(self, name: RequestSMSWithVerificationCodeEvent.name) { notification in
+            let phoneNumber = (notification.object as! RequestSMSWithVerificationCodeEvent).phoneNumber
+
+            FoodServiceAuth.requestSMSWithVerificationCode(phoneNumber: phoneNumber)
+        }
+
+        EventBus.onMainThread(self, name: RequestAuthenticationTokenEvent.name) { notification in
+            let event = (notification.object as! RequestAuthenticationTokenEvent)
+            let phoneNumber = event.phoneNumber
+            let code = event.code
+
+            FoodServiceAuth.requestAuthToken(phoneNumber: phoneNumber, code: code)
+        }
+
+        EventBus.onMainThread(self, name: DidRequestAuthenticationTokenEvent.name) { [unowned self] (notification) in
+            let authToken = (notification.object as! DidRequestAuthenticationTokenEvent).authToken
+            self.core.persistAuthToken(authToken)
+
+            OpenConnectionEvent.fire(authToken: authToken)
+
+            FoodServiceRest.requestMenus(authToken: authToken)
+            
+            let defaultVC = self.createDefaultRootViewController()
+            self.changeRootViewController(defaultVC)
+        }
+
+        // MARK: Terms events
+
         EventBus.onMainThread(self, name: DidUpdateTermsOfUseServerEvent.name) { [unowned self] (notification) in
             // todo: use url from event
             let vc = TermsOfUseViewController()
@@ -118,183 +176,92 @@ class App: UIResponder, UIApplicationDelegate {
             self.window?.rootViewController?.present(vc, animated: true, completion: nil)
         }
 
-        EventBus.onMainThread(self, name: DidRequestAuthenticationTokenEvent.name) { [unowned self] (notification) in
-            let authToken = (notification.object as! DidRequestAuthenticationTokenEvent).authToken
+        // MARK: Menu events
 
-            do {
-                try CoreStore.perform(synchronous: { [unowned self] (transaction) in
-                    if let settings = transaction.edit(self.userSession.settings) {
-                        settings.authToken = authToken
-                    }
-                })
-            
-                OpenConnectionEvent.fire(authToken: authToken)
+//        EventBus.onMainThread(self, name: SelectMenuServerEvent.name) { [unowned self] (notification) in
+//            let menus = (notification.object as! SelectMenuServerEvent).menus
+//
+//            func presentLocalitiesController() {
+//                let vc = MenusViewController(menus: menus)
+//
+//                self.window?.rootViewController?.present(vc, animated: true, completion: nil)
+//            }
+//
+//            func getMenu(by location: CLLocation) -> MenuDto? {
+//                return menus.filter {
+//                    $0.locality.includes(coordinate: location.coordinate) // todo: get most inner locality
+//                }.first
+//            }
+//
+//            CLLocationManager.promise().then { [unowned self] location -> () in
+//                if let menuDto = getMenu(by: location) {
+//                    self.core.selectMenu(menuDto: menuDto)
+//
+//                } else {
+//                    presentLocalitiesController()
+//                }
+//
+//            }.catch { error in
+//                presentLocalitiesController()
+//            }
+//        }
+//
+//        EventBus.onMainThread(self, name: DidSelectMenuServerEvent.name) { [unowned self] notification in
+//            let menuDto = (notification.object as! DidSelectMenuServerEvent).menuDto
+//
+//            guard menuDto.menuID == (self.core.selectedMenuId ?? -1) else {
+//                return self.core.selectMenu(menuDto: menuDto)
+//            }
+//
+//            self.core.persistCategories(ofMenuDto: menuDto)
+//        }
 
-                let authenticatedVC = self.createDefaultRootViewController()
+        // MARK: Category events
 
-                self.changeRootViewController(authenticatedVC)
-            } catch {
-                // todo: reveal error in appropriate vc
-            }
-        }
+//        EventBus.onMainThread(self, name: CategoriesServerEvent.name) { notification in
+//            let categories = (notification.object as! CategoriesServerEvent).categories
 
-        EventBus.onMainThread(self, name: SelectMenuServerEvent.name) { [unowned self] (notification) in
-            let menus = (notification.object as! SelectMenuServerEvent).menus
+//            print("Categories received")
 
-            func presentLocalitiesController() {
-                let vc = MenusViewController(menus: menus)
+//            do {
+//                try CoreStore.perform(synchronous: { [unowned self] (transaction) in
+//                    for categoryDto in categories {
+//                        let categoryEntity = transaction.fetchOne(From<MenuCategoryEntity>(), Where("serverId", isEqualTo: categoryDto.id)) ??
+//                            transaction.create(Into<MenuCategoryEntity>())
+//                        
+//                        categoryEntity.serverId = categoryDto.id
+//                        categoryEntity.title = categoryDto.name
+//                        categoryEntity.imageUrl = categoryDto.photo.url
+//                        categoryEntity.imageSize = CGSize(width: CGFloat(categoryDto.photo.width),
+//                                                          height: CGFloat(categoryDto.photo.height))
+//                        let menu = transaction.edit(self.selectedMenu)
+//                        categoryEntity.menu = menu
+//                    }                    
+//                })
+//            } catch {
+////                 todo: log error
+//            }
+//        }
 
-                self.window?.rootViewController?.present(vc, animated: true, completion: nil)
-            }
+        // MARK: Product events
 
-            func getMenu(by location: CLLocation) -> MenuDto? {
-                return menus.filter {
-                    $0.locality.includes(coordinate: location.coordinate) // todo: get most inner locality
-                }.first
-            }
-            
-            CLLocationManager.promise().then { [unowned self] location -> () in
-                if let menuDto = getMenu(by: location) {
-                    self.selectMenu(menuDto: menuDto)
-
-                } else {
-                    presentLocalitiesController()
-                }
-
-            }.catch { error in
-                presentLocalitiesController()
-            }
-        }
-
-        EventBus.onMainThread(self, name: DidOpenConnectionEvent.name) { [unowned self] (notification) in
-            print("Websocket connected")
-            self.restartWebsocketConnectionDelay = 1
-            GetMenuEvent.fire()
-        }
-
-        EventBus.onMainThread(self, name: DidCloseConnectionEvent.name) { [unowned self] (notification) in
-            print("Did close connection")
-            
-            self.connectWithDelay()
-        }
-        
-        EventBus.onMainThread(self, name: DidCloseConnectionWithErrorEvent.name) { notification in
-            let cause = (notification.object as! DidCloseConnectionWithErrorEvent).cause
-            
-            print("Websocket connection error: \(cause.localizedDescription)")
-            
-            self.connectWithDelay()
-        }
-        
-        EventBus.onMainThread(self, name: RequestSMSWithVerificationCodeEvent.name) { notification in
-            let phoneNumber = (notification.object as! RequestSMSWithVerificationCodeEvent).phoneNumber
-            
-            FoodServiceAuth.requestSMSWithVerificationCode(phoneNumber: phoneNumber)
-        }
-        
-        EventBus.onMainThread(self, name: RequestAuthenticationTokenEvent.name) { notification in
-            let event = (notification.object as! RequestAuthenticationTokenEvent)
-            let phoneNumber = event.phoneNumber
-            let code = event.code
-            
-            FoodServiceAuth.requestAuthToken(phoneNumber: phoneNumber, code: code)
-        }
-        
-        EventBus.onMainThread(self, name: CategoriesServerEvent.name) { notification in
-            let categories = (notification.object as! CategoriesServerEvent).categories
-            
-            print("Categories received")
-            
-            do {
-                try CoreStore.perform(synchronous: { [unowned self] (transaction) in
-                    for categoryDto in categories {
-                        let categoryEntity = transaction.fetchOne(From<MenuCategoryEntity>(), Where("serverId", isEqualTo: categoryDto.id)) ??
-                            transaction.create(Into<MenuCategoryEntity>())
-                        
-                        categoryEntity.serverId = categoryDto.id
-                        categoryEntity.title = categoryDto.name
-                        categoryEntity.imageUrl = categoryDto.photo.url
-                        categoryEntity.imageSize = CGSize(width: CGFloat(categoryDto.photo.width),
-                                                          height: CGFloat(categoryDto.photo.height))
-                        let menu = transaction.edit(self.userSession.settings.menu)
-                        categoryEntity.menu = menu
-                    }                    
-                })
-            } catch {
-//                 todo: log error
-            }
-        }
-        
-        EventBus.onMainThread(self, name: RecommendationsServerEvent.name) { notification in
-            let products = (notification.object as! RecommendationsServerEvent).products
-            
-            print("Recommendations received")
-            
-            do {
-                try CoreStore.perform(synchronous: { [unowned self] (transaction) in
-                    for productDto in products {
-                        let productEntity = transaction.fetchOne(From<ProductEntity>(), Where("serverId", isEqualTo: productDto.id)) ??
-                            transaction.create(Into<ProductEntity>())
-                        
-                        productEntity.serverId = productDto.id
-                        productEntity.title = productDto.name
-                        productEntity.subtitle = productDto.subheading
-                        productEntity.imageUrl = productDto.photo.url
-                        productEntity.imageSize = CGSize(width: CGFloat(productDto.photo.width),
-                                                          height: CGFloat(productDto.photo.height))
-                        productEntity.isRecommended = true
-                        productEntity.menuCategory = transaction.fetchOne(From<MenuCategoryEntity>(), Where("serverId", isEqualTo: productDto.categoryID))
-                        
-                        for priceDto in productDto.pricing {
-                            let priceEntity = transaction.fetchOne(From<PriceEntity>(), Where("serverId", isEqualTo: priceDto.id)) ??
-                                transaction.create(Into<PriceEntity>())
-                            
-                            priceEntity.serverId = priceDto.id
-                            priceEntity.value = priceDto.value
-                            priceEntity.modifierName = priceDto.modifier
-                            priceEntity.currencyLocale = priceDto.currencyLocale
-                            priceEntity.product = productEntity
-                        }
-                    }
-                })
-            } catch {
-                //                 todo: log error
-            }
-        }
-    }
-    
-    func selectMenu(menuDto: MenuDto)  {
-        do {
-            try CoreStore.perform(synchronous: { [unowned self] (transaction) in
-                let menu = transaction.fetchOne(From<MenuEntity>(), Where("serverId", isEqualTo: menuDto.menuID)) ??
-transaction.create(Into<MenuEntity>())
-                menu.locality = transaction.edit(menu.locality) ?? transaction.create(Into<LocalityEntity>())
-                
-                menu.serverId = NSNumber.init(value: menuDto.menuID)
-                menu.locality.name = menuDto.locality.name
-                menu.locality.descr = menuDto.locality.descr
-                menu.locality.fiasId = menuDto.locality.fiasID
-                menu.locality.latitude = menuDto.locality.latitude
-                menu.locality.longitude = menuDto.locality.longitude
-                menu.locality.lowerLatitude = menuDto.locality.lowerLatitude
-                menu.locality.lowerLongitude = menuDto.locality.lowerLongitude
-                menu.locality.upperLatitude = menuDto.locality.upperLatitude
-                menu.locality.upperLongitude = menuDto.locality.upperLongitude
-                
-                let userSettings = transaction.edit(self.userSession.settings)
-                userSettings?.menu = menu
-            })
-        } catch {
-            // todo: log error
-        }
-        
-        DidSelectMenuEvent.fire(menuDto: menuDto)
+//        EventBus.onMainThread(self, name: RecommendationsServerEvent.name) { [unowned self] notification in
+//            let productDtos = (notification.object as! RecommendationsServerEvent).products
+//
+//            print("Recommendations received")
+//
+//            self.core.persistRecommendations(productDtos: productDtos)
+//        }
     }
 }
 
 extension App: UITabBarControllerDelegate {
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
         (tabBarController as! MainViewController).setPaperFoldState(isFolded: true, animated: true)
+
+        if tabBarController.selectedIndex == 0 {
+            DidSelectRecommendationsEvent.fire()
+        }
     }
 }
 
@@ -302,18 +269,18 @@ extension App {
     fileprivate func changeRootViewController(_ vc: UIViewController) {
         let snapshot: UIView = (self.window?.snapshotView(afterScreenUpdates: true))!
         vc.view.addSubview(snapshot)
-        
+
         self.window?.rootViewController = vc;
-        
+
         UIView.animate(withDuration: 0.3, animations: { () in
             snapshot.layer.opacity = 0;
             snapshot.layer.transform = CATransform3DMakeScale(1.5, 1.5, 1.5);
-            
+
         }, completion: { (value: Bool) in
             snapshot.removeFromSuperview();
         });
     }
-    
+
     fileprivate func createDefaultRootViewController() -> UIViewController {
         let rootTBC = MainViewController()
         rootTBC.delegate = self
@@ -321,22 +288,35 @@ extension App {
         rootTBC.tabBar.tintColor = PaperColor.Gray800
         rootTBC.tabBar.itemWidth = 39
         rootTBC.tabBar.itemPositioning = .centered
-        rootTBC.tabBar.itemSpacing = UIScreen.main.bounds.width/2
+        rootTBC.tabBar.itemSpacing = UIScreen.main.bounds.width / 2
         rootTBC.tabBar.backgroundImage = drawTabBarImage()
-        
+
         let homeNC = ASNavigationController(rootViewController: ProductsViewController())
         homeNC.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
-        let image = UIImage(named: "logo")!
-        homeNC.tabBarItem.image = image.convertToGrayScale().tranlucentWithAlpha(alpha: 0.5).withRenderingMode(.alwaysOriginal)
-        homeNC.tabBarItem.selectedImage = image.withRenderingMode(.alwaysOriginal)
-        
+
+        let logoImage = UIImage(named: "logo")!.withRenderingMode(.alwaysOriginal)
+        let logoImageGrayScale = logoImage.convertToGrayScale().tranlucentWithAlpha(alpha: 0.5).withRenderingMode(.alwaysOriginal)
+
+        homeNC.tabBarItem.image = logoImageGrayScale
+        homeNC.tabBarItem.selectedImage = logoImage
+
+        EventBus.onMainThread(self, name: DidSelectRecommendationsEvent.name) { _ in
+            homeNC.tabBarItem.selectedImage = logoImage
+        }
+
+        EventBus.onMainThread(self, name: DidSelectCategoryEvent.name) { _ in
+            homeNC.tabBarItem.selectedImage = logoImageGrayScale
+
+            rootTBC.setPaperFoldState(isFolded: true, animated: true)
+        }
+
         let settingsNC = ASNavigationController(rootViewController: SettingsViewController())
         settingsNC.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
         settingsNC.tabBarItem.image = UIImage.fontAwesomeIcon(name: .ellipsisH, textColor: PaperColor.Gray400, size: CGSize(width: 32, height: 32))
-        
+
         rootTBC.addChildViewController(homeNC, narrowSideController: CategoriesViewController())
         rootTBC.addChildViewController(settingsNC)
-        
+
         return rootTBC
     }
 }

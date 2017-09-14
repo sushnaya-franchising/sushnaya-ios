@@ -81,7 +81,7 @@ extension OrderViewController: ASTableDataSource, ASTableDelegate {
     
     func tableNode(_ tableNode: ASTableNode, nodeBlockForRowAt indexPath: IndexPath) -> ASCellNodeBlock {
         return { [unowned self] _ in
-            let node = OrderWithDeliveryFormNode(userSession: self.app.userSession)
+            let node = OrderWithDeliveryFormNode(cart: self.app.cart)
             node.delegate = self
             
             return node

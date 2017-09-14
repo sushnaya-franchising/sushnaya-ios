@@ -51,7 +51,7 @@ class EditAddressViewController: ASViewController<EditAddressContentNode> {
     }
     
     var locality: LocalityEntity {
-        return app.userSession.settings.menu!.locality
+        return app.selectedMenu!.locality
     }
     
     convenience init() {

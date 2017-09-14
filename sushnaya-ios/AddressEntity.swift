@@ -1,9 +1,9 @@
 import Foundation
-import CoreData
-
+import CoreStore
+import SwiftyJSON
 
 class AddressEntity: NSManagedObject {
-    @NSManaged var serverId: NSNumber?
+    @NSManaged var serverId: Int32
     @NSManaged var latitude: Double
     @NSManaged var longitude: Double
     @NSManaged var streetAndHouse: String
@@ -33,5 +33,27 @@ class AddressEntity: NSManagedObject {
             self.latitude = newValue.latitude
             self.longitude = newValue.longitude
         }
+    }
+}
+
+extension AddressEntity: ImportableUniqueObject {
+    typealias ImportSource = JSON
+    typealias UniqueIDType = Int32
+    
+    class var uniqueIDKeyPath: String {
+        return #keyPath(AddressEntity.serverId)
+    }
+    
+    var uniqueIDValue: Int32 {
+        get { return self.serverId }
+        set { self.serverId = newValue }
+    }
+    
+    class func uniqueID(from source: JSON, in transaction: BaseDataTransaction) throws -> Int32? {
+        return source["id"].int32
+    }
+    
+    func update(from source: ImportSource, in transaction: BaseDataTransaction) throws {
+        // todo: impl
     }
 }
