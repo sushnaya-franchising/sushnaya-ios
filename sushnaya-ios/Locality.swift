@@ -1,4 +1,6 @@
 import Foundation
+import CoreStore
+import SwiftyJSON
 
 struct Locality {
     var name: String

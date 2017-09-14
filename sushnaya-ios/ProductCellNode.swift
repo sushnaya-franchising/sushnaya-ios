@@ -16,12 +16,12 @@ class ProductCellNode: ASCellNode {
     let imageNode: ASNetworkImageNode = {
         let imageNode = ASNetworkImageNode()
         imageNode.contentMode = .scaleAspectFit
-//        imageNode.imageModificationBlock = ImageNodePrecompositedCornerModification(cornerRadius: 15)
+        imageNode.imageModificationBlock = ImageNodePrecompositedCornerModification(cornerRadius: 15)
         return imageNode
     }()
-
-    private(set) var titleLabel = ASTextNode()
-    private(set) var subtitleLabel: ASTextNode?
+    
+    private(set) var titleTextNode = ASTextNode()
+    private(set) var subtitleTextNode: ASTextNode?
     private(set) var priceNodes = [PriceNode]()
     
     weak var delegate: ProductCellNodeDelegate?
@@ -43,13 +43,15 @@ class ProductCellNode: ASCellNode {
 
     private func setupNodes() {
         setupImageNode()
-        setupTitleLabel()
-        setupSubtitleLabel()
+        setupTitleTextNode()
+        setupSubtitleTextNode()
         setupPriceNodes()
     }
 
     private func setupImageNode() {
-        imageNode.defaultImage = UIImage(color: PaperColor.Gray300)
+        imageNode.placeholderEnabled = true
+        imageNode.placeholderColor = PaperColor.Gray100
+        imageNode.placeholderFadeDuration = 0.1
 
         if let url = product.imageUrl {
             imageNode.url = URL(string: url)
@@ -75,15 +77,15 @@ class ProductCellNode: ASCellNode {
         imageNode.pop_add(alphaAnimation, forKey: "alpha")
     }
     
-    private func setupTitleLabel() {
-        titleLabel.attributedText = NSAttributedString(string: product.title, attributes: Constants.ProductCellLayout.TitleStringAttributes)
+    private func setupTitleTextNode() {
+        titleTextNode.attributedText = NSAttributedString(string: product.name, attributes: Constants.ProductCellLayout.TitleStringAttributes)
     }
 
-    private func setupSubtitleLabel() {
-        if let subtitle = product.subtitle {
-            let subtitleLabel = ASTextNode()
-            self.subtitleLabel = subtitleLabel
-            subtitleLabel.attributedText = NSAttributedString(string: subtitle, attributes: Constants.ProductCellLayout.SubtitleStringAttributes)
+    private func setupSubtitleTextNode() {
+        if let subtitle = product.subheading {
+            let subtitleTextNode = ASTextNode()
+            self.subtitleTextNode = subtitleTextNode
+            subtitleTextNode.attributedText = NSAttributedString(string: subtitle, attributes: Constants.ProductCellLayout.SubtitleStringAttributes)
         }
     }
 
@@ -97,46 +99,75 @@ class ProductCellNode: ASCellNode {
 
     override func didLoad() {
         super.didLoad()
-        
-//        imageNode.cornerRadius = imageCornerRadius // todo: use optimized corner radius, update corner radius in ASNetworkImageNodeDelegate
-//        imageNode.clipsToBounds = true
     }
     
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        let resultStack = ASStackLayoutSpec.vertical()
-        var resultStackChildren = [ASLayoutElement]()
+        let stackLayout = ASStackLayoutSpec.vertical()
+        var stackChildren = [ASLayoutElement]()
         
-        resultStackChildren.append(layoutSpecForImage())
-        resultStackChildren.append(layoutSpecForTitle())
-        if let subtitleLayout = layoutSpecForSubtitle() {
-            resultStackChildren.append(subtitleLayout)
+        if let imageSize = product.imageSize {
+            let imageRatio = imageSize.height / imageSize.width
+            let imageLayout = ASRatioLayoutSpec(ratio: imageRatio, child: imageNode)
+            
+            stackChildren.append(imageLayout)
         }
-        resultStackChildren.append(layoutSpecForPricing(constrainedSize))
         
-        resultStack.children = resultStackChildren
+        titleTextNode.style.maxWidth = ASDimension(unit: .points, value: constrainedSize.max.width)
+        stackChildren.append(titleTextNode)
         
-        return ASInsetLayoutSpec(insets: cellInsets, child: resultStack)
+        if let subtitleTextNode = subtitleTextNode {
+            subtitleTextNode.style.maxWidth = ASDimension(unit: .points, value: constrainedSize.max.width)
+            stackChildren.append(subtitleTextNode)
+        }
+        
+        stackChildren.append(layoutSpecForPricing(constrainedSize))        
+        
+        stackLayout.children = stackChildren
+        
+        return  ASInsetLayoutSpec(insets: UIEdgeInsets.zero, child: stackLayout)
+        
+        
+//        let resultStack = ASStackLayoutSpec.vertical()
+//        var resultStackChildren = [ASLayoutElement]()
+//        
+//        if let imageLayout = layoutSpecForImage(constrainedWidth: constrainedSize.max.width) {
+//            resultStackChildren.append(imageLayout)
+//        }
+//        
+//        resultStackChildren.append(layoutSpecForTitle())
+//        
+//        if let subtitleLayout = layoutSpecForSubtitle() {
+//            resultStackChildren.append(subtitleLayout)
+//        }
+//        
+//        resultStackChildren.append(layoutSpecForPricing(constrainedSize))
+//        
+//        resultStack.children = resultStackChildren
+//        
+//        return ASInsetLayoutSpec(insets: cellInsets, child: resultStack)
     }
     
-    private func layoutSpecForImage() -> ASLayoutSpec {
-        var imageRatio: CGFloat = 0.5
-        if let image = imageNode.image {
-            imageRatio = image.size.height / image.size.width
+    private func layoutSpecForImage(constrainedWidth: CGFloat) -> ASLayoutSpec? {
+        guard let imageSize = product.imageSize else {
+            return nil
         }
         
-        return ASRatioLayoutSpec(ratio: imageRatio, child: imageNode)
+        imageNode.style.preferredSize = CGSize(width: constrainedWidth,
+                                               height: imageSize.height / (imageSize.width / constrainedWidth))
+        
+        return ASWrapperLayoutSpec(layoutElement: imageNode)
     }
     
     private func layoutSpecForTitle() -> ASLayoutSpec {
-        return ASInsetLayoutSpec(insets: Constants.ProductCellLayout.TitleLabelInsets, child: titleLabel)
+        return ASInsetLayoutSpec(insets: Constants.ProductCellLayout.TitleLabelInsets, child: titleTextNode)
     }
     
     private func layoutSpecForSubtitle() -> ASLayoutSpec? {
-        guard let subtitleLabel = subtitleLabel else {
+        guard let subtitleTextNode = subtitleTextNode else {
             return nil
         }
     
-        return ASInsetLayoutSpec(insets: Constants.ProductCellLayout.SubtitleLabelInsets, child: subtitleLabel)
+        return ASInsetLayoutSpec(insets: Constants.ProductCellLayout.SubtitleLabelInsets, child: subtitleTextNode)
     }
     
     private func layoutSpecForPricing(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {

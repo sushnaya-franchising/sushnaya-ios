@@ -1,10 +1,9 @@
 syntax = "proto3";
 
-
 option java_package = "com.appnbot.food.apiserver";
 option java_outer_classname = "FoodServiceProto";
 
-message GetMenuDto {
+message GetSelectedMenuDto {
 }
 
 message SelectMenuDto {
@@ -75,6 +74,7 @@ message DidNotDeleteAddressDto {
 message MenuDto {
     int32 menuId = 1;
     LocalityDto locality = 2;
+    repeated CategoryDto categories = 3;
 }
 
 message LocalityDto {
@@ -101,6 +101,7 @@ message CategoryDto {
     int32 id = 1;
     string name = 2;
     PhotoDto photo = 3;
+    float rank = 4;
 }
 
 message RecommendationsDto {
@@ -118,6 +119,15 @@ message ProductDto {
     PhotoDto photo = 4;
     int32 id = 5;
     int32 categoryId = 6;
+    repeated ProductOptionDto options = 7;
+    float rank = 8;
+}
+
+message ProductOptionDto {
+    int32 id = 1;
+    string name = 2;
+    double price = 3;
+    float rank = 4;
 }
 
 message PriceDto {
@@ -151,7 +161,7 @@ message AddressDto {
 message UserMessage {
     oneof type {
         DidSelectMenuDto didSelectMenu = 1;
-        GetMenuDto getMenu = 2;
+        GetSelectedMenuDto getSelectedMenu = 2;
         GetRecommendationsDto getRecommendations = 3;
         GetCategoryProductsDto getCategoryProducts = 4;
 
@@ -166,16 +176,17 @@ message FoodServiceMessage {
     oneof type {
         SelectMenuDto selectMenu = 1;
         DidUpdateTermsOfServicesDto didUpdateTermsOfServices = 2;
-        CategoriesDto categories = 3;
-        RecommendationsDto recommendations = 4;
-        ProductsDto products = 5;
+        MenuDto menu = 3;
+        CategoriesDto categories = 4;
+        RecommendationsDto recommendations = 5;
+        ProductsDto products = 6;
 
-        DidCreateAddressDto didCreateAddress = 6;
-        DidNotCreateAddressDto didNotCreateAddress = 7;
-        UserAddressesDto userAddresses = 8;
-        DidUpdateAddressDto didUpdateAddress = 9;
-        DidNotUpdateAddressDto didNotUpdateAddress = 10;
-        DidDeleteAddressDto didDeleteAddress = 11;
-        DidNotDeleteAddressDto didNotDeleteAddress = 12;
+        DidCreateAddressDto didCreateAddress = 7;
+        DidNotCreateAddressDto didNotCreateAddress = 8;
+        UserAddressesDto userAddresses = 9;
+        DidUpdateAddressDto didUpdateAddress = 10;
+        DidNotUpdateAddressDto didNotUpdateAddress = 11;
+        DidDeleteAddressDto didDeleteAddress = 12;
+        DidNotDeleteAddressDto didNotDeleteAddress = 13;
     }
 }

@@ -9,11 +9,13 @@ class CategoriesViewController: ASViewController<ASDisplayNode>, PaperFoldAsyncV
     let titleStringAttrs = Constants.DefaultCellLayout.TitleStringAttributes
     let imageSize = Constants.DefaultCellLayout.ImageSize
 
+    var categories: ListMonitor<MenuCategoryEntity> {
+        return app.core.categories
+    }
+    
     fileprivate var collectionNode: ASCollectionNode!
     
-    var onViewUpdated: (() -> ())?
-
-    fileprivate var categories: ListMonitor<MenuCategoryEntity>?
+    var onViewUpdated: (() -> ())?    
     
     convenience init() {
         self.init(node: ASDisplayNode())
@@ -29,13 +31,12 @@ class CategoriesViewController: ASViewController<ASDisplayNode>, PaperFoldAsyncV
             return ASInsetLayoutSpec(insets: UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0), child: self.collectionNode)
         }
         
-        EventBus.onMainThread(self, name: DidSelectMenuEvent.name) { [unowned self] (notification) in
-            self.setupCategoriesMonitor()
-        }
+        categories.addObserver(self)
     }
     
     deinit {
         EventBus.unregister(self)
+        categories.removeObserver(self)
     }
     
     private func setupTableNode() {
@@ -47,43 +48,51 @@ class CategoriesViewController: ASViewController<ASDisplayNode>, PaperFoldAsyncV
         super.viewDidLoad()
         
         collectionNode.view.contentInset = UIEdgeInsets(top: 5, left: 0, bottom: 49 + 10, right: 0)
-        collectionNode.view.showsVerticalScrollIndicator = false
-        
-        setupCategoriesMonitor()
-    }
-    
-    func setupCategoriesMonitor() {
-        guard let menu = self.app.userSession.settings.menu else { return }
-        
-        self.categories?.removeObserver(self)
-        
-        self.categories = CoreStore.monitorList(From<MenuCategoryEntity>(), Where("menu.serverId", isEqualTo: menu.serverId), OrderBy(.ascending("title")))
-        
-        self.categories?.addObserver(self)
+        collectionNode.view.showsVerticalScrollIndicator = false                
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        self.setupCategoriesMonitor()
+//        collectionNode.reloadData()
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)                
+        super.viewDidAppear(animated)
+    }
+    
+    fileprivate func setCollectionEnabled(_ enabled: Bool) {
+        UIView.animate(
+            withDuration: 0.2,
+            delay: 0,
+            options: .beginFromCurrentState,
+            animations: { [unowned self] () -> Void in
+                self.collectionNode.alpha = enabled ? 1.0 : 0.5
+                self.collectionNode.isUserInteractionEnabled = enabled
+        },
+            completion: nil
+        )
     }
 }
 
 extension CategoriesViewController: ListSectionObserver {
     
-    func listMonitorWillChange(_ monitor: ListMonitor<MenuCategoryEntity>) { }
-    
-    func listMonitorDidChange(_ monitor: ListMonitor<MenuCategoryEntity>) {
-        collectionNode.reloadData()
+    func listMonitorWillChange(_ monitor: ListMonitor<MenuCategoryEntity>) {
+        collectionNode.view.beginUpdates()
     }
     
-    func listMonitorWillRefetch(_ monitor: ListMonitor<MenuCategoryEntity>) { }
+    func listMonitorDidChange(_ monitor: ListMonitor<MenuCategoryEntity>) {
+        collectionNode.view.endUpdates(animated: true)
+    }
     
-    func listMonitorDidRefetch(_ monitor: ListMonitor<MenuCategoryEntity>) { }
+    func listMonitorWillRefetch(_ monitor: ListMonitor<MenuCategoryEntity>) {
+        setCollectionEnabled(false)
+    }
+    
+    func listMonitorDidRefetch(_ monitor: ListMonitor<MenuCategoryEntity>) {
+        collectionNode.reloadData()
+        setCollectionEnabled(true)
+    }
     
     func listMonitor(_ monitor: ListMonitor<MenuCategoryEntity>, didInsertObject object: MenuCategoryEntity, toIndexPath indexPath: IndexPath) {
         
@@ -98,7 +107,7 @@ extension CategoriesViewController: ListSectionObserver {
     func listMonitor(_ monitor: ListMonitor<MenuCategoryEntity>, didUpdateObject object: MenuCategoryEntity, atIndexPath indexPath: IndexPath) {
         
         if let cell = self.collectionNode.nodeForItem(at: indexPath) as? DefaultCellNode {
-            cell.context = CategoryCellContext(categories![indexPath])
+            cell.context = CategoryCellContext(categories[indexPath])
         }
     }
     
@@ -125,35 +134,37 @@ extension CategoriesViewController: ASCollectionDelegate, ASCollectionDataSource
     
     func collectionNode(_ collectionNode: ASCollectionNode, numberOfItemsInSection section: Int) -> Int {
         
-        return categories?.numberOfObjectsInSection(section) ?? 0
+        return categories.numberOfObjectsInSection(section)
     }
     
     func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
         
-        return categories?.numberOfSections() ?? 0
+        return categories.numberOfSections()
     }    
     
     func collectionNode(_ collectionNode: ASCollectionNode, nodeBlockForItemAt indexPath: IndexPath) -> ASCellNodeBlock {
-        guard let categoryEntity = categories?[indexPath.row] else {
-            return { ASCellNode() }
+        return { [unowned self] _ in
+            DefaultCellNode(context: CategoryCellContext(self.categories[indexPath.row]))
         }
-        
-        return { DefaultCellNode(context: CategoryCellContext(categoryEntity)) }
     }
     
     func collectionNode(_ collectionNode: ASCollectionNode, didEndDisplayingItemWith node: ASCellNode) {
         onViewUpdated?()
+    }
+    
+    func collectionNode(_ collectionNode: ASCollectionNode, didSelectItemAt indexPath: IndexPath) {
+        DidSelectCategoryEvent.fire(category: categories.objectsInSection(indexPath.section)[indexPath.row])
     }
 }
 
 class CategoryCellContext: DefaultCellContext {
     override var title: String {
         set {
-            category.title = newValue
+            category.name = newValue
         }
         
         get {
-            return category.title
+            return category.name
         }
     }
     
@@ -182,10 +193,10 @@ class CategoryCellContext: DefaultCellContext {
     init(_ category: MenuCategoryEntity) {
         self.category = category
         
-        super.init(title: category.title)
+        super.init(title: category.name)
         
         if let imageSize = category.imageSize {
-            self.preferredImageSize = CGSize(width: 64, height: imageSize.height / (imageSize.width / 64))
+            self.preferredImageSize = CGSize(width: 64, height: imageSize.height / (imageSize.width / 64))                        
         }                
     }
 }

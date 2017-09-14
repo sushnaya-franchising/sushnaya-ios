@@ -51,7 +51,7 @@ extension String {
         return result
     }
     
-    func computeHeight(attributes: [String: Any]?, width: CGFloat) -> CGFloat {
+    func calculateHeight(attributes: [String: Any]?, width: CGFloat) -> CGFloat {
         let rect = NSString(string: self).boundingRect(with: CGSize(width: width, height: CGFloat(MAXFLOAT)), options: .usesLineFragmentOrigin, attributes: attributes, context: nil)
         return ceil(rect.height)
     }

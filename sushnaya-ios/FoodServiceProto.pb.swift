@@ -19,8 +19,8 @@ fileprivate struct _GeneratedWithProtocGenSwiftVersion: SwiftProtobuf.ProtobufAP
   typealias Version = _2
 }
 
-struct GetMenuDto: SwiftProtobuf.Message {
-  static let protoMessageName: String = "GetMenuDto"
+struct GetSelectedMenuDto: SwiftProtobuf.Message {
+  static let protoMessageName: String = "GetSelectedMenuDto"
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
@@ -632,6 +632,11 @@ struct MenuDto: SwiftProtobuf.Message {
   /// Clears the value of `locality`. Subsequent reads from it will return its default value.
   mutating func clearLocality() {_storage._locality = nil}
 
+  var categories: [CategoryDto] {
+    get {return _storage._categories}
+    set {_uniqueStorage()._categories = newValue}
+  }
+
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
   init() {}
@@ -647,6 +652,7 @@ struct MenuDto: SwiftProtobuf.Message {
         switch fieldNumber {
         case 1: try decoder.decodeSingularInt32Field(value: &_storage._menuID)
         case 2: try decoder.decodeSingularMessageField(value: &_storage._locality)
+        case 3: try decoder.decodeRepeatedMessageField(value: &_storage._categories)
         default: break
         }
       }
@@ -664,6 +670,9 @@ struct MenuDto: SwiftProtobuf.Message {
       }
       if let v = _storage._locality {
         try visitor.visitSingularMessageField(value: v, fieldNumber: 2)
+      }
+      if !_storage._categories.isEmpty {
+        try visitor.visitRepeatedMessageField(value: _storage._categories, fieldNumber: 3)
       }
     }
     try unknownFields.traverse(visitor: &visitor)
@@ -844,6 +853,11 @@ struct CategoryDto: SwiftProtobuf.Message {
   /// Clears the value of `photo`. Subsequent reads from it will return its default value.
   mutating func clearPhoto() {_storage._photo = nil}
 
+  var rank: Float {
+    get {return _storage._rank}
+    set {_uniqueStorage()._rank = newValue}
+  }
+
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
   init() {}
@@ -860,6 +874,7 @@ struct CategoryDto: SwiftProtobuf.Message {
         case 1: try decoder.decodeSingularInt32Field(value: &_storage._id)
         case 2: try decoder.decodeSingularStringField(value: &_storage._name)
         case 3: try decoder.decodeSingularMessageField(value: &_storage._photo)
+        case 4: try decoder.decodeSingularFloatField(value: &_storage._rank)
         default: break
         }
       }
@@ -880,6 +895,9 @@ struct CategoryDto: SwiftProtobuf.Message {
       }
       if let v = _storage._photo {
         try visitor.visitSingularMessageField(value: v, fieldNumber: 3)
+      }
+      if _storage._rank != 0 {
+        try visitor.visitSingularFloatField(value: _storage._rank, fieldNumber: 4)
       }
     }
     try unknownFields.traverse(visitor: &visitor)
@@ -993,6 +1011,16 @@ struct ProductDto: SwiftProtobuf.Message {
     set {_uniqueStorage()._categoryID = newValue}
   }
 
+  var options: [ProductOptionDto] {
+    get {return _storage._options}
+    set {_uniqueStorage()._options = newValue}
+  }
+
+  var rank: Float {
+    get {return _storage._rank}
+    set {_uniqueStorage()._rank = newValue}
+  }
+
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
   init() {}
@@ -1012,6 +1040,8 @@ struct ProductDto: SwiftProtobuf.Message {
         case 4: try decoder.decodeSingularMessageField(value: &_storage._photo)
         case 5: try decoder.decodeSingularInt32Field(value: &_storage._id)
         case 6: try decoder.decodeSingularInt32Field(value: &_storage._categoryID)
+        case 7: try decoder.decodeRepeatedMessageField(value: &_storage._options)
+        case 8: try decoder.decodeSingularFloatField(value: &_storage._rank)
         default: break
         }
       }
@@ -1042,11 +1072,69 @@ struct ProductDto: SwiftProtobuf.Message {
       if _storage._categoryID != 0 {
         try visitor.visitSingularInt32Field(value: _storage._categoryID, fieldNumber: 6)
       }
+      if !_storage._options.isEmpty {
+        try visitor.visitRepeatedMessageField(value: _storage._options, fieldNumber: 7)
+      }
+      if _storage._rank != 0 {
+        try visitor.visitSingularFloatField(value: _storage._rank, fieldNumber: 8)
+      }
     }
     try unknownFields.traverse(visitor: &visitor)
   }
 
   fileprivate var _storage = _StorageClass.defaultInstance
+}
+
+struct ProductOptionDto: SwiftProtobuf.Message {
+  static let protoMessageName: String = "ProductOptionDto"
+
+  var id: Int32 = 0
+
+  var name: String = String()
+
+  var price: Double = 0
+
+  var rank: Float = 0
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+
+  /// Used by the decoding initializers in the SwiftProtobuf library, not generally
+  /// used directly. `init(serializedData:)`, `init(jsonUTF8Data:)`, and other decoding
+  /// initializers are defined in the SwiftProtobuf library. See the Message and
+  /// Message+*Additions` files.
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      switch fieldNumber {
+      case 1: try decoder.decodeSingularInt32Field(value: &self.id)
+      case 2: try decoder.decodeSingularStringField(value: &self.name)
+      case 3: try decoder.decodeSingularDoubleField(value: &self.price)
+      case 4: try decoder.decodeSingularFloatField(value: &self.rank)
+      default: break
+      }
+    }
+  }
+
+  /// Used by the encoding methods of the SwiftProtobuf library, not generally
+  /// used directly. `Message.serializedData()`, `Message.jsonUTF8Data()`, and
+  /// other serializer methods are defined in the SwiftProtobuf library. See the
+  /// `Message` and `Message+*Additions` files.
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if self.id != 0 {
+      try visitor.visitSingularInt32Field(value: self.id, fieldNumber: 1)
+    }
+    if !self.name.isEmpty {
+      try visitor.visitSingularStringField(value: self.name, fieldNumber: 2)
+    }
+    if self.price != 0 {
+      try visitor.visitSingularDoubleField(value: self.price, fieldNumber: 3)
+    }
+    if self.rank != 0 {
+      try visitor.visitSingularFloatField(value: self.rank, fieldNumber: 4)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
 }
 
 struct PriceDto: SwiftProtobuf.Message {
@@ -1307,12 +1395,12 @@ struct UserMessage: SwiftProtobuf.Message {
     set {_uniqueStorage()._type = .didSelectMenu(newValue)}
   }
 
-  var getMenu: GetMenuDto {
+  var getSelectedMenu: GetSelectedMenuDto {
     get {
-      if case .getMenu(let v)? = _storage._type {return v}
-      return GetMenuDto()
+      if case .getSelectedMenu(let v)? = _storage._type {return v}
+      return GetSelectedMenuDto()
     }
-    set {_uniqueStorage()._type = .getMenu(newValue)}
+    set {_uniqueStorage()._type = .getSelectedMenu(newValue)}
   }
 
   var getRecommendations: GetRecommendationsDto {
@@ -1367,7 +1455,7 @@ struct UserMessage: SwiftProtobuf.Message {
 
   enum OneOf_Type: Equatable {
     case didSelectMenu(DidSelectMenuDto)
-    case getMenu(GetMenuDto)
+    case getSelectedMenu(GetSelectedMenuDto)
     case getRecommendations(GetRecommendationsDto)
     case getCategoryProducts(GetCategoryProductsDto)
     case createAddress(CreateAddressDto)
@@ -1378,7 +1466,7 @@ struct UserMessage: SwiftProtobuf.Message {
     static func ==(lhs: UserMessage.OneOf_Type, rhs: UserMessage.OneOf_Type) -> Bool {
       switch (lhs, rhs) {
       case (.didSelectMenu(let l), .didSelectMenu(let r)): return l == r
-      case (.getMenu(let l), .getMenu(let r)): return l == r
+      case (.getSelectedMenu(let l), .getSelectedMenu(let r)): return l == r
       case (.getRecommendations(let l), .getRecommendations(let r)): return l == r
       case (.getCategoryProducts(let l), .getCategoryProducts(let r)): return l == r
       case (.createAddress(let l), .createAddress(let r)): return l == r
@@ -1410,13 +1498,13 @@ struct UserMessage: SwiftProtobuf.Message {
           try decoder.decodeSingularMessageField(value: &v)
           if let v = v {_storage._type = .didSelectMenu(v)}
         case 2:
-          var v: GetMenuDto?
+          var v: GetSelectedMenuDto?
           if let current = _storage._type {
             try decoder.handleConflictingOneOf()
-            if case .getMenu(let m) = current {v = m}
+            if case .getSelectedMenu(let m) = current {v = m}
           }
           try decoder.decodeSingularMessageField(value: &v)
-          if let v = v {_storage._type = .getMenu(v)}
+          if let v = v {_storage._type = .getSelectedMenu(v)}
         case 3:
           var v: GetRecommendationsDto?
           if let current = _storage._type {
@@ -1480,7 +1568,7 @@ struct UserMessage: SwiftProtobuf.Message {
       switch _storage._type {
       case .didSelectMenu(let v)?:
         try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
-      case .getMenu(let v)?:
+      case .getSelectedMenu(let v)?:
         try visitor.visitSingularMessageField(value: v, fieldNumber: 2)
       case .getRecommendations(let v)?:
         try visitor.visitSingularMessageField(value: v, fieldNumber: 3)
@@ -1525,6 +1613,14 @@ struct FoodServiceMessage: SwiftProtobuf.Message {
       return DidUpdateTermsOfServicesDto()
     }
     set {_uniqueStorage()._type = .didUpdateTermsOfServices(newValue)}
+  }
+
+  var menu: MenuDto {
+    get {
+      if case .menu(let v)? = _storage._type {return v}
+      return MenuDto()
+    }
+    set {_uniqueStorage()._type = .menu(newValue)}
   }
 
   var categories: CategoriesDto {
@@ -1612,6 +1708,7 @@ struct FoodServiceMessage: SwiftProtobuf.Message {
   enum OneOf_Type: Equatable {
     case selectMenu(SelectMenuDto)
     case didUpdateTermsOfServices(DidUpdateTermsOfServicesDto)
+    case menu(MenuDto)
     case categories(CategoriesDto)
     case recommendations(RecommendationsDto)
     case products(ProductsDto)
@@ -1627,6 +1724,7 @@ struct FoodServiceMessage: SwiftProtobuf.Message {
       switch (lhs, rhs) {
       case (.selectMenu(let l), .selectMenu(let r)): return l == r
       case (.didUpdateTermsOfServices(let l), .didUpdateTermsOfServices(let r)): return l == r
+      case (.menu(let l), .menu(let r)): return l == r
       case (.categories(let l), .categories(let r)): return l == r
       case (.recommendations(let l), .recommendations(let r)): return l == r
       case (.products(let l), .products(let r)): return l == r
@@ -1670,6 +1768,14 @@ struct FoodServiceMessage: SwiftProtobuf.Message {
           try decoder.decodeSingularMessageField(value: &v)
           if let v = v {_storage._type = .didUpdateTermsOfServices(v)}
         case 3:
+          var v: MenuDto?
+          if let current = _storage._type {
+            try decoder.handleConflictingOneOf()
+            if case .menu(let m) = current {v = m}
+          }
+          try decoder.decodeSingularMessageField(value: &v)
+          if let v = v {_storage._type = .menu(v)}
+        case 4:
           var v: CategoriesDto?
           if let current = _storage._type {
             try decoder.handleConflictingOneOf()
@@ -1677,7 +1783,7 @@ struct FoodServiceMessage: SwiftProtobuf.Message {
           }
           try decoder.decodeSingularMessageField(value: &v)
           if let v = v {_storage._type = .categories(v)}
-        case 4:
+        case 5:
           var v: RecommendationsDto?
           if let current = _storage._type {
             try decoder.handleConflictingOneOf()
@@ -1685,7 +1791,7 @@ struct FoodServiceMessage: SwiftProtobuf.Message {
           }
           try decoder.decodeSingularMessageField(value: &v)
           if let v = v {_storage._type = .recommendations(v)}
-        case 5:
+        case 6:
           var v: ProductsDto?
           if let current = _storage._type {
             try decoder.handleConflictingOneOf()
@@ -1693,7 +1799,7 @@ struct FoodServiceMessage: SwiftProtobuf.Message {
           }
           try decoder.decodeSingularMessageField(value: &v)
           if let v = v {_storage._type = .products(v)}
-        case 6:
+        case 7:
           var v: DidCreateAddressDto?
           if let current = _storage._type {
             try decoder.handleConflictingOneOf()
@@ -1701,7 +1807,7 @@ struct FoodServiceMessage: SwiftProtobuf.Message {
           }
           try decoder.decodeSingularMessageField(value: &v)
           if let v = v {_storage._type = .didCreateAddress(v)}
-        case 7:
+        case 8:
           var v: DidNotCreateAddressDto?
           if let current = _storage._type {
             try decoder.handleConflictingOneOf()
@@ -1709,7 +1815,7 @@ struct FoodServiceMessage: SwiftProtobuf.Message {
           }
           try decoder.decodeSingularMessageField(value: &v)
           if let v = v {_storage._type = .didNotCreateAddress(v)}
-        case 8:
+        case 9:
           var v: UserAddressesDto?
           if let current = _storage._type {
             try decoder.handleConflictingOneOf()
@@ -1717,7 +1823,7 @@ struct FoodServiceMessage: SwiftProtobuf.Message {
           }
           try decoder.decodeSingularMessageField(value: &v)
           if let v = v {_storage._type = .userAddresses(v)}
-        case 9:
+        case 10:
           var v: DidUpdateAddressDto?
           if let current = _storage._type {
             try decoder.handleConflictingOneOf()
@@ -1725,7 +1831,7 @@ struct FoodServiceMessage: SwiftProtobuf.Message {
           }
           try decoder.decodeSingularMessageField(value: &v)
           if let v = v {_storage._type = .didUpdateAddress(v)}
-        case 10:
+        case 11:
           var v: DidNotUpdateAddressDto?
           if let current = _storage._type {
             try decoder.handleConflictingOneOf()
@@ -1733,7 +1839,7 @@ struct FoodServiceMessage: SwiftProtobuf.Message {
           }
           try decoder.decodeSingularMessageField(value: &v)
           if let v = v {_storage._type = .didNotUpdateAddress(v)}
-        case 11:
+        case 12:
           var v: DidDeleteAddressDto?
           if let current = _storage._type {
             try decoder.handleConflictingOneOf()
@@ -1741,7 +1847,7 @@ struct FoodServiceMessage: SwiftProtobuf.Message {
           }
           try decoder.decodeSingularMessageField(value: &v)
           if let v = v {_storage._type = .didDeleteAddress(v)}
-        case 12:
+        case 13:
           var v: DidNotDeleteAddressDto?
           if let current = _storage._type {
             try decoder.handleConflictingOneOf()
@@ -1766,26 +1872,28 @@ struct FoodServiceMessage: SwiftProtobuf.Message {
         try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
       case .didUpdateTermsOfServices(let v)?:
         try visitor.visitSingularMessageField(value: v, fieldNumber: 2)
-      case .categories(let v)?:
+      case .menu(let v)?:
         try visitor.visitSingularMessageField(value: v, fieldNumber: 3)
-      case .recommendations(let v)?:
+      case .categories(let v)?:
         try visitor.visitSingularMessageField(value: v, fieldNumber: 4)
-      case .products(let v)?:
+      case .recommendations(let v)?:
         try visitor.visitSingularMessageField(value: v, fieldNumber: 5)
-      case .didCreateAddress(let v)?:
+      case .products(let v)?:
         try visitor.visitSingularMessageField(value: v, fieldNumber: 6)
-      case .didNotCreateAddress(let v)?:
+      case .didCreateAddress(let v)?:
         try visitor.visitSingularMessageField(value: v, fieldNumber: 7)
-      case .userAddresses(let v)?:
+      case .didNotCreateAddress(let v)?:
         try visitor.visitSingularMessageField(value: v, fieldNumber: 8)
-      case .didUpdateAddress(let v)?:
+      case .userAddresses(let v)?:
         try visitor.visitSingularMessageField(value: v, fieldNumber: 9)
-      case .didNotUpdateAddress(let v)?:
+      case .didUpdateAddress(let v)?:
         try visitor.visitSingularMessageField(value: v, fieldNumber: 10)
-      case .didDeleteAddress(let v)?:
+      case .didNotUpdateAddress(let v)?:
         try visitor.visitSingularMessageField(value: v, fieldNumber: 11)
-      case .didNotDeleteAddress(let v)?:
+      case .didDeleteAddress(let v)?:
         try visitor.visitSingularMessageField(value: v, fieldNumber: 12)
+      case .didNotDeleteAddress(let v)?:
+        try visitor.visitSingularMessageField(value: v, fieldNumber: 13)
       case nil: break
       }
     }
@@ -1797,10 +1905,10 @@ struct FoodServiceMessage: SwiftProtobuf.Message {
 
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
-extension GetMenuDto: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+extension GetSelectedMenuDto: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let _protobuf_nameMap = SwiftProtobuf._NameMap()
 
-  func _protobuf_generated_isEqualTo(other: GetMenuDto) -> Bool {
+  func _protobuf_generated_isEqualTo(other: GetSelectedMenuDto) -> Bool {
     if unknownFields != other.unknownFields {return false}
     return true
   }
@@ -2057,11 +2165,13 @@ extension MenuDto: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._Prot
   static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     1: .same(proto: "menuId"),
     2: .same(proto: "locality"),
+    3: .same(proto: "categories"),
   ]
 
   fileprivate class _StorageClass {
     var _menuID: Int32 = 0
     var _locality: LocalityDto? = nil
+    var _categories: [CategoryDto] = []
 
     static let defaultInstance = _StorageClass()
 
@@ -2070,6 +2180,7 @@ extension MenuDto: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._Prot
     init(copying source: _StorageClass) {
       _menuID = source._menuID
       _locality = source._locality
+      _categories = source._categories
     }
   }
 
@@ -2087,6 +2198,7 @@ extension MenuDto: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._Prot
         let other_storage = _args.1
         if _storage._menuID != other_storage._menuID {return false}
         if _storage._locality != other_storage._locality {return false}
+        if _storage._categories != other_storage._categories {return false}
         return true
       }
       if !storagesAreEqual {return false}
@@ -2153,12 +2265,14 @@ extension CategoryDto: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._
     1: .same(proto: "id"),
     2: .same(proto: "name"),
     3: .same(proto: "photo"),
+    4: .same(proto: "rank"),
   ]
 
   fileprivate class _StorageClass {
     var _id: Int32 = 0
     var _name: String = String()
     var _photo: PhotoDto? = nil
+    var _rank: Float = 0
 
     static let defaultInstance = _StorageClass()
 
@@ -2168,6 +2282,7 @@ extension CategoryDto: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._
       _id = source._id
       _name = source._name
       _photo = source._photo
+      _rank = source._rank
     }
   }
 
@@ -2186,6 +2301,7 @@ extension CategoryDto: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._
         if _storage._id != other_storage._id {return false}
         if _storage._name != other_storage._name {return false}
         if _storage._photo != other_storage._photo {return false}
+        if _storage._rank != other_storage._rank {return false}
         return true
       }
       if !storagesAreEqual {return false}
@@ -2227,6 +2343,8 @@ extension ProductDto: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._P
     4: .same(proto: "photo"),
     5: .same(proto: "id"),
     6: .same(proto: "categoryId"),
+    7: .same(proto: "options"),
+    8: .same(proto: "rank"),
   ]
 
   fileprivate class _StorageClass {
@@ -2236,6 +2354,8 @@ extension ProductDto: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._P
     var _photo: PhotoDto? = nil
     var _id: Int32 = 0
     var _categoryID: Int32 = 0
+    var _options: [ProductOptionDto] = []
+    var _rank: Float = 0
 
     static let defaultInstance = _StorageClass()
 
@@ -2248,6 +2368,8 @@ extension ProductDto: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._P
       _photo = source._photo
       _id = source._id
       _categoryID = source._categoryID
+      _options = source._options
+      _rank = source._rank
     }
   }
 
@@ -2269,10 +2391,30 @@ extension ProductDto: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._P
         if _storage._photo != other_storage._photo {return false}
         if _storage._id != other_storage._id {return false}
         if _storage._categoryID != other_storage._categoryID {return false}
+        if _storage._options != other_storage._options {return false}
+        if _storage._rank != other_storage._rank {return false}
         return true
       }
       if !storagesAreEqual {return false}
     }
+    if unknownFields != other.unknownFields {return false}
+    return true
+  }
+}
+
+extension ProductOptionDto: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .same(proto: "id"),
+    2: .same(proto: "name"),
+    3: .same(proto: "price"),
+    4: .same(proto: "rank"),
+  ]
+
+  func _protobuf_generated_isEqualTo(other: ProductOptionDto) -> Bool {
+    if self.id != other.id {return false}
+    if self.name != other.name {return false}
+    if self.price != other.price {return false}
+    if self.rank != other.rank {return false}
     if unknownFields != other.unknownFields {return false}
     return true
   }
@@ -2396,7 +2538,7 @@ extension AddressDto: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._P
 extension UserMessage: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     1: .same(proto: "didSelectMenu"),
-    2: .same(proto: "getMenu"),
+    2: .same(proto: "getSelectedMenu"),
     3: .same(proto: "getRecommendations"),
     4: .same(proto: "getCategoryProducts"),
     5: .same(proto: "createAddress"),
@@ -2443,16 +2585,17 @@ extension FoodServiceMessage: SwiftProtobuf._MessageImplementationBase, SwiftPro
   static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     1: .same(proto: "selectMenu"),
     2: .same(proto: "didUpdateTermsOfServices"),
-    3: .same(proto: "categories"),
-    4: .same(proto: "recommendations"),
-    5: .same(proto: "products"),
-    6: .same(proto: "didCreateAddress"),
-    7: .same(proto: "didNotCreateAddress"),
-    8: .same(proto: "userAddresses"),
-    9: .same(proto: "didUpdateAddress"),
-    10: .same(proto: "didNotUpdateAddress"),
-    11: .same(proto: "didDeleteAddress"),
-    12: .same(proto: "didNotDeleteAddress"),
+    3: .same(proto: "menu"),
+    4: .same(proto: "categories"),
+    5: .same(proto: "recommendations"),
+    6: .same(proto: "products"),
+    7: .same(proto: "didCreateAddress"),
+    8: .same(proto: "didNotCreateAddress"),
+    9: .same(proto: "userAddresses"),
+    10: .same(proto: "didUpdateAddress"),
+    11: .same(proto: "didNotUpdateAddress"),
+    12: .same(proto: "didDeleteAddress"),
+    13: .same(proto: "didNotDeleteAddress"),
   ]
 
   fileprivate class _StorageClass {

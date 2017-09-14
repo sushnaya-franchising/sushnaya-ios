@@ -12,7 +12,7 @@ target 'sushnaya-ios' do
     pod 'pop'    
     pod 'Alamofire'
     pod 'SwiftEventBus', :tag => '2.2.0', :git => 'https://github.com/cesarferreira/SwiftEventBus.git'
-    pod 'Texture', '2.2'
+    pod 'Texture'
     pod 'PaperFold'    
     pod 'YandexMapKit'
     pod 'SwiftyJSON'

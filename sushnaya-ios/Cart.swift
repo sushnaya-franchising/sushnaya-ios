@@ -104,14 +104,14 @@ class Cart: NSObject {
     }
 
     private func addToSection(cartUnit: CartUnit) {
-        if let sectionIdx = sections.index(where: { s in s.title == cartUnit.categoryTitle }) {
+        if let sectionIdx = sections.index(where: { s in s.title == cartUnit.categoryName }) {
             let section = sections[sectionIdx]
             let productIdx = section.append(unit: cartUnit)
 
             DidAddToCartEvent.fire(cart: self, sectionIdx: sectionIdx, productIdx: productIdx)
 
         } else {
-            let section = CartSection(title: cartUnit.categoryTitle ?? "")
+            let section = CartSection(title: cartUnit.categoryName ?? "")
             let productIdx = section.append(unit: cartUnit)
             let sectionIdx = sections.count
             sections.append(section)
@@ -121,7 +121,7 @@ class Cart: NSObject {
     }
 
     private func removeFromSection(cartUnit: CartUnit) {
-        guard let sectionIdx = sections.index(where: { section in section.title == cartUnit.categoryTitle }) else {
+        guard let sectionIdx = sections.index(where: { section in section.title == cartUnit.categoryName }) else {
             return
         }
 
@@ -252,8 +252,8 @@ fileprivate class CartUnit: Hashable {
     let price: Price
     var isConfirmed = false
 
-    var categoryTitle: String? {
-        return product.categoryTitle
+    var categoryName: String? {
+        return product.categoryName
     }
 
     init(product: Product, price: Price) {

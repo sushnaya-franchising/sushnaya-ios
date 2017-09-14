@@ -1,13 +1,5 @@
-//
-//  GetMenuEvent.swift
-//  sushnaya-ios
-//
-//  Created by Igor Kurylenko on 3/25/17.
-//  Copyright © 2017 igor kurilenko. All rights reserved.
-//
-
 import Foundation
-import SwiftEventBus
+import SwiftyJSON
 
 struct GetMenuEvent: Event {
     static var name: String = "\(GetMenuEvent.self)"
@@ -27,6 +19,17 @@ struct SelectMenuServerEvent: Event {
     }
 }
 
+struct DidSelectMenuServerEvent: Event {
+    static var name: String = "\(DidSelectMenuServerEvent.self)"
+    
+    var menuDto: MenuDto
+    
+    static func fire(menuDto: MenuDto) {
+        EventBus.post(DidSelectMenuServerEvent.name, sender: DidSelectMenuServerEvent(menuDto: menuDto))
+    }
+}
+
+
 struct DidSelectMenuEvent: Event {
     static var name: String = "\(DidSelectMenuEvent.self)"
     
@@ -36,3 +39,14 @@ struct DidSelectMenuEvent: Event {
         EventBus.post(DidSelectMenuEvent.name, sender: DidSelectMenuEvent(menuDto: menuDto))
     }
 }
+
+struct DidRequestMenusEvent: Event {
+    static var name: String = "\(DidRequestMenusEvent.self)"
+    
+    var menusJSON: JSON
+    
+    static func fire(menusJSON: JSON) {
+        EventBus.post(DidRequestMenusEvent.name, sender: DidRequestMenusEvent(menusJSON: menusJSON))
+    }
+}
+

@@ -1,15 +1,6 @@
-//
-//  FoodServiceAuth.swift
-//  sushnaya-ios
-//
-//  Created by Igor Kurylenko on 8/5/17.
-//  Copyright © 2017 igor kurilenko. All rights reserved.
-//
-
 import Foundation
 import libPhoneNumber_iOS
 import Alamofire
-import PromiseKit
 
 enum AuthenticationError: Error {
     case invalidPhoneNumber
@@ -20,6 +11,7 @@ enum AuthenticationError: Error {
 class FoodServiceAuth {
     // todo: use ssl
     static let baseUrl = "http://localhost:8080/0.1.0"
+//    static let baseUrl = "http://fba86b35.ngrok.io/0.1.0"
     static let authenticateUrl = baseUrl + "/authenticate"
     static let tokenUrl = baseUrl + "/token"
     

@@ -145,7 +145,7 @@ extension SelectAddressViewController: ASCollectionDelegate, ASCollectionDataSou
     }
     
     private func calculateAddressLabelHeight(_ address: Address, width: CGFloat) -> CGFloat {
-        return address.displayName.computeHeight(attributes: AddressCellNode.LabelStringAttributes, width: width)
+        return address.displayName.calculateHeight(attributes: AddressCellNode.LabelStringAttributes, width: width)
     }
     
     func collectionNode(_ collectionNode: ASCollectionNode, nodeBlockForItemAt indexPath: IndexPath) -> ASCellNodeBlock {

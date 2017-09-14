@@ -33,15 +33,12 @@ class OrderWithDeliveryFormNode: ASCellNode {
     fileprivate let summarySectionNode: OrderFormSummarySectionNode
     fileprivate let submitButtonNode = ASButtonNode()
     
-    fileprivate var userSession: UserSession
-    fileprivate var cart: Cart {
-        return self.userSession.cart
-    }
+    fileprivate let cart: Cart
     
-    init(userSession: UserSession) {
-        self.userSession = userSession
-        self.summarySectionNode = OrderFormSummarySectionNode(cart: userSession.cart)
-        self.cashOptionsSectionNode = CashOptionsSectionNode(cart: userSession.cart)
+    init(cart: Cart) {
+        self.cart = cart
+        self.summarySectionNode = OrderFormSummarySectionNode(cart: cart)
+        self.cashOptionsSectionNode = CashOptionsSectionNode(cart: cart)
         
         super.init()
         self.automaticallyManagesSubnodes = true

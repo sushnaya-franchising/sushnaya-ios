@@ -2,7 +2,7 @@ import Foundation
 
 struct MenuCategory {
     var serverId: Int32
-    var title: String
+    var name: String
     var imageUrl: String?
     var imageWidth: NSNumber?
     var imageHeight: NSNumber?
@@ -28,7 +28,7 @@ extension MenuCategory: Hashable {
     var hashValue: Int {
         var result = 1
         result = 31 &* result &+ Int(serverId)
-        result = 31 &* result &+ title.hashValue        
+        result = 31 &* result &+ name.hashValue
         result = 31 &* result &+ (imageUrl?.hashValue ?? 0)
         result = 31 &* result &+ (imageSize?.hashValue ?? 0)
         
@@ -38,7 +38,7 @@ extension MenuCategory: Hashable {
 
 func ==(lhs: MenuCategory, rhs: MenuCategory) -> Bool {
     return lhs.serverId == rhs.serverId &&
-        lhs.title == rhs.title &&
+        lhs.name == rhs.name &&
         lhs.imageSize == rhs.imageSize &&
         lhs.imageUrl == rhs.imageUrl
 }

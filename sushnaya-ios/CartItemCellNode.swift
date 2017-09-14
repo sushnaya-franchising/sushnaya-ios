@@ -109,7 +109,7 @@ class CartItemCellNode: ASCellNode {
     }
 
     private func updateTitleNode() {
-        titleNode.attributedText = NSAttributedString(string: product.title.uppercased(),
+        titleNode.attributedText = NSAttributedString(string: product.name.uppercased(),
                 attributes: Constants.CartLayout.ItemTitleStringAttributes)
     }
 
