@@ -25,6 +25,10 @@ class App: UIResponder, UIApplicationDelegate {
         return foodServiceWebsocket.isConnected
     }
 
+    var isMenuSelected: Bool {
+        return selectedMenu != nil
+    }
+    
     var selectedMenu: MenuEntity? {
         return core.settings.object?.selectedMenu
     }
@@ -89,7 +93,6 @@ class App: UIResponder, UIApplicationDelegate {
 
         if let authToken = authToken {
             OpenConnectionEvent.fire(authToken: authToken)
-            FoodServiceRest.requestMenus(authToken: authToken)
         }
     }
 
@@ -141,13 +144,13 @@ class App: UIResponder, UIApplicationDelegate {
 
         // MARK: Authentication events
 
-        EventBus.onMainThread(self, name: RequestSMSWithVerificationCodeEvent.name) { notification in
+        EventBus.onMainThread(self, name: RequestSMSWithVerificationCodeEvent.name) { notification in // todo: move phonenumber vc
             let phoneNumber = (notification.object as! RequestSMSWithVerificationCodeEvent).phoneNumber
 
             FoodServiceAuth.requestSMSWithVerificationCode(phoneNumber: phoneNumber)
         }
 
-        EventBus.onMainThread(self, name: RequestAuthenticationTokenEvent.name) { notification in
+        EventBus.onMainThread(self, name: RequestAuthenticationTokenEvent.name) { notification in // todo: move to code vc
             let event = (notification.object as! RequestAuthenticationTokenEvent)
             let phoneNumber = event.phoneNumber
             let code = event.code
@@ -160,8 +163,6 @@ class App: UIResponder, UIApplicationDelegate {
             self.core.persistAuthToken(authToken)
 
             OpenConnectionEvent.fire(authToken: authToken)
-
-            FoodServiceRest.requestMenus(authToken: authToken)
             
             let defaultVC = self.createDefaultRootViewController()
             self.changeRootViewController(defaultVC)
@@ -176,36 +177,12 @@ class App: UIResponder, UIApplicationDelegate {
             self.window?.rootViewController?.present(vc, animated: true, completion: nil)
         }
 
-        // MARK: Menu events
+        // MARK: Menu events        
 
-//        EventBus.onMainThread(self, name: SelectMenuServerEvent.name) { [unowned self] (notification) in
-//            let menus = (notification.object as! SelectMenuServerEvent).menus
-//
-//            func presentLocalitiesController() {
-//                let vc = MenusViewController(menus: menus)
-//
-//                self.window?.rootViewController?.present(vc, animated: true, completion: nil)
-//            }
-//
-//            func getMenu(by location: CLLocation) -> MenuDto? {
-//                return menus.filter {
-//                    $0.locality.includes(coordinate: location.coordinate) // todo: get most inner locality
-//                }.first
-//            }
-//
-//            CLLocationManager.promise().then { [unowned self] location -> () in
-//                if let menuDto = getMenu(by: location) {
-//                    self.core.selectMenu(menuDto: menuDto)
-//
-//                } else {
-//                    presentLocalitiesController()
-//                }
-//
-//            }.catch { error in
-//                presentLocalitiesController()
-//            }
-//        }
-//
+        EventBus.onMainThread(self, name: DidSyncMenusEvent.name) { [unowned self] notification in
+            self.ensureMenuSelected()
+        }
+
 //        EventBus.onMainThread(self, name: DidSelectMenuServerEvent.name) { [unowned self] notification in
 //            let menuDto = (notification.object as! DidSelectMenuServerEvent).menuDto
 //
@@ -266,6 +243,27 @@ extension App: UITabBarControllerDelegate {
 }
 
 extension App {
+    fileprivate func ensureMenuSelected() {
+        guard !self.isMenuSelected else { return }
+        
+        guard (CoreStore.fetchCount(From<MenuEntity>()) ?? 0) > 0 else {
+            // todo: present shop is closed vc
+            return
+        }
+        
+        func presentSelectMenuViewController() {
+            self.window?.rootViewController?.present(SelectMenuViewController(), animated: true)
+        }
+        
+        CLLocationManager.promise().then { [unowned self] location -> () in
+            if !self.core.selectMenu(by: location) {
+                presentSelectMenuViewController()
+            }
+        }.catch { error in
+            presentSelectMenuViewController()
+        }
+    }
+    
     fileprivate func changeRootViewController(_ vc: UIViewController) {
         let snapshot: UIView = (self.window?.snapshotView(afterScreenUpdates: true))!
         vc.view.addSubview(snapshot)

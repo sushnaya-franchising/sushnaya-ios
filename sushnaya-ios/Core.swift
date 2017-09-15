@@ -51,9 +51,11 @@ class Core: ObjectObserver{
         }
         
         func createProductsMonitor(_ settings: UserSettingsEntity?) -> ListMonitor<ProductEntity> {
+            let selectedMenuId: Int32 = settings?.selectedMenu?.serverId ?? -1
+            
             return CoreStore.monitorList(
                 From<ProductEntity>(),
-                Where("menuCategory.menu.serverId", isEqualTo: (settings?.selectedMenu?.serverId ?? -1)) &&
+                Where("category.menu.serverId", isEqualTo: selectedMenuId) &&
                     Where("isRecommended", isEqualTo: true),
                 OrderBy(.ascending(#keyPath(ProductEntity.rank))) +
                     OrderBy(.ascending(#keyPath(ProductEntity.name))))
@@ -79,36 +81,57 @@ class Core: ObjectObserver{
     }
 
     private func bindEventHandlers() {
-        EventBus.onMainThread(self, name: DidRequestMenusEvent.name) { notification in
-            if let menusJSON = (notification.object as! DidRequestMenusEvent).menusJSON.array {
-            
-            do {
-                _ = try CoreStore.perform(synchronous: { [unowned self] (transaction) in
-                    try! self.deleteDeprecatedMenus(update: menusJSON, in: transaction)
-                    
-                    _ = try! transaction.importUniqueObjects(Into<MenuEntity>(), sourceArray: menusJSON)
-                })
-            } catch {
-                //                 todo: log corestore error
-            }
+        EventBus.onMainThread(self, name: SyncMenusEvent.name) { notification in
+            if let menusJSON = (notification.object as! SyncMenusEvent).menusJSON.array {
+                
+                do {
+                    _ = try CoreStore.perform(synchronous: { [unowned self] (transaction) in
+                        try! self.deleteDeprecatedMenus(update: menusJSON, in: transaction)
+                        
+                        // todo: if no one is selected update settings
+                        
+                        _ = try! transaction.importUniqueObjects(Into<MenuEntity>(), sourceArray: menusJSON)
+                    })
+                } catch {
+                    // todo: log corestore error
+                }
+                
+                DidSyncMenusEvent.fire()
             }
         }
-//        EventBus.onMainThread(self, name: DidSelectCategoryEvent.name) { [unowned self] notification in
-//            if let category = (notification.object as! DidSelectCategoryEvent).category {
-//                self.products.refetch(
-//                    Where("menuCategory.serverId", isEqualTo: category.serverId),
-//                    OrderBy(.ascending(#keyPath(ProductEntity.rank))) +
-//                        OrderBy(.ascending(#keyPath(ProductEntity.title))))
-//            }
-//        }
-//
-//        EventBus.onMainThread(self, name: DidSelectRecommendationsEvent.name) { [unowned self] notification in
-//            self.products.refetch(
-//                Where("menuCategory.menu.serverId", isEqualTo: self.selectedMenuId) &&
-//                    Where("isRecommended", isEqualTo: true),
-//                OrderBy(.ascending(#keyPath(ProductEntity.rank))) +
-//                    OrderBy(.ascending(#keyPath(ProductEntity.title))))
-//        }
+
+        EventBus.onMainThread(self, name: DidSelectMenuEvent.name) { [unowned self] notification in
+            let menuJSON = (notification.object as! DidSelectMenuEvent).menuJSON
+            
+            do {
+                try CoreStore.perform(synchronous: { [unowned self] (transaction) in
+                    if let userSettings = transaction.edit(self.settings.object),
+                        let menu = try! transaction.importObject(Into<MenuEntity>(), source: menuJSON) {
+                        userSettings.selectedMenu = menu
+                    }
+                })
+            } catch let error {
+                // todo: log error
+                print(error.localizedDescription)
+            }
+        }
+        
+        EventBus.onMainThread(self, name: DidSelectCategoryEvent.name) { [unowned self] notification in
+            if let category = (notification.object as! DidSelectCategoryEvent).category {
+                self.products.refetch(
+                    Where("category.serverId", isEqualTo: category.serverId),
+                    OrderBy(.ascending(#keyPath(ProductEntity.rank))) +
+                        OrderBy(.ascending(#keyPath(ProductEntity.name))))
+            }
+        }
+
+        EventBus.onMainThread(self, name: DidSelectRecommendationsEvent.name) { [unowned self] notification in
+            self.products.refetch(
+                Where("category.menu.serverId", isEqualTo: self.selectedMenuId) &&
+                    Where("isRecommended", isEqualTo: true),
+                OrderBy(.ascending(#keyPath(ProductEntity.rank))) +
+                    OrderBy(.ascending(#keyPath(ProductEntity.name))))
+        }
     }
 
     deinit {
@@ -121,8 +144,12 @@ class Core: ObjectObserver{
                 Where("menu.serverId", isEqualTo: selectedMenuId ?? -1),
                 OrderBy(.ascending(#keyPath(MenuCategoryEntity.rank))) +
                     OrderBy(.ascending(#keyPath(MenuCategoryEntity.name))))
-
-            FoodServiceRest.requestMenus(authToken: self.authToken!)
+            
+            products.refetch(
+                Where("category.menu.serverId", isEqualTo: selectedMenuId ?? -1) &&
+                    Where("isRecommended", isEqualTo: true),
+                OrderBy(.ascending(#keyPath(ProductEntity.rank))) +
+                    OrderBy(.ascending(#keyPath(ProductEntity.name))))
         }
     }
 }
@@ -148,10 +175,27 @@ extension Core {
         for currentMenu in currentMenus {
             if update.filter({$0["id"].int32! == currentMenu.serverId}).first == nil {
                 transaction.delete(currentMenu)
+                
+                if let selectedMenuId = self.selectedMenuId,
+                    currentMenu.serverId == selectedMenuId {
+                    transaction.edit(settings.object)?.selectedMenu = nil
+                }
             }
         }
     }
     
+    func selectMenu(by location: CLLocation) -> Bool {
+        guard let menu = CoreStore.fetchOne(
+            From<MenuEntity>(),
+            Where("locality.lowerLatitude <= %f", location.coordinate.latitude) &&
+            Where("locality.upperLatitude >= %f", location.coordinate.latitude) &&
+            Where("locality.lowerLongitude <= %f", location.coordinate.longitude) &&
+            Where("locality.upperLongitude >= %f", location.coordinate.longitude)) else { return false }
+        
+        FoodServiceRest.requestSelectMenu(menu: menu, authToken: authToken!)
+        
+        return true
+    }
 //    func selectMenu(menuDto: MenuDto) {
 //        do {
 //            try CoreStore.perform(synchronous: { [unowned self] (transaction) in

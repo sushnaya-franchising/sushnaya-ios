@@ -33,20 +33,29 @@ struct DidSelectMenuServerEvent: Event {
 struct DidSelectMenuEvent: Event {
     static var name: String = "\(DidSelectMenuEvent.self)"
     
-    var menuDto: MenuDto
+    var menuJSON: JSON
     
-    static func fire(menuDto: MenuDto) {
-        EventBus.post(DidSelectMenuEvent.name, sender: DidSelectMenuEvent(menuDto: menuDto))
+    static func fire(menuJSON: JSON) {
+        EventBus.post(DidSelectMenuEvent.name, sender: DidSelectMenuEvent(menuJSON: menuJSON))
     }
 }
 
-struct DidRequestMenusEvent: Event {
-    static var name: String = "\(DidRequestMenusEvent.self)"
+struct SyncMenusEvent: Event {
+    static var name: String = "\(SyncMenusEvent.self)"
     
     var menusJSON: JSON
     
     static func fire(menusJSON: JSON) {
-        EventBus.post(DidRequestMenusEvent.name, sender: DidRequestMenusEvent(menusJSON: menusJSON))
+        EventBus.post(SyncMenusEvent.name, sender: SyncMenusEvent(menusJSON: menusJSON))
     }
 }
+
+struct DidSyncMenusEvent: Event {
+    static var name: String = "\(DidSyncMenusEvent.self)"
+    
+    static func fire() {
+        EventBus.post(DidSyncMenusEvent.name, sender: DidSyncMenusEvent())
+    }
+}
+
 
