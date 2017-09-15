@@ -148,7 +148,11 @@ extension CategoriesViewController: ASCollectionDelegate, ASCollectionDataSource
     }
     
     func collectionNode(_ collectionNode: ASCollectionNode, didSelectItemAt indexPath: IndexPath) {
-        DidSelectCategoryEvent.fire(category: categories.objectsInSection(indexPath.section)[indexPath.row])
+        let category = categories.objectsInSection(indexPath.section)[indexPath.row]
+        
+        DidSelectCategoryEvent.fire(category: category)
+        
+        FoodServiceRest.requestProducts(categoryId: category.serverId, authToken: app.authToken!)
     }
 }
 

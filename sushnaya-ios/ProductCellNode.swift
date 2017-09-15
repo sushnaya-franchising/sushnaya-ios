@@ -105,7 +105,9 @@ class ProductCellNode: ASCellNode {
         let stackLayout = ASStackLayoutSpec.vertical()
         var stackChildren = [ASLayoutElement]()
         
-        if let imageSize = product.imageSize {
+        if let _ = product.imageUrl,
+            let imageSize = product.imageSize {
+            
             let imageRatio = imageSize.height / imageSize.width
             let imageLayout = ASRatioLayoutSpec(ratio: imageRatio, child: imageNode)
             

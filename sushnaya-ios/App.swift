@@ -255,8 +255,16 @@ extension App {
             self.window?.rootViewController?.present(SelectMenuViewController(), animated: true)
         }
         
-        CLLocationManager.promise().then { [unowned self] location -> () in
-            if !self.core.selectMenu(by: location) {
+        func selectMenu(by location: CLLocation) -> Bool {
+            guard let menu = self.core.fetchMenu(by: location) else { return false }
+            
+            FoodServiceRest.requestSelectMenu(menuId: menu.serverId, authToken: authToken!)
+            
+            return true
+        }
+        
+        CLLocationManager.promise().then { location -> () in
+            if !selectMenu(by: location) {
                 presentSelectMenuViewController()
             }
         }.catch { error in
