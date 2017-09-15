@@ -9,8 +9,9 @@
         <attribute name="longitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="needsSynchronization" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="ordersCount" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="serverId" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="serverId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="streetAndHouse" attributeType="String" syncable="YES"/>
+        <attribute name="timestamp" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <relationship name="locality" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="LocalityEntity" syncable="YES"/>
     </entity>
     <entity name="LocalityEntity" representedClassName=".LocalityEntity" syncable="YES">
@@ -21,6 +22,7 @@
         <attribute name="lowerLatitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="lowerLongitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="name" attributeType="String" syncable="YES"/>
+        <attribute name="serverId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="upperLatitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="upperLongitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
         <relationship name="menu" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MenuEntity" inverseName="locality" inverseEntity="MenuEntity" syncable="YES"/>
@@ -69,8 +71,8 @@
         <relationship name="selectedMenu" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MenuEntity" syncable="YES"/>
     </entity>
     <elements>
-        <element name="AddressEntity" positionX="-54" positionY="-9" width="128" height="210"/>
-        <element name="LocalityEntity" positionX="-36" positionY="81" width="128" height="195"/>
+        <element name="AddressEntity" positionX="-54" positionY="-9" width="128" height="225"/>
+        <element name="LocalityEntity" positionX="-36" positionY="81" width="128" height="210"/>
         <element name="MenuCategoryEntity" positionX="-27" positionY="108" width="128" height="165"/>
         <element name="MenuEntity" positionX="-18" positionY="90" width="128" height="90"/>
         <element name="PriceEntity" positionX="-9" positionY="126" width="128" height="120"/>

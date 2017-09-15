@@ -3,7 +3,7 @@ import CoreStore
 import SwiftyJSON
 
 class AddressEntity: NSManagedObject {
-    @NSManaged var serverId: Int32
+    @NSManaged var serverId: NSNumber?
     @NSManaged var latitude: Double
     @NSManaged var longitude: Double
     @NSManaged var streetAndHouse: String
@@ -13,6 +13,7 @@ class AddressEntity: NSManagedObject {
     @NSManaged var comment: String?
     @NSManaged var ordersCount: Int32
     @NSManaged var needsSynchronization: Bool
+    @NSManaged var timestamp: Int64
 
     @NSManaged var locality: LocalityEntity
 
@@ -45,8 +46,8 @@ extension AddressEntity: ImportableUniqueObject {
     }
     
     var uniqueIDValue: Int32 {
-        get { return self.serverId }
-        set { self.serverId = newValue }
+        get { return self.serverId!.int32Value }
+        set { self.serverId = NSNumber(value: newValue) }
     }
     
     class func uniqueID(from source: JSON, in transaction: BaseDataTransaction) throws -> Int32? {

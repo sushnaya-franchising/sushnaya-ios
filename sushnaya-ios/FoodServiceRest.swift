@@ -8,6 +8,7 @@ class FoodServiceRest {
     static let selectMenuUrl = menusUrl + "/%d/select"
     static let categoriesUrl = menusUrl + "/%d/categories"
     static let productsUrl = baseUrl + "/categories/%d/products"
+    static let addressesUrl = baseUrl + "/addresses"
     
     class func requestMenus(authToken: String) {
         let headers: HTTPHeaders = [ "Authorization": authToken ]
@@ -27,8 +28,9 @@ class FoodServiceRest {
     
     class func requestSelectMenu(menuId: Int32, authToken: String) {
         let headers: HTTPHeaders = [ "Authorization": authToken ]
+        let url = String(format: selectMenuUrl, menuId)
         
-        Alamofire.request(String(format: selectMenuUrl, menuId), method: .post, headers: headers).validate().responseJSON { response in
+        Alamofire.request(url, method: .post, headers: headers).validate().responseJSON { response in
             switch response.result {
             case .success(let data):
                 DidSelectMenuEvent.fire(menuJSON: JSON(data))
@@ -43,8 +45,9 @@ class FoodServiceRest {
     
     class func requestCategories(menuId: Int32, authToken: String) {
         let headers: HTTPHeaders = [ "Authorization": authToken ]
+        let url = String(format: categoriesUrl, menuId)
         
-        Alamofire.request(String(format: categoriesUrl, menuId), method: .get, headers: headers).validate().responseJSON { response in
+        Alamofire.request(url, method: .get, headers: headers).validate().responseJSON { response in
             switch response.result {
             case .success(let data):
                 SyncCategoriesEvent.fire(categoriesJSON: JSON(data), menuId: menuId)
@@ -59,11 +62,29 @@ class FoodServiceRest {
     
     class func requestProducts(categoryId: Int32, authToken: String) {
         let headers: HTTPHeaders = [ "Authorization": authToken ]
+        let url = String(format: productsUrl, categoryId)
         
-        Alamofire.request(String(format: productsUrl, categoryId), method: .get, headers: headers).validate().responseJSON { response in
+        Alamofire.request(url, method: .get, headers: headers).validate().responseJSON { response in
             switch response.result {
             case .success(let data):
                 SyncProductsEvent.fire(productsJSON: JSON(data), categoryId: categoryId)
+                
+            case .failure(let error):
+                print(error) // todo: handle categories response error
+                
+                // todo: fire failed to select menu
+            }
+        }
+    }
+    
+    class func requestAddresses(authToken: String, localityId: Int32?) {
+        let headers: HTTPHeaders = [ "Authorization": authToken ]
+        let parameters: Parameters? = (localityId == nil ? nil: [ "localityId": localityId! ])
+        
+        Alamofire.request(addressesUrl, method: .get, parameters: parameters, headers: headers).validate().responseJSON { response in
+            switch response.result {
+            case .success(let data):
+                SyncAddressesEvent.fire(addressesJSON: JSON(data), localityId: localityId)
                 
             case .failure(let error):
                 print(error) // todo: handle categories response error

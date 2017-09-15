@@ -1,6 +1,7 @@
 import Foundation
 
 struct Address {
+    var serverId: Int?
     var locality: Locality
     var streetAndHouse: String
     var latitude: Double
@@ -9,8 +10,7 @@ struct Address {
     var apartment: String?
     var entrance: String?
     var floor: String?
-    var comment: String?
-    var serverId: Int?
+    var comment: String?    
     
     var displayName: String {
         guard let apartment = apartment else {

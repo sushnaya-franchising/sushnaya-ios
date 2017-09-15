@@ -4,6 +4,7 @@ import CoreStore
 import SwiftyJSON
 
 class LocalityEntity: NSManagedObject {
+    @NSManaged var serverId: Int32
     @NSManaged var name: String
     @NSManaged var descr: String
     @NSManaged var fiasId: String
@@ -41,7 +42,24 @@ class LocalityEntity: NSManagedObject {
 }
 
 extension LocalityEntity {
+    typealias ImportSource = JSON
+    typealias UniqueIDType = Int32
+    
+    class var uniqueIDKeyPath: String {
+        return #keyPath(LocalityEntity.serverId)
+    }
+    
+    var uniqueIDValue: Int32 {
+        get { return self.serverId }
+        set { self.serverId = newValue }
+    }
+    
+    class func uniqueID(from source: JSON, in transaction: BaseDataTransaction) throws -> Int32? {
+        return source["id"].int32
+    }
+    
     func update(from source: JSON, in transaction: BaseDataTransaction) throws {
+        self.serverId = source["id"].int32!
         self.name = source["name"].string!
         self.descr = source["description"].string!
         self.fiasId = source["fiasId"].string!

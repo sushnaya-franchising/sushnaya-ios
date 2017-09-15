@@ -1,12 +1,6 @@
-//
-//  CreateAddressEvent.swift
-//  sushnaya-ios
-//
-//  Created by Igor Kurylenko on 8/26/17.
-//  Copyright © 2017 igor kurilenko. All rights reserved.
-//
-
 import Foundation
+import SwiftyJSON
+
 
 struct CreateAddressEvent: Event {
     static var name: String = "\(CreateAddressEvent.self)"
@@ -177,4 +171,13 @@ struct ShowEditAddressViewControllerEvent: Event {
     }
 }
 
-
+struct SyncAddressesEvent: Event {
+    static var name: String = "\(SyncAddressesEvent.self)"
+    
+    var addressesJSON: JSON
+    var localityId: Int32?
+    
+    static func fire(addressesJSON: JSON, localityId: Int32?) {
+        EventBus.post(SyncAddressesEvent.name, sender: SyncAddressesEvent(addressesJSON: addressesJSON, localityId: localityId))
+    }
+}
