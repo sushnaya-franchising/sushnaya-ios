@@ -3,7 +3,7 @@ import AsyncDisplayKit
 import UIKit
 import CoreStore
 
-class MenusViewController: ASViewController<MenusNode> {
+class SelectMenuViewController: ASViewController<MenusNode> {
 
     var menus: ListMonitor<MenuEntity> {
         return app.core.menus
@@ -53,7 +53,7 @@ class MenusViewController: ASViewController<MenusNode> {
     }
 }
 
-extension MenusViewController: ListSectionObserver {
+extension SelectMenuViewController: ListSectionObserver {
     
     func listMonitorWillChange(_ monitor: ListMonitor<MenuEntity>) {
         // tableNode.view.beginUpdates()
@@ -108,7 +108,7 @@ extension MenusViewController: ListSectionObserver {
     }
 }
 
-extension MenusViewController: ASTableDataSource, ASTableDelegate {
+extension SelectMenuViewController: ASTableDataSource, ASTableDelegate {
     func tableNode(_ tableNode: ASTableNode, numberOfRowsInSection section: Int) -> Int {
         return menus.numberOfObjectsInSection(section)
     }
@@ -124,15 +124,7 @@ extension MenusViewController: ASTableDataSource, ASTableDelegate {
     func tableNode(_ tableNode: ASTableNode, didSelectRowAt indexPath: IndexPath) {
         let menu = self.menus.objectsInSection(indexPath.section)[indexPath.row]
         
-        do {
-            try CoreStore.perform(synchronous: { [unowned self] (transaction) in
-                if let userSettings = transaction.edit(self.app.core.settings.object) {
-                    userSettings.selectedMenu = menu
-                }
-            })
-        } catch {
-            // todo: log error
-        }
+        FoodServiceRest.requestSelectMenu(menu: menu, authToken: app.authToken!)
         
         self.dismiss(animated: true, completion: nil)
     }

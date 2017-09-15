@@ -56,16 +56,16 @@
         <attribute name="rank" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="serverId" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="subheading" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="category" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MenuCategoryEntity" inverseName="products" inverseEntity="MenuCategoryEntity" syncable="YES"/>
-        <relationship name="options" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ProductOptionEntity" inverseName="product" inverseEntity="ProductOptionEntity" syncable="YES"/>
-        <relationship name="pricing" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="PriceEntity" inverseName="product" inverseEntity="PriceEntity" syncable="YES"/>
+        <relationship name="category" maxCount="1" deletionRule="Nullify" destinationEntity="MenuCategoryEntity" inverseName="products" inverseEntity="MenuCategoryEntity" syncable="YES"/>
+        <relationship name="options" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="ProductOptionEntity" inverseName="product" inverseEntity="ProductOptionEntity" syncable="YES"/>
+        <relationship name="pricing" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="PriceEntity" inverseName="product" inverseEntity="PriceEntity" syncable="YES"/>
     </entity>
     <entity name="ProductOptionEntity" representedClassName=".ProductOptionEntity" syncable="YES">
         <attribute name="serverId" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <relationship name="product" maxCount="1" deletionRule="Nullify" destinationEntity="ProductEntity" inverseName="options" inverseEntity="ProductEntity" syncable="YES"/>
     </entity>
     <entity name="UserSettingsEntity" representedClassName=".UserSettingsEntity" syncable="YES">
-        <attribute name="authToken" attributeType="String" syncable="YES"/>
+        <attribute name="authToken" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="selectedMenu" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MenuEntity" syncable="YES"/>
     </entity>
     <elements>
@@ -75,7 +75,7 @@
         <element name="MenuEntity" positionX="-18" positionY="90" width="128" height="90"/>
         <element name="PriceEntity" positionX="-9" positionY="126" width="128" height="120"/>
         <element name="ProductEntity" positionX="-18" positionY="117" width="128" height="210"/>
-        <element name="UserSettingsEntity" positionX="0" positionY="99" width="128" height="75"/>
         <element name="ProductOptionEntity" positionX="-27" positionY="135" width="128" height="75"/>
+        <element name="UserSettingsEntity" positionX="0" positionY="99" width="128" height="75"/>
     </elements>
 </model>

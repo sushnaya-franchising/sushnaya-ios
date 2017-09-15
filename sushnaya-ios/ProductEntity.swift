@@ -14,7 +14,7 @@ class ProductEntity: NSManagedObject {
     
     @NSManaged var options: [ProductOptionEntity]?
     @NSManaged var pricing: [PriceEntity]
-    @NSManaged var category: MenuCategoryEntity?
+    @NSManaged var category: MenuCategoryEntity
 
     var imageSize: CGSize? {
         get {
@@ -46,8 +46,8 @@ class ProductEntity: NSManagedObject {
         return result
     }
     
-    var categoryName:String? {
-        return category?.name
+    var categoryName:String {
+        return category.name
     }
     
     var plain: Product {
@@ -58,7 +58,7 @@ class ProductEntity: NSManagedObject {
                        imageWidth: imageWidth,
                        imageHeight: imageHeight,
                        pricing: plainPricing,
-                       menuCategory: category?.plainCategory)
+                       menuCategory: category.plainCategory)
     }
     
     var plainPricing: [Price] {

@@ -53,8 +53,7 @@ class CategoriesViewController: ASViewController<ASDisplayNode>, PaperFoldAsyncV
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-//        collectionNode.reloadData()
+        onViewUpdated?()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -146,10 +145,6 @@ extension CategoriesViewController: ASCollectionDelegate, ASCollectionDataSource
         return { [unowned self] _ in
             DefaultCellNode(context: CategoryCellContext(self.categories[indexPath.row]))
         }
-    }
-    
-    func collectionNode(_ collectionNode: ASCollectionNode, didEndDisplayingItemWith node: ASCellNode) {
-        onViewUpdated?()
     }
     
     func collectionNode(_ collectionNode: ASCollectionNode, didSelectItemAt indexPath: IndexPath) {
