@@ -99,9 +99,15 @@ extension ProductEntity: ImportableUniqueObject {
         self.name = source["name"].string!
         self.subheading = source["subheading"].string!
         self.rank = source["rank"].float!
-        self.imageUrl = source["photo"]["url"].string!
-        self.imageWidth = NSNumber(value: source["photo"]["width"].float!)
-        self.imageHeight = NSNumber(value: source["photo"]["height"].float!)
+        self.imageUrl = source["photo"]["url"].string
+        
+        if let imageWidth = source["photo"]["width"].float {
+            self.imageWidth = NSNumber(value: imageWidth)
+        }
+        
+        if let imageHeight = source["photo"]["height"].float {
+            self.imageHeight = NSNumber(value: imageHeight)
+        }
         
         try! updatePricing(from: source["pricing"].array!, in: transaction)
         

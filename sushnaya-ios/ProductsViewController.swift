@@ -90,10 +90,14 @@ class ProductsViewController: ASViewController<ASDisplayNode> {
             if let category = (notification.object as! DidSelectCategoryEvent).category {
                 self.categoryName = category.name
             }
+            
+            self.scrollToTop()
         }
 
         EventBus.onMainThread(self, name: DidSelectRecommendationsEvent.name) { _ in
             self.categoryName = App.brandName
+            
+            self.scrollToTop()
         }        
     }
 
@@ -119,6 +123,10 @@ class ProductsViewController: ASViewController<ASDisplayNode> {
         super.viewDidDisappear(animated)
     }
 
+    fileprivate func scrollToTop() {
+        collectionNode.view.setContentOffset(CGPoint.zero, animated: true)
+    }
+    
     fileprivate func setCollectionEnabled(_ enabled: Bool) {
         UIView.animate(
                 withDuration: 0.2,

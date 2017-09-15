@@ -5,14 +5,12 @@ import SwiftyJSON
 class FoodServiceRest {
     static let baseUrl = "http://localhost:8080/0.1.0"
     static let menusUrl = baseUrl + "/menus"
-    static let selectMenu = menusUrl + "/%d/select"
-    
-    // http://localhost:8080/0.1.0/menus/1/select
+    static let selectMenuUrl = menusUrl + "/%d/select"
+    static let categoriesUrl = menusUrl + "/%d/categories"
+    static let productsUrl = baseUrl + "/categories/%d/products"
     
     class func requestMenus(authToken: String) {
-        let headers: HTTPHeaders = [
-            "Authorization": authToken,
-        ]
+        let headers: HTTPHeaders = [ "Authorization": authToken ]
 
         Alamofire.request(menusUrl, method: .get, headers: headers).validate().responseJSON { response in
             switch response.result {
@@ -27,17 +25,13 @@ class FoodServiceRest {
         }
     }
     
-    class func requestSelectMenu(menu: MenuEntity, authToken: String) {
-        let headers: HTTPHeaders = [
-            "Authorization": authToken,
-        ]
+    class func requestSelectMenu(menuId: Int32, authToken: String) {
+        let headers: HTTPHeaders = [ "Authorization": authToken ]
         
-        print(String(format: selectMenu, menu.serverId))
-        
-        Alamofire.request(String(format: selectMenu, menu.serverId), method: .post, headers: headers).validate().responseJSON { response in
+        Alamofire.request(String(format: selectMenuUrl, menuId), method: .post, headers: headers).validate().responseJSON { response in
             switch response.result {
             case .success(let data):
-                DidSelectMenuEvent.fire(menuJSON: JSON(data).array![0])// todo: remove .array![0]
+                DidSelectMenuEvent.fire(menuJSON: JSON(data))
                 
             case .failure(let error):
                 print(error) // todo: handle select menu response error
@@ -45,6 +39,37 @@ class FoodServiceRest {
                 // todo: fire failed to select menu
             }
         }
-        //DidSelectMenuEvent.fire(menu: menu, )
+    }
+    
+    class func requestCategories(menuId: Int32, authToken: String) {
+        let headers: HTTPHeaders = [ "Authorization": authToken ]
+        
+        Alamofire.request(String(format: categoriesUrl, menuId), method: .get, headers: headers).validate().responseJSON { response in
+            switch response.result {
+            case .success(let data):
+                SyncCategoriesEvent.fire(categoriesJSON: JSON(data), menuId: menuId)
+                
+            case .failure(let error):
+                print(error) // todo: handle categories response error
+                
+                // todo: fire failed to select menu
+            }
+        }
+    }
+    
+    class func requestProducts(categoryId: Int32, authToken: String) {
+        let headers: HTTPHeaders = [ "Authorization": authToken ]
+        
+        Alamofire.request(String(format: productsUrl, categoryId), method: .get, headers: headers).validate().responseJSON { response in
+            switch response.result {
+            case .success(let data):
+                SyncProductsEvent.fire(productsJSON: JSON(data), categoryId: categoryId)
+                
+            case .failure(let error):
+                print(error) // todo: handle categories response error
+                
+                // todo: fire failed to select menu
+            }
+        }
     }
 }

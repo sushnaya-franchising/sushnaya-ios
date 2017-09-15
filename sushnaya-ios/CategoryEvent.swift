@@ -1,4 +1,5 @@
 import Foundation
+import SwiftyJSON
 
 struct CategoriesServerEvent: Event {
     static var name: String = "\(CategoriesServerEvent.self)"
@@ -31,3 +32,15 @@ struct DidSelectRecommendationsEvent: Event {
         EventBus.post(DidSelectRecommendationsEvent.name, sender: DidSelectRecommendationsEvent())
     }
 }
+
+struct SyncCategoriesEvent: Event {
+    static var name: String = "\(SyncCategoriesEvent.self)"
+    
+    var categoriesJSON: JSON
+    var menuId: Int32
+    
+    static func fire(categoriesJSON: JSON, menuId: Int32) {
+        EventBus.post(SyncCategoriesEvent.name, sender: SyncCategoriesEvent(categoriesJSON: categoriesJSON, menuId: menuId))
+    }
+}
+

@@ -88,7 +88,10 @@ class Core: ObjectObserver{
                     _ = try CoreStore.perform(synchronous: { [unowned self] (transaction) in
                         try! self.deleteDeprecatedMenus(update: menusJSON, in: transaction)
                         
-                        // todo: if no one is selected update settings
+                        guard menusJSON.count > 0 else {
+                            transaction.edit(self.settings.object)!.selectedMenu = nil
+                            return
+                        }
                         
                         _ = try! transaction.importUniqueObjects(Into<MenuEntity>(), sourceArray: menusJSON)
                     })
@@ -100,6 +103,44 @@ class Core: ObjectObserver{
             }
         }
 
+        EventBus.onMainThread(self, name: SyncCategoriesEvent.name) { notification in
+            let event = (notification.object as! SyncCategoriesEvent)
+            let menuId = event.menuId
+            
+            if let categoriesJSON = event.categoriesJSON.array {
+                do {
+                    _ = try CoreStore.perform(synchronous: { [unowned self] (transaction) in
+                        try! self.deleteDeprecatedCategories(update: categoriesJSON, inMenu: menuId, in: transaction)
+                        
+                        guard categoriesJSON.count > 0 else { return }
+                        
+                        _ = try! transaction.importUniqueObjects(Into<MenuCategoryEntity>(), sourceArray: categoriesJSON)
+                    })
+                } catch {
+                    // todo: log corestore error
+                }
+            }
+        }
+        
+        EventBus.onMainThread(self, name: SyncProductsEvent.name) { notification in
+            let event = (notification.object as! SyncProductsEvent)
+            let categoryId = event.categoryId
+            
+            if let productsJSON = event.productsJSON.array {
+                do {
+                    _ = try CoreStore.perform(synchronous: { [unowned self] (transaction) in
+                        try! self.deleteDeprecatedProducts(update: productsJSON, inCategory: categoryId, in: transaction)
+                        
+                        guard productsJSON.count > 0 else { return }
+                        
+                        _ = try! transaction.importUniqueObjects(Into<ProductEntity>(), sourceArray: productsJSON)
+                    })
+                } catch {
+                    // todo: log corestore error
+                }
+            }
+        }
+        
         EventBus.onMainThread(self, name: DidSelectMenuEvent.name) { [unowned self] notification in
             let menuJSON = (notification.object as! DidSelectMenuEvent).menuJSON
             
@@ -168,9 +209,9 @@ extension Core {
     }
     
     fileprivate func deleteDeprecatedMenus(update: [JSON], in transaction: BaseDataTransaction) throws {
-        let currentMenus = transaction.fetchAll(
+        guard let currentMenus = transaction.fetchAll(
             From<MenuEntity>(),
-            OrderBy(.ascending(#keyPath(MenuEntity.serverId)))) ?? [MenuEntity]()
+            OrderBy(.ascending(#keyPath(MenuEntity.serverId)))) else { return }
         
         for currentMenu in currentMenus {
             if update.filter({$0["id"].int32! == currentMenu.serverId}).first == nil {
@@ -184,17 +225,39 @@ extension Core {
         }
     }
     
-    func selectMenu(by location: CLLocation) -> Bool {
-        guard let menu = CoreStore.fetchOne(
+    fileprivate func deleteDeprecatedCategories(update: [JSON], inMenu menuId: Int32, in transaction: BaseDataTransaction) throws {
+        guard let currentCategories = transaction.fetchAll(
+            From<MenuCategoryEntity>(),
+            Where("menu.serverId", isEqualTo: menuId),
+            OrderBy(.ascending(#keyPath(MenuCategoryEntity.serverId)))) else { return }
+        
+        for currentCategory in currentCategories {
+            if update.filter({$0["id"].int32! == currentCategory.serverId}).first == nil {
+                transaction.delete(currentCategory)
+            }
+        }
+    }
+    
+    fileprivate func deleteDeprecatedProducts(update: [JSON], inCategory categoryId: Int32, in transaction: BaseDataTransaction) throws {
+        guard let currentProducts = transaction.fetchAll(
+            From<ProductEntity>(),
+            Where("category.serverId", isEqualTo: categoryId),
+            OrderBy(.ascending(#keyPath(ProductEntity.serverId)))) else { return }
+        
+        for currentProduct in currentProducts {
+            if update.filter({$0["id"].int32! == currentProduct.serverId}).first == nil {
+                transaction.delete(currentProduct)
+            }
+        }
+    }
+    
+    func fetchMenu(by location: CLLocation) -> MenuEntity? {
+        return CoreStore.fetchOne(
             From<MenuEntity>(),
             Where("locality.lowerLatitude <= %f", location.coordinate.latitude) &&
             Where("locality.upperLatitude >= %f", location.coordinate.latitude) &&
             Where("locality.lowerLongitude <= %f", location.coordinate.longitude) &&
-            Where("locality.upperLongitude >= %f", location.coordinate.longitude)) else { return false }
-        
-        FoodServiceRest.requestSelectMenu(menu: menu, authToken: authToken!)
-        
-        return true
+            Where("locality.upperLongitude >= %f", location.coordinate.longitude))
     }
 //    func selectMenu(menuDto: MenuDto) {
 //        do {

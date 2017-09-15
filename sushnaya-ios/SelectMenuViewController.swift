@@ -124,7 +124,7 @@ extension SelectMenuViewController: ASTableDataSource, ASTableDelegate {
     func tableNode(_ tableNode: ASTableNode, didSelectRowAt indexPath: IndexPath) {
         let menu = self.menus.objectsInSection(indexPath.section)[indexPath.row]
         
-        FoodServiceRest.requestSelectMenu(menu: menu, authToken: app.authToken!)
+        FoodServiceRest.requestSelectMenu(menuId: menu.serverId, authToken: app.authToken!)
         
         self.dismiss(animated: true, completion: nil)
     }
