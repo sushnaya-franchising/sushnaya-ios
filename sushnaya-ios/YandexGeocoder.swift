@@ -1,11 +1,3 @@
- //
-//  YandexGeocoder.swift
-//  sushnaya-ios
-//
-//  Created by Igor Kurylenko on 4/29/17.
-//  Copyright © 2017 igor kurilenko. All rights reserved.
-//
-
 import Foundation
 import Alamofire
 import PromiseKit
@@ -25,13 +17,6 @@ struct YandexAddress {
 struct YandexAddressComponent {
     var kind: String
     var name: String
-}
- 
-extension YandexAddress {
-    // HERE
-//    func toAddress(locality: Locality) -> Address {
-//        return Address(locality: locality, coordinate: self.coordinate, streetAndHouse: self.displayName)        
-//    }
 }
  
 class YandexGeocoder {

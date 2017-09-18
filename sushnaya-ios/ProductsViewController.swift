@@ -151,9 +151,12 @@ class ProductsViewController: ASViewController<ASDisplayNode> {
 extension ProductsViewController: ProductCellNodeDelegate {
     func productCellNode(_ node: ProductCellNode, didSelectProduct product: ProductEntity, withPrice price: PriceEntity) {
         if !(product.options?.isEmpty ?? true) {
-            self.present(productOptionsVC, animated: true)
+            productOptionsVC.product = product
+            present(productOptionsVC, animated: true)
+        
+        } else {
+            AddToCartEvent.fire(product: product.plain, withPrice: price.plain)
         }
-        //AddToCartEvent.fire(product: product.plain, withPrice: price.plain)
     }
 }
 

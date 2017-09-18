@@ -66,16 +66,18 @@ class Core: ObjectObserver {
         func createAddressesMonitor() -> ListMonitor<AddressEntity> {
             return CoreStore.monitorList(
                 From<AddressEntity>(),
+                OrderBy(.ascending(#keyPath(AddressEntity.ordersCount))) +
                 OrderBy(.ascending(#keyPath(AddressEntity.timestamp))) +
                     OrderBy(.ascending(#keyPath(AddressEntity.streetAndHouse))))
         }
         
         func createAddressesByLocalityMonitor(_ settings: UserSettingsEntity?) -> ListMonitor<AddressEntity> {
-            //let localityId: Int32 = settings?.selectedMenu?.locality.serverId ?? -1
+            let localityId: Int32 = settings?.selectedMenu?.locality.serverId ?? -1
             
             return CoreStore.monitorList(
                 From<AddressEntity>(),
-                //Where("locality.serverId", isEqualTo: localityId),
+                Where("locality.serverId", isEqualTo: localityId),
+                OrderBy(.ascending(#keyPath(AddressEntity.ordersCount))) +
                 OrderBy(.ascending(#keyPath(AddressEntity.timestamp))) +
                     OrderBy(.ascending(#keyPath(AddressEntity.streetAndHouse))))
         }

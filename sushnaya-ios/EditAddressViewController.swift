@@ -2,6 +2,7 @@ import Foundation
 import AsyncDisplayKit
 import PromiseKit
 import Alamofire
+import CoreStore
 
 protocol EditAddressViewControllerDelegate: class {    
     func editAddressViewControllerDidTapBackButton(_ vc: EditAddressViewController)
@@ -18,7 +19,7 @@ class EditAddressViewController: ASViewController<EditAddressContentNode> {
                 formNode.address = addressToEdit
             
             } else {
-                mapNode.setCenter(coordinate: locality.coordinate, animated: false)
+                mapNode.setCenter(coordinate: selectedMenuLocality.coordinate, animated: false)
                 pagerNode.scrollToPage(at: 0, animated: false)
                 node.navbarNode.selectedSegment = 0
                 formNode.address = nil
@@ -38,7 +39,7 @@ class EditAddressViewController: ASViewController<EditAddressContentNode> {
     
     fileprivate var adjustSuggestionsWidgetFrame: (() -> ())?
     
-    fileprivate var addressOnMap: Address?
+    fileprivate var addressOnMap: YandexAddress?
     
     weak var delegate: EditAddressViewControllerDelegate?
     
@@ -50,7 +51,7 @@ class EditAddressViewController: ASViewController<EditAddressContentNode> {
         return node.navbarNode
     }
     
-    var locality: LocalityEntity {
+    var selectedMenuLocality: LocalityEntity {
         return app.selectedMenu!.locality
     }
     
@@ -58,13 +59,13 @@ class EditAddressViewController: ASViewController<EditAddressContentNode> {
         self.init(node: EditAddressContentNode())
         
         self.formNode = EditAddressFormNode()
-        self.formNode.locality = locality
+        self.formNode.locality = selectedMenuLocality
         self.formNode.delegate = self
         
         self.addressSuggestionsWidget = AddressSuggestionsWidget()
         self.addressSuggestionsWidget.delegate = self
         
-        self.mapNode = EditAddressMapNode(locality: self.locality)
+        self.mapNode = EditAddressMapNode(locality: self.selectedMenuLocality)
         self.mapNode.delegate = self
         self.mapNode.addressCallout.delegate = self
         
@@ -79,24 +80,24 @@ class EditAddressViewController: ASViewController<EditAddressContentNode> {
         
         self.node.automaticallyManagesSubnodes = true
         
-        self.dadataSuggestionsProvider = DadataSuggestionsProvider(cityFiasId: locality.fiasId)
+        self.dadataSuggestionsProvider = DadataSuggestionsProvider(cityFiasId: selectedMenuLocality.fiasId)
         self.addressSuggestionsWidget.provider = dadataSuggestionsProvider
         
         self.geocoding = debounce (delay: 0.1) { [unowned self] in
-            YandexGeocoder.requestAddress(coordinate: self.mapNode.centerCoordinate).then { yandexAddress -> () in
-                guard let yandexAddress = yandexAddress else {
+            YandexGeocoder.requestAddress(coordinate: self.mapNode.centerCoordinate).then { address -> () in
+                guard let address = address else {
                     self.mapNode.addressCallout.state = .addressIsUndefined
                     return
                 }
                 
-                self.mapNode.setCenter(coordinate: yandexAddress.coordinate, animated: true)
-                self.mapNode.addressCallout.state = .addressIsDefined(yandexAddress.displayName)
-                // HERE
-//                self.addressOnMap = yandexAddress.toAddress(locality: self.locality)
+                self.mapNode.setCenter(coordinate: address.coordinate, animated: true)
+                self.mapNode.addressCallout.state = .addressIsDefined(address.displayName)
+                self.addressOnMap = address
                 
             }.catch { error in
                 self.mapNode.addressCallout.state = .addressIsUndefined
             }
+            
         }.onCancel {
             YandexGeocoder.cancelAllRequests()
         }
@@ -150,16 +151,22 @@ class EditAddressViewController: ASViewController<EditAddressContentNode> {
         self.view.endEditing(true)
     }
     
-    fileprivate func submitAddress(_ address: Address) {
-//        if let addressToEdit = addressToEdit {
-//            addressToEdit.copyProperties(fromAddress: address)
-//            
-//            UpdateAddressEvent.fire(address: addressToEdit)
-//            self.addressToEdit = nil
-//        
-//        } else {
-//            CreateAddressEvent.fire(address: address)
-//        }
+    fileprivate func submitAddress(_ yandexAddress: YandexAddress) {
+        if let address = try? CoreStore.perform(synchronous: { [unowned self] (transaction) -> AddressEntity in
+            let address = transaction.edit(self.addressToEdit) ?? transaction.create(Into<AddressEntity>())
+            address.locality = transaction.edit(address.locality) ?? transaction.edit(self.selectedMenuLocality)!
+            address.coordinate = yandexAddress.coordinate
+            address.streetAndHouse = yandexAddress.displayName
+            address.apartment = self.formNode.apartmentFormFieldNode.value
+            address.entrance = self.formNode.entranceFormFieldNode.value
+            address.floor = self.formNode.floorFormFieldNode.value
+            address.comment = self.formNode.commentFormFieldNode.value
+            
+            return address
+            
+        }) {
+            DidEditAddressEvent.fire(address: address)
+        }
     }
 }
 
@@ -253,19 +260,13 @@ extension EditAddressViewController: EditAddressFormDelegate, AddressSuggestions
     func editAddressFormDidSubmit(_ node: EditAddressFormNode) {
         let streetAndHouse = node.streetAndHouseFormFieldNode.value!
         // todo: show loading indicator
-        YandexGeocoder.requestAddress(query: "\(locality.name) \(streetAndHouse)").then { [unowned self] (yandexAddress) -> () in
-            guard let yandexAddress = yandexAddress else {
+        YandexGeocoder.requestAddress(query: "\(selectedMenuLocality.name) \(streetAndHouse)").then { [unowned self] (address) -> () in
+            guard let address = address else {
                 self.alert(title: "Неизвестный адрес", message: "Не удалось определить географические координаты адреса доставки. Попробуйте указать другой адрес.")
                 return
             }
-//HERE
-//            let addressInForm = yandexAddress.toAddress(locality: self.locality)
-//            addressInForm.apartment = node.apartmentFormFieldNode.value
-//            addressInForm.entrance = node.entranceFormFieldNode.value
-//            addressInForm.floor = node.floorFormFieldNode.value
-//            addressInForm.comment = node.commentFormFieldNode.value
-//            
-//            self.submitAddress(addressInForm)
+
+            self.submitAddress(address)
             
         }.catch { error in
             self.alert(title: "Возникла ошибка", message: error.localizedDescription)
@@ -345,7 +346,6 @@ extension EditAddressViewController: EditAddressMapDelegate, EditAddressMapCallo
             return
         }
         
-        // todo: user networking for address persistance
         submitAddress(addressOnMap)
     }        
 }

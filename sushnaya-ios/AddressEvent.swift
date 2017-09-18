@@ -2,23 +2,13 @@ import Foundation
 import SwiftyJSON
 
 
-struct CreateAddressEvent: Event {
-    static var name: String = "\(CreateAddressEvent.self)"
+struct DidEditAddressEvent: Event {
+    static var name: String = "\(DidEditAddressEvent.self)"
     
-    var address: Address
+    var address: AddressEntity
     
-    static func fire(address: Address) {
-        EventBus.post(CreateAddressEvent.name, sender: CreateAddressEvent(address: address))
-    }
-}
-
-struct DidCreateAddressEvent: Event {
-    static var name: String = "\(DidCreateAddressEvent.self)"
-    
-    var address: Address
-    
-    static func fire(address: Address) {
-        EventBus.post(DidCreateAddressEvent.name, sender: DidCreateAddressEvent(address: address))
+    static func fire(address: AddressEntity) {
+        EventBus.post(DidEditAddressEvent.name, sender: DidEditAddressEvent(address: address))
     }
 }
 
@@ -52,59 +42,6 @@ struct DidNotCreateAddressServerEvent: Event {
     
     static func fire(address: Address, error: String) {
         EventBus.post(DidNotCreateAddressServerEvent.name, sender: DidNotCreateAddressServerEvent(address: address, error: error))
-    }
-}
-
-struct UpdateAddressEvent: Event {
-    static var name: String = "\(UpdateAddressEvent.self)"
-    
-    var address: Address
-    
-    static func fire(address: Address) {
-        EventBus.post(UpdateAddressEvent.name, sender: UpdateAddressEvent(address: address))
-    }
-}
-
-struct DidUpdateAddressEvent: Event {
-    static var name: String = "\(DidUpdateAddressEvent.self)"
-    
-    var address: Address
-    
-    static func fire(address: Address) {
-        EventBus.post(DidUpdateAddressEvent.name, sender: DidUpdateAddressEvent(address: address))
-    }
-}
-
-struct DidNotUpdateAddressEvent: Event {
-    static var name: String = "\(DidNotUpdateAddressEvent.self)"
-    
-    var address: Address
-    var error: Error
-    
-    static func fire(address: Address, error: Error) {
-        EventBus.post(DidNotUpdateAddressEvent.name, sender: DidNotUpdateAddressEvent(address: address, error: error))
-    }
-}
-
-
-struct DidUpdateAddressServerEvent: Event {
-    static var name: String = "\(DidUpdateAddressServerEvent.self)"
-    
-    var address: Address
-    
-    static func fire(address: Address) {
-        EventBus.post(DidUpdateAddressServerEvent.name, sender: DidUpdateAddressServerEvent(address: address))
-    }
-}
-
-struct DidNotUpdateAddressServerEvent: Event {
-    static var name: String = "\(DidNotUpdateAddressServerEvent.self)"
-    
-    var address: Address
-    var error: String
-    
-    static func fire(address: Address, error: String) {
-        EventBus.post(DidNotUpdateAddressServerEvent.name, sender: DidNotUpdateAddressServerEvent(address: address, error: error))
     }
 }
 

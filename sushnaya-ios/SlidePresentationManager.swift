@@ -5,8 +5,15 @@ final class SlidePresentationManager: NSObject, UIViewControllerTransitioningDel
     private let slideDownDismissingTransitioning = SlideDownDismissingTransitioning()
     let interactionController = SwipeInteractionController()
     
+    var dimmingViewAlpha: CGFloat
+    
+    init(dimmingViewAlpha: CGFloat = 0.4) {
+        self.dimmingViewAlpha = dimmingViewAlpha
+        super.init()
+    }
+    
     func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
-        return SlidePresentationController(presentedViewController: presented, presenting: presenting)
+        return SlidePresentationController(presentedViewController: presented, presenting: presenting, dimmingViewAlpha: dimmingViewAlpha)
     }
     
     func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {

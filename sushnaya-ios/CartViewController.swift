@@ -10,7 +10,7 @@ class CartViewController: ASViewController<ASDisplayNode> {
         return app.cart
     }    
     
-    fileprivate let presentationManager = SlidePresentationManager()
+    fileprivate let presentationManager = SlidePresentationManager(dimmingViewAlpha: 0.1)
     
     convenience init() {
         self.init(node: ASDisplayNode())

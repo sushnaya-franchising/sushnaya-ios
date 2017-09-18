@@ -56,7 +56,7 @@ class SelectAddressViewController: ASViewController<SelectAddressNode> {
         super.viewWillAppear(animated)
         
         FoodServiceRest.requestAddresses(authToken: app.authToken!,
-                                         localityId: app.selectedMenu?.locality.serverId?.int32Value)
+                                         localityId: app.selectedMenu?.locality.serverId)
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -261,11 +261,6 @@ class SelectAddressNode: ASDisplayNode {
         DispatchQueue.main.async { [unowned self] _ in
             self.collectionNode.reloadData()
         }
-    }
-    
-    override func setNeedsLayout() {
-        reloadCollection()
-        super.setNeedsLayout()
     }
     
     override func didLoad() {

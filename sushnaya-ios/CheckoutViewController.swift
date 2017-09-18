@@ -48,7 +48,7 @@ class CheckoutViewController: ASViewController<CheckoutContentNode> {
 
         self.node.automaticallyManagesSubnodes = true
 
-        updateState()
+        setupState()
 
         bindEventHandlers()
     }
@@ -60,12 +60,7 @@ class CheckoutViewController: ASViewController<CheckoutContentNode> {
             self.node.transitionLayout(withAnimation: true, shouldMeasureAsync: false)
         }
 
-        EventBus.onMainThread(self, name: DidCreateAddressEvent.name) { [unowned self] _ in
-            self.node.state = .order
-            self.node.transitionLayout(withAnimation: true, shouldMeasureAsync: false)
-        }
-
-        EventBus.onMainThread(self, name: DidUpdateAddressEvent.name) { [unowned self] (notification) in
+        EventBus.onMainThread(self, name: DidEditAddressEvent.name) { [unowned self] _ in
             self.node.state = .order
             self.node.transitionLayout(withAnimation: true, shouldMeasureAsync: false)
         }
@@ -85,15 +80,21 @@ class CheckoutViewController: ASViewController<CheckoutContentNode> {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        updateState()
+        setupState()
     }
 
-    func updateState() {
-        if noAddresses {
+    func setupState() {
+        switch addressesCount {
+        case 0:
             node.state = .editAddress
             editAddressVC.node.setNeedsLayout()
-
-        } else {
+            
+        case 1:
+            // todo: open order vc
+            node.state = .selectAddress
+            selectAddressVC.node.setNeedsLayout()
+            
+        default:
             node.state = .selectAddress
             selectAddressVC.node.setNeedsLayout()
         }
@@ -170,6 +171,15 @@ class CheckoutContentNode: ASDisplayNode {
         self.automaticallyManagesSubnodes = true
     }
 
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        for subnode in subnodes {
+            if subnode.hitTest(convert(point, to: subnode), with: event) != nil {
+                return true
+            }
+        }
+        return false
+    }
+    
     override func didLoad() {
         super.didLoad()
 

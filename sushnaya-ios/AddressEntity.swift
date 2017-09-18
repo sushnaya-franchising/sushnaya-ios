@@ -11,8 +11,7 @@ class AddressEntity: NSManagedObject {
     @NSManaged var entrance: String?
     @NSManaged var floor: String?
     @NSManaged var comment: String?
-    @NSManaged var ordersCount: Int32
-    @NSManaged var needsSynchronization: Bool
+    @NSManaged var ordersCount: Int32    
     @NSManaged var timestamp: Int64
 
     @NSManaged var locality: LocalityEntity

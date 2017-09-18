@@ -1,11 +1,3 @@
-//
-//  CartNode.swift
-//  sushnaya-ios
-//
-//  Created by Igor Kurylenko on 4/13/17.
-//  Copyright © 2017 igor kurilenko. All rights reserved.
-//
-
 import Foundation
 import AsyncDisplayKit
 import FontAwesome_swift
@@ -17,8 +9,7 @@ protocol CartNodeDelegate: class {
 }
 
 class CartNode: ASDisplayNode {
-
-    let closeButton = ASButtonNode()
+    
     let iconNode = ASImageNode()
     let cartContentNode: CartContentNode
     weak var delegate: CartNodeDelegate?
@@ -30,8 +21,10 @@ class CartNode: ASDisplayNode {
         automaticallyManagesSubnodes = true
 
         iconNode.image = UIImage.fontAwesomeIcon(name: .shoppingBasket, textColor: PaperColor.White, size: CGSize(width: 130, height: 130))
-        closeButton.addTarget(self, action: #selector(didTouchUpInsideCloseButton), forControlEvents: .touchUpInside)
-
+        iconNode.setTargetClosure { [unowned self] _ in
+            self.delegate?.cartNodeDidTouchUpInsideCloseButton()
+        }
+        
         cartContentNode.toolBarNode.orderWithDeliveryButton.addTarget(self, action: #selector(didTouchUpInsideOrderWithDeliveryButton), forControlEvents: .touchUpInside)
     }
 
@@ -39,10 +32,14 @@ class CartNode: ASDisplayNode {
         delegate?.cartNodeDidTouchUpInsideOrderWithDeliveryButton()
     }
 
-    func didTouchUpInsideCloseButton() {
-        delegate?.cartNodeDidTouchUpInsideCloseButton()
+    override func didLoad() {
+        super.didLoad()
+        
+        layer.shadowOffset = CGSize(width: 0, height: 0)
+        layer.shadowOpacity = 0.3
+        layer.shadowRadius = 3
     }
-
+    
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let backLayout = backLayoutSpecThatFits(constrainedSize)
         let frontLayout = frontLayoutSpecThatFits(constrainedSize)
@@ -51,19 +48,17 @@ class CartNode: ASDisplayNode {
     }
 
     private func backLayoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        let backLayout = ASStackLayoutSpec.vertical()
-        backLayout.alignItems = .center
+        let layout = ASStackLayoutSpec.vertical()
+        layout.alignItems = .center
 
         let backPusher = ASLayoutSpec()
         backPusher.style.height = ASDimension(unit: .points, value: 8)
 
         iconNode.style.preferredSize = iconNode.image!.size
 
-        backLayout.children = [backPusher, iconNode]
+        layout.children = [backPusher, iconNode]
 
-        closeButton.style.height = ASDimension(unit: .points, value: 70)
-
-        return ASOverlayLayoutSpec(child: backLayout, overlay: closeButton)
+        return layout
     }
 
     private func frontLayoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {

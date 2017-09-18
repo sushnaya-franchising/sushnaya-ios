@@ -161,7 +161,7 @@ class App: UIResponder, UIApplicationDelegate {
         EventBus.onMainThread(self, name: DidRequestAuthenticationTokenEvent.name) { [unowned self] (notification) in
             let authToken = (notification.object as! DidRequestAuthenticationTokenEvent).authToken
             self.core.persistAuthToken(authToken)
-
+            
             OpenConnectionEvent.fire(authToken: authToken)
             
             let defaultVC = self.createDefaultRootViewController()

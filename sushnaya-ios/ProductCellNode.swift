@@ -29,6 +29,7 @@ class ProductCellNode: ASCellNode {
     var product: ProductEntity {
         didSet {
             setupNodes()
+            setNeedsLayout()
         }
     }
     
@@ -90,6 +91,8 @@ class ProductCellNode: ASCellNode {
     }
 
     private func setupPriceNodes() {
+        priceNodes.removeAll()
+        
         for price in product.pricing {
             let priceNode = PriceNode(price: price)
             priceNode.delegate = self
@@ -97,8 +100,14 @@ class ProductCellNode: ASCellNode {
         }
     }
 
-    override func didLoad() {
-        super.didLoad()
+    override func setNeedsLayout() {
+        imageNode.setNeedsLayout()
+        titleTextNode.setNeedsLayout()
+        subtitleTextNode?.setNeedsLayout()
+        for priceNode in priceNodes {
+            priceNode.setNeedsLayout()
+        }
+        super.setNeedsLayout()
     }
     
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {

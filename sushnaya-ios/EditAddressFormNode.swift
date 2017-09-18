@@ -108,9 +108,7 @@ class EditAddressFormNode: ASCellNode {
     }
     
     private func adjustLocalityImageNode() {
-        guard let locality = locality else { return }
-        
-        print(FoodServiceImages.getCoatOfArmsImageUrl(coordinate: locality.coordinate))
+        guard let locality = locality else { return }                
         
         localityImageNode.url = FoodServiceImages.getCoatOfArmsImageUrl(coordinate: locality.coordinate)
     }
