@@ -9,19 +9,19 @@ protocol EditAddressViewControllerDelegate: class {
 
 class EditAddressViewController: ASViewController<EditAddressContentNode> {
     
-    var addressToEdit: Address? {
+    var addressToEdit: AddressEntity? {
         didSet {
             if let addressToEdit = addressToEdit {
                 mapNode.setCenter(coordinate: addressToEdit.coordinate, animated: false)
                 pagerNode.scrollToPage(at: 1, animated: false)
                 node.navbarNode.selectedSegment = 1
-                formNode.fill(address: addressToEdit)
+                formNode.address = addressToEdit
             
             } else {
                 mapNode.setCenter(coordinate: locality.coordinate, animated: false)
                 pagerNode.scrollToPage(at: 0, animated: false)
                 node.navbarNode.selectedSegment = 0
-                formNode.clear()
+                formNode.address = nil
             }
         }
     }

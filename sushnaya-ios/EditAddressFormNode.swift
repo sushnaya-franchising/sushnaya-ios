@@ -23,6 +23,18 @@ class EditAddressFormNode: ASCellNode {
         }
     }
     
+    var address: AddressEntity? {
+        didSet {
+            if let address = address {
+                fill(address)
+            
+            } else {
+                clear()
+            }
+        }
+        
+    }
+    
     weak var delegate: EditAddressFormDelegate?
     
     fileprivate let scrollNode = ASScrollNode()
@@ -236,7 +248,7 @@ class EditAddressFormNode: ASCellNode {
         return layout
     }
     
-    public func fill(address: Address) {
+    private func fill(_ address: AddressEntity) {
         streetAndHouseFormFieldNode.setValue(address.streetAndHouse, notifyDelegate: false)
         apartmentFormFieldNode.setValue(address.apartment, notifyDelegate: false)
         entranceFormFieldNode.setValue(address.entrance, notifyDelegate: false)
@@ -244,7 +256,7 @@ class EditAddressFormNode: ASCellNode {
         commentFormFieldNode.setValue(address.comment, notifyDelegate: false)
     }
     
-    public func clear() {
+    private func clear() {
         streetAndHouseFormFieldNode.setValue(nil, notifyDelegate: false)
         apartmentFormFieldNode.setValue(nil, notifyDelegate: false)
         entranceFormFieldNode.setValue(nil, notifyDelegate: false)

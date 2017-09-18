@@ -1,8 +1,3 @@
-//
-// Created by Igor Kurylenko on 4/8/17.
-// Copyright (c) 2017 igor kurilenko. All rights reserved.
-//
-
 import Foundation
 import AsyncDisplayKit
 import PaperFold
@@ -17,6 +12,8 @@ class MainViewController: ASTabBarController {
     private var cartButtonSetupStarted = false
 
     private var cartVC: CartViewController!
+    
+    private let presentationManager = SlidePresentationManager()
     
     private func addCartButtonViewAsynchronously(containerRect: CGRect) {
         DispatchQueue.global().async { [unowned self] _ in
@@ -41,7 +38,7 @@ class MainViewController: ASTabBarController {
     }
     
     func presentCartViewController() {
-        present(cartVC, animated: true, completion: nil)
+        present(cartVC, animated: true)
     }
     
     func setPaperFoldState(isFolded: Bool, animated: Bool) {
@@ -70,8 +67,10 @@ class MainViewController: ASTabBarController {
         super.viewDidLoad()
         
         cartVC = CartViewController()
-        cartVC.transitioningDelegate = self
+        cartVC.transitioningDelegate = presentationManager
         cartVC.modalPresentationStyle = .custom
+        
+        presentationManager.interactionController.destinationVC = cartVC
     }
 
     override func viewWillLayoutSubviews() {
@@ -89,15 +88,4 @@ class MainViewController: ASTabBarController {
         }
     }
 }
-
-extension MainViewController: UIViewControllerTransitioningDelegate {
-    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return SlideUpPresentingTransitioning()
-    }
-    
-    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return SlideDownDismissingTransitioning()
-    }
-}
-
 

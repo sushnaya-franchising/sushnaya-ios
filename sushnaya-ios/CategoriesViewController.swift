@@ -9,7 +9,7 @@ class CategoriesViewController: ASViewController<ASDisplayNode>, PaperFoldAsyncV
     let titleStringAttrs = Constants.DefaultCellLayout.TitleStringAttributes
     let imageSize = Constants.DefaultCellLayout.ImageSize
 
-    var categories: ListMonitor<MenuCategoryEntity> {
+    fileprivate var categories: ListMonitor<MenuCategoryEntity> {
         return app.core.categories
     }
     

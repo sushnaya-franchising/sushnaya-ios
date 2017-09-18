@@ -111,10 +111,10 @@ struct DidNotUpdateAddressServerEvent: Event {
 struct RemoveAddressEvent: Event {
     static var name: String = "\(RemoveAddressEvent.self)"
     
-    var addressId: Int
+    var address: AddressEntity
     
-    static func fire(addressId: Int) {
-        EventBus.post(RemoveAddressEvent.name, sender: RemoveAddressEvent(addressId: addressId))
+    static func fire(address: AddressEntity) {
+        EventBus.post(RemoveAddressEvent.name, sender: RemoveAddressEvent(address: address))
     }
 }
 
@@ -164,9 +164,9 @@ struct DidNotRemoveAddressServerEvent: Event {
 struct ShowEditAddressViewControllerEvent: Event {
     static var name: String = "\(ShowEditAddressViewControllerEvent.self)"
     
-    var address: Address
+    var address: AddressEntity
     
-    static func fire(address: Address) {
+    static func fire(address: AddressEntity) {
         EventBus.post(ShowEditAddressViewControllerEvent.name, sender: ShowEditAddressViewControllerEvent(address: address))
     }
 }

@@ -16,6 +16,14 @@ class CheckoutViewController: ASViewController<CheckoutContentNode> {
     fileprivate var addresses: ListMonitor<AddressEntity> {
         return app.core.addressesByLocality
     }
+    
+    fileprivate var addressesCount: Int {
+        return addresses.objectsInAllSections().count
+    }
+    
+    fileprivate var noAddresses: Bool {
+        return addressesCount == 0
+    }
 
     convenience init() {
         let editAddressVC = EditAddressViewController()
@@ -63,7 +71,7 @@ class CheckoutViewController: ASViewController<CheckoutContentNode> {
         }
 
         EventBus.onMainThread(self, name: DidRemoveAddressEvent.name) { [unowned self] (notification) in
-            if self.addresses.objectsInAllSections().isEmpty {
+            if self.noAddresses {
                 self.node.state = .editAddress
                 self.node.transitionLayout(withAnimation: true, shouldMeasureAsync: false)
             }
@@ -81,7 +89,7 @@ class CheckoutViewController: ASViewController<CheckoutContentNode> {
     }
 
     func updateState() {
-        if addresses.objectsInAllSections().isEmpty {
+        if noAddresses {
             node.state = .editAddress
             editAddressVC.node.setNeedsLayout()
 
@@ -98,7 +106,7 @@ class CheckoutViewController: ASViewController<CheckoutContentNode> {
 
 extension CheckoutViewController: EditAddressViewControllerDelegate {
     func editAddressViewControllerDidTapBackButton(_ vc: EditAddressViewController) {
-        if addresses.objectsInAllSections().isEmpty {
+        if noAddresses {
             self.dismiss(animated: true)
 
         } else {
@@ -119,7 +127,7 @@ extension CheckoutViewController: SelectAddressViewControllerDelegate {
         node.transitionLayout(withAnimation: true, shouldMeasureAsync: false)
     }
 
-    func selectAddressViewController(_ vc: SelectAddressViewController, didSelectAddress address: Address) {
+    func selectAddressViewController(_ vc: SelectAddressViewController, didSelectAddress address: AddressEntity) {
         // todo: pass selected address to the order node
         self.node.state = .order
         node.transitionLayout(withAnimation: true, shouldMeasureAsync: false)

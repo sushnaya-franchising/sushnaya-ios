@@ -1,59 +1,41 @@
-//
-//  PresentingAnimationController.swift
-//  sushnaya-ios
-//
-//  Created by Igor Kurylenko on 4/8/17.
-//  Copyright © 2017 igor kurilenko. All rights reserved.
-//
-
 import Foundation
-import pop
 
 class SlideUpPresentingTransitioning: NSObject, UIViewControllerAnimatedTransitioning {
-
-    var applyAlpha:Bool
-    
-    convenience override init() {
-        self.init(applyAlpha: true)
-    }
-    
-    init(applyAlpha: Bool) {
-        self.applyAlpha = applyAlpha
-    }
     
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
         return 0.5
     }
     
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
-        guard let fromView = transitionContext.viewController(forKey: .from)?.view else { return }
+        guard let fromView = transitionContext.viewController(forKey: .from)?.view,
+            let toView = transitionContext.viewController(forKey: .to)?.view else { return }
+
         fromView.tintAdjustmentMode = .dimmed
         fromView.isUserInteractionEnabled = false
         
-        guard let toView = transitionContext.viewController(forKey: .to)?.view else { return }
-        toView.frame = CGRect(x: 0, y: 0,
-                               width: transitionContext.containerView.bounds.width,
-                               height: transitionContext.containerView.bounds.height)
+        let screenBounds = UIScreen.main.bounds
+        let bottomLeftCorner = CGPoint(x: 0, y: screenBounds.height)
+        let initialFrame = CGRect(origin: bottomLeftCorner, size: screenBounds.size)
+        toView.frame = initialFrame
         
         let p = CGPoint(x: transitionContext.containerView.center.x, y: transitionContext.containerView.center.y * 3)
         toView.center = p
         
         transitionContext.containerView.addSubview(toView)
         
-        let positionAnimation = POPSpringAnimation(propertyNamed: kPOPLayerPositionY)
-        positionAnimation?.toValue = transitionContext.containerView.center.y
-        positionAnimation?.springBounciness = 5
-        positionAnimation?.completionBlock = { _ in
-            transitionContext.completeTransition(true)
-        }
+        let duration = transitionDuration(using: transitionContext)
         
-        toView.layer.pop_add(positionAnimation, forKey: "positionAnimation")
-        
-        if applyAlpha {
-            let fromViewAlphaAnimation = POPBasicAnimation(propertyNamed: kPOPViewAlpha)
-            fromViewAlphaAnimation?.toValue = 0.6
-        
-            fromView.pop_add(fromViewAlphaAnimation, forKey: "alphaAnimation")
-        }
+        UIView.animate(
+            withDuration: duration,
+            delay: 0,
+            usingSpringWithDamping: 1,
+            initialSpringVelocity: 2,
+            options: .curveEaseInOut,
+            animations: {
+                toView.frame = CGRect(origin: CGPoint.zero, size: screenBounds.size)
+            },
+            completion: { _ in
+                transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
+            })
     }
 }

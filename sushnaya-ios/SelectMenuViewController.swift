@@ -3,7 +3,7 @@ import AsyncDisplayKit
 import UIKit
 import CoreStore
 
-class SelectMenuViewController: ASViewController<MenusNode> {
+class SelectMenuViewController: ASViewController<SelectMenuNode> {
 
     var menus: ListMonitor<MenuEntity> {
         return app.core.menus
@@ -14,7 +14,7 @@ class SelectMenuViewController: ASViewController<MenusNode> {
     }
     
     convenience init() {
-        self.init(node: MenusNode())
+        self.init(node: SelectMenuNode())
         
         self.tableNode.delegate = self
         self.tableNode.dataSource = self

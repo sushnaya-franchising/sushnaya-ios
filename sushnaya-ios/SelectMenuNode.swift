@@ -2,7 +2,7 @@ import Foundation
 import AsyncDisplayKit
 import CoreStore
 
-class MenusNode: ASDisplayNode {
+class SelectMenuNode: ASDisplayNode {
     
     fileprivate var headerTextNode = ASTextNode()
     fileprivate var subheadingTextNode = ASTextNode()

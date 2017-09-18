@@ -1,11 +1,3 @@
-//
-//  AddressCellNode.swift
-//  sushnaya-ios
-//
-//  Created by Igor Kurylenko on 7/1/17.
-//  Copyright © 2017 igor kurilenko. All rights reserved.
-//
-
 import Foundation
 import AsyncDisplayKit
 import SwiftEventBus
@@ -30,7 +22,9 @@ class AddressCellNode: ASCellNode {
                                                      attributes: [NSFontAttributeName: UIFont.fontAwesome(ofSize: 24),
                                                                   NSForegroundColorAttributeName: PaperColor.Gray800])    
     
-    var address: Address
+    var address: AddressEntity {
+        didSet { setupNodes() }
+    }
     
     fileprivate let mapImageBuilder = YMKMapImageBuilder()
     fileprivate var labelNode: ASTextNode?
@@ -45,7 +39,7 @@ class AddressCellNode: ASCellNode {
         return imageNode
     }()
     
-    init(address: Address) {
+    init(address: AddressEntity) {
         self.address = address
         super.init()
         
@@ -86,10 +80,10 @@ class AddressCellNode: ASCellNode {
         removeButtonNode.setAttributedTitle(AddressCellNode.RemoveIconString, for: .normal)
         removeButtonNode.setBackgroundImage(UIImage.init(color: PaperColor.White.withAlphaComponent(0.5)), for: .normal)
         removeButtonNode.isHidden = true
-        // HERE
-//        removeButtonNode.setTargetClosure { [unowned self] _ in
-//            RemoveAddressEvent.fire(addressId: self.address.serverId!)
-//        }
+        
+        removeButtonNode.setTargetClosure { [unowned self] _ in
+            RemoveAddressEvent.fire(address: self.address)
+        }
     }
     
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {

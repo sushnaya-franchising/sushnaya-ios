@@ -26,10 +26,13 @@ class ProductsViewController: ASViewController<ASDisplayNode> {
     fileprivate let layoutInspector = MosaicCollectionViewLayoutInspector()
     fileprivate var selectedProductIndexPath: IndexPath?
 
+    fileprivate var productOptionsVC: ProductOptionsViewController!
+    
+    fileprivate let presentationManager = SlidePresentationManager()
+    
     var products: ListMonitor<ProductEntity> {
         return app.core.products
     }
-
 
     var categoryName = App.brandName {
         didSet {
@@ -50,6 +53,12 @@ class ProductsViewController: ASViewController<ASDisplayNode> {
         }
 
         products.addObserver(self)
+        
+        productOptionsVC = ProductOptionsViewController()
+        productOptionsVC.transitioningDelegate = presentationManager
+        productOptionsVC.modalPresentationStyle = .custom
+                
+        presentationManager.interactionController.destinationVC = productOptionsVC
     }
 
     private func setupHeaderTextCellNode() {
@@ -82,10 +91,10 @@ class ProductsViewController: ASViewController<ASDisplayNode> {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         collectionNode.view.isScrollEnabled = true
         collectionNode.view.showsVerticalScrollIndicator = false
-
+        
         EventBus.onMainThread(self, name: DidSelectCategoryEvent.name) { [unowned self] notification in
             if let category = (notification.object as! DidSelectCategoryEvent).category {
                 self.categoryName = category.name
@@ -135,15 +144,16 @@ class ProductsViewController: ASViewController<ASDisplayNode> {
                 animations: { () -> Void in
                     self.collectionNode.alpha = enabled ? 1.0 : 0.5
                     self.collectionNode.isUserInteractionEnabled = enabled
-                },
-                completion: nil
-        )
+                })
     }
 }
 
 extension ProductsViewController: ProductCellNodeDelegate {
     func productCellNode(_ node: ProductCellNode, didSelectProduct product: ProductEntity, withPrice price: PriceEntity) {
-        AddToCartEvent.fire(product: product.plain, withPrice: price.plain)
+        if !(product.options?.isEmpty ?? true) {
+            self.present(productOptionsVC, animated: true)
+        }
+        //AddToCartEvent.fire(product: product.plain, withPrice: price.plain)
     }
 }
 

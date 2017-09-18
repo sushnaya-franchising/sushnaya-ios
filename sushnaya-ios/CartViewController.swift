@@ -8,8 +8,10 @@ class CartViewController: ASViewController<ASDisplayNode> {
     
     var cart: Cart {
         return app.cart
-    }
-
+    }    
+    
+    fileprivate let presentationManager = SlidePresentationManager()
+    
     convenience init() {
         self.init(node: ASDisplayNode())
 
@@ -58,8 +60,10 @@ class CartViewController: ASViewController<ASDisplayNode> {
     fileprivate func showCheckoutViewController() {
         if checkoutVC == nil {
             checkoutVC = CheckoutViewController()
-            checkoutVC.transitioningDelegate = self
+            checkoutVC.transitioningDelegate = presentationManager
             checkoutVC.modalPresentationStyle = .custom
+            
+            presentationManager.interactionController.destinationVC = checkoutVC
         }
 
         show(checkoutVC, sender: self)
@@ -73,15 +77,5 @@ extension CartViewController: CartNodeDelegate {
 
     func cartNodeDidTouchUpInsideOrderWithDeliveryButton() {
         showCheckoutViewController()
-    }
-}
-
-extension CartViewController: UIViewControllerTransitioningDelegate {
-    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return SlideUpPresentingTransitioning(applyAlpha: false)
-    }
-
-    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return SlideDownDismissingTransitioning()
     }
 }

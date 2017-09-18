@@ -97,7 +97,7 @@ extension ProductEntity: ImportableUniqueObject {
         self.category = category
         self.serverId = source["id"].int32!
         self.name = source["name"].string!
-        self.subheading = source["subheading"].string!
+        self.subheading = source["subheading"].string
         self.rank = source["rank"].float!
         self.imageUrl = source["photo"]["url"].string
         

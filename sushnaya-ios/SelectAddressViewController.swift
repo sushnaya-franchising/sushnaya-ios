@@ -2,9 +2,10 @@ import Foundation
 import AsyncDisplayKit
 import pop
 import SwiftEventBus
+import CoreStore
 
 protocol SelectAddressViewControllerDelegate: class {
-    func selectAddressViewController(_ vc: SelectAddressViewController, didSelectAddress address: Address)
+    func selectAddressViewController(_ vc: SelectAddressViewController, didSelectAddress address: AddressEntity)
     
     func selectAddressViewControllerDapTapAddAddressButton(_ vc: SelectAddressViewController)
     
@@ -31,13 +32,16 @@ class SelectAddressViewController: ASViewController<SelectAddressNode> {
         return node.collectionNode
     }
     
-    fileprivate var addresses: [Address] {
-        return []
-//        return Array(userSettings.addresses.filter({$0.locality == userSettings.menu!.locality})).sorted(by: <)
+    fileprivate var addresses: ListMonitor<AddressEntity> {
+        return app.core.addressesByLocality
     }
     
-    var addressesCount: Int {
-        return self.addresses.count
+    fileprivate var addressesCount: Int {
+        return addresses.objectsInAllSections().count
+    }
+    
+    fileprivate var noAddresses: Bool {
+        return addressesCount == 0
     }
     
     convenience init() {
@@ -51,15 +55,8 @@ class SelectAddressViewController: ASViewController<SelectAddressNode> {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        collectionNode.reloadData()
-        
-        EventBus.onMainThread(self, name: DidRemoveAddressEvent.name) { [unowned self] _ in
-            self.collectionNode.reloadData()
-            
-            self.adjustCollectionNode(withAnimation: false)
-            
-            self.isEditMode = !self.addresses.isEmpty
-        }
+        FoodServiceRest.requestAddresses(authToken: app.authToken!,
+                                         localityId: app.selectedMenu?.locality.serverId?.int32Value)
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -77,11 +74,11 @@ class SelectAddressViewController: ASViewController<SelectAddressNode> {
     fileprivate func adjustNodes(withAnimation: Bool = true) {
         navbarNode.editButtonNode.isSelected = isEditMode
         
-        adjustCollectionNode(withAnimation: withAnimation)
+        adjustCollectionNode()
     }
     
-    fileprivate func adjustCollectionNode(withAnimation: Bool) {
-        for i in 0..<addresses.count {
+    fileprivate func adjustCollectionNode() {
+        for i in 0..<addressesCount {
             let indexPath = IndexPath(item: i, section: 0)
             
             if let addressCellNode = collectionNode.nodeForItem(at: indexPath) as? AddressCellNode {
@@ -89,9 +86,7 @@ class SelectAddressViewController: ASViewController<SelectAddressNode> {
                 addressCellNode.removeButtonNode.isHidden = !isEditMode
                 addressCellNode.editButtonNode.isHidden = !isEditMode
                 
-                if(withAnimation) {
-                    playAddressCellAnimationOnModeChange(addressCellNode)
-                }
+                playAddressCellAnimationOnModeChange(addressCellNode)
             }
         }
     }
@@ -105,6 +100,17 @@ class SelectAddressViewController: ASViewController<SelectAddressNode> {
             addressCellNode.mapMarkerTextNode.pop_add(createIconImpulseAnimation(), forKey: "ImpulseAnimation")
         }
     }
+    
+    fileprivate func setCollectionEnabled(_ enabled: Bool) {
+        UIView.animate(
+            withDuration: 0.2,
+            delay: 0,
+            options: .beginFromCurrentState,
+            animations: { () -> Void in
+                self.collectionNode.alpha = enabled ? 1.0 : 0.5
+                self.collectionNode.isUserInteractionEnabled = enabled
+        })
+    }
 }
 
 extension SelectAddressViewController: SelectAddressNavbarDelegate {
@@ -117,7 +123,67 @@ extension SelectAddressViewController: SelectAddressNavbarDelegate {
     }
 }
 
+extension SelectAddressViewController: ListSectionObserver {
+    
+    func listMonitorWillChange(_ monitor: ListMonitor<AddressEntity>) {
+        collectionNode.view.beginUpdates()
+    }
+    
+    func listMonitorDidChange(_ monitor: ListMonitor<AddressEntity>) {
+        collectionNode.view.endUpdates(animated: true)
+    }
+    
+    func listMonitorWillRefetch(_ monitor: ListMonitor<AddressEntity>) {
+        setCollectionEnabled(false)
+    }
+    
+    func listMonitorDidRefetch(_ monitor: ListMonitor<AddressEntity>) {
+        collectionNode.reloadData()
 
+        setCollectionEnabled(true)
+    }
+    
+    func listMonitor(_ monitor: ListMonitor<AddressEntity>, didInsertObject object: AddressEntity, toIndexPath indexPath: IndexPath) {
+        
+        collectionNode.insertItems(at: [indexPath])
+    }
+    
+    func listMonitor(_ monitor: ListMonitor<AddressEntity>, didDeleteObject object: AddressEntity, fromIndexPath indexPath: IndexPath) {
+        collectionNode.deleteItems(at: [indexPath])
+        
+        isEditMode = self.addressesCount > 0
+    }
+    
+    func listMonitor(_ monitor: ListMonitor<AddressEntity>, didUpdateObject object: AddressEntity, atIndexPath indexPath: IndexPath) {
+        
+        if let cell = collectionNode.nodeForItem(at: indexPath) as? AddressCellNode {
+            cell.address = addresses.objectsInSection(indexPath.section)[indexPath.row]
+        }
+    }
+    
+    func listMonitor(_ monitor: ListMonitor<AddressEntity>, didMoveObject object: AddressEntity, fromIndexPath: IndexPath, toIndexPath: IndexPath) {
+        
+        collectionNode.deleteItems(at: [fromIndexPath])
+        collectionNode.insertItems(at: [toIndexPath])
+    }
+    
+    // MARK: ListSectionObserver
+    
+    func listMonitor(_ monitor: ListMonitor<AddressEntity>, didInsertSection sectionInfo: NSFetchedResultsSectionInfo, toSectionIndex sectionIndex: Int) {
+        
+        collectionNode.insertSections(IndexSet(integer: sectionIndex))
+    }
+    
+    func listMonitor(_ monitor: ListMonitor<AddressEntity>, didDeleteSection sectionInfo: NSFetchedResultsSectionInfo, fromSectionIndex sectionIndex: Int) {
+        collectionNode.deleteSections(IndexSet(integer: sectionIndex))
+        
+        isEditMode = self.addressesCount > 0
+    }
+}
+
+// todo: support sections with cities headers
+// todo: address entity mappings
+// todo: edit address vcs
 extension SelectAddressViewController: ASCollectionDelegate, ASCollectionDataSource {
     func collectionNode(_ collectionNode: ASCollectionNode, numberOfItemsInSection section: Int) -> Int {
         return self.addressesCount + 1
@@ -144,7 +210,7 @@ extension SelectAddressViewController: ASCollectionDelegate, ASCollectionDataSou
         return AddressCellNode.calculateMapImageSize().height
     }
     
-    private func calculateAddressLabelHeight(_ address: Address, width: CGFloat) -> CGFloat {
+    private func calculateAddressLabelHeight(_ address: AddressEntity, width: CGFloat) -> CGFloat {
         return address.displayName.calculateHeight(attributes: AddressCellNode.LabelStringAttributes, width: width)
     }
     

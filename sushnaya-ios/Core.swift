@@ -71,11 +71,11 @@ class Core: ObjectObserver {
         }
         
         func createAddressesByLocalityMonitor(_ settings: UserSettingsEntity?) -> ListMonitor<AddressEntity> {
-            let localityId: Int32 = settings?.selectedMenu?.locality.serverId ?? -1
+            //let localityId: Int32 = settings?.selectedMenu?.locality.serverId ?? -1
             
             return CoreStore.monitorList(
                 From<AddressEntity>(),
-                Where("locality.serverId", isEqualTo: localityId),
+                //Where("locality.serverId", isEqualTo: localityId),
                 OrderBy(.ascending(#keyPath(AddressEntity.timestamp))) +
                     OrderBy(.ascending(#keyPath(AddressEntity.streetAndHouse))))
         }
@@ -212,6 +212,19 @@ class Core: ObjectObserver {
                 OrderBy(.ascending(#keyPath(ProductEntity.rank))) +
                     OrderBy(.ascending(#keyPath(ProductEntity.name))))
         }
+        
+        EventBus.onMainThread(self, name: RemoveAddressEvent.name) { notification in
+            let address = (notification.object as! RemoveAddressEvent).address
+            
+            do {
+                try CoreStore.perform(synchronous: { (transaction) in
+                    transaction.delete(address)
+                })
+            } catch let error {
+                // todo: log error
+                print(error.localizedDescription)
+            }
+        }
     }
 
     deinit {
@@ -247,10 +260,19 @@ extension Core {
         }
     }
     
+    func fetchMenu(by location: CLLocation) -> MenuEntity? {
+        return CoreStore.fetchOne(
+            From<MenuEntity>(),
+            Where("locality.lowerLatitude <= %f", location.coordinate.latitude) &&
+                Where("locality.upperLatitude >= %f", location.coordinate.latitude) &&
+                Where("locality.lowerLongitude <= %f", location.coordinate.longitude) &&
+                Where("locality.upperLongitude >= %f", location.coordinate.longitude))
+    }
+    
     fileprivate func deleteDeprecatedMenus(update: [JSON], in transaction: BaseDataTransaction) throws {
         guard let currentMenus = transaction.fetchAll(
             From<MenuEntity>(),
-            OrderBy(.ascending(#keyPath(MenuEntity.objectID)))) else { return }
+            OrderBy(.ascending(#keyPath(MenuEntity.serverId)))) else { return }
         
         for currentMenu in currentMenus {
             if update.filter({$0["id"].int32! == currentMenu.serverId}).first == nil {
@@ -268,7 +290,7 @@ extension Core {
         guard let currentCategories = transaction.fetchAll(
             From<MenuCategoryEntity>(),
             Where("menu.serverId", isEqualTo: menuId),
-            OrderBy(.ascending(#keyPath(MenuCategoryEntity.objectID)))) else { return }
+            OrderBy(.ascending(#keyPath(MenuCategoryEntity.serverId)))) else { return }
         
         for currentCategory in currentCategories {
             if update.filter({$0["id"].int32! == currentCategory.serverId}).first == nil {
@@ -281,7 +303,7 @@ extension Core {
         guard let currentProducts = transaction.fetchAll(
             From<ProductEntity>(),
             Where("category.serverId", isEqualTo: categoryId),
-            OrderBy(.ascending(#keyPath(ProductEntity.objectID)))) else { return }
+            OrderBy(.ascending(#keyPath(ProductEntity.serverId)))) else { return }
         
         for currentProduct in currentProducts {
             if update.filter({$0["id"].int32! == currentProduct.serverId}).first == nil {
@@ -291,7 +313,7 @@ extension Core {
     }
     
     fileprivate func deleteDeprecatedAddresses(update: [JSON], localityId: Int32?, in transaction: BaseDataTransaction) throws {
-        var fetchClause: [FetchClause] = [OrderBy(.ascending(#keyPath(AddressEntity.objectID)))]
+        var fetchClause: [FetchClause] = [OrderBy(.ascending(#keyPath(AddressEntity.streetAndHouse)))]
         
         if let localityId = localityId {
             fetchClause.append(Where("locality.serverId", isEqualTo: localityId))
@@ -309,14 +331,5 @@ extension Core {
                 transaction.delete(currentAddress)
             }
         }
-    }
-    
-    func fetchMenu(by location: CLLocation) -> MenuEntity? {
-        return CoreStore.fetchOne(
-            From<MenuEntity>(),
-            Where("locality.lowerLatitude <= %f", location.coordinate.latitude) &&
-            Where("locality.upperLatitude >= %f", location.coordinate.latitude) &&
-            Where("locality.lowerLongitude <= %f", location.coordinate.longitude) &&
-            Where("locality.upperLongitude >= %f", location.coordinate.longitude))
     }
 }
