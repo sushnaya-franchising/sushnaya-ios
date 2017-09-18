@@ -20,40 +20,12 @@ class CartToolbarNode: ASDisplayNode {
     let recommendationsTitleNode = ASTextNode()
     private(set) var recommendationsCollection: ASCollectionNode!
 
-    lazy var contexts: [DefaultCellContext]? = {
-//        func applyStyleForRecommendationCell(_ ctx: DefaultCellContext) -> DefaultCellContext {
-//            ctx.style.imageSize = Constants.CartLayout.RecommendationImageSize
-//            ctx.style.imageCornerRadius = Constants.CartLayout.RecommendationCornerRadius
-//            ctx.style.titleStringAttributes = Constants.CartLayout.RecommendationTitleStringAttributes
-//
-//            return ctx
-//        }
-//
-//        let categories = [
-//            MenuCategory(title: "Салаты", subtitle: nil, photoUrl: "category_s_3", photoSize: UIImage(named: "category_s_3")?.size),
-//            MenuCategory(title: "Напитки", subtitle: nil, photoUrl: "category_s_5", photoSize: UIImage(named: "category_s_5")?.size)
-//        ]
-//
-//        let giftIconImage = UIImage.fontAwesomeIcon(name: .gift, textColor: PaperColor.Gray800,
-//                size: CGSize(width: 32, height: 32))
-//        let giftCellContext = DefaultCellContext(title: "Подарок")
-//        giftCellContext.image = giftIconImage
-//
-//        var contexts = [giftCellContext]
-//        categories.forEach {
-//            contexts.append(CategoryCellContext($0))
-//        }
-//
-//        return contexts.map {
-//            applyStyleForRecommendationCell($0)
-//        }
-        return []
-    }()
+    lazy var contexts = [DefaultCellContext]()
 
     lazy var biggestCellHeight: CGFloat = { [unowned self] in
         var biggestHeight: CGFloat = 0
 
-        self.contexts?.forEach {
+        self.contexts.forEach {
             let titleHeight = $0.title.calculateHeight(attributes: Constants.DefaultCellLayout.TitleStringAttributes,
                     width: Constants.CartLayout.RecommendationImageSize.width)
 
@@ -227,12 +199,8 @@ class CartToolbarNode: ASDisplayNode {
 
 extension CartToolbarNode: ASCollectionDataSource, ASCollectionDelegate {
     func collectionNode(_ collectionNode: ASCollectionNode, nodeBlockForItemAt indexPath: IndexPath) -> ASCellNodeBlock {
-        guard let context = contexts?[indexPath.item] else {
-            return {
-                ASCellNode()
-            }
-        }
-
+        let context = contexts[indexPath.item]
+        
         return {
             let cell = DefaultCellNode(context: context)
             cell.backgroundColor = PaperColor.White.withAlphaComponent(0)
@@ -242,7 +210,7 @@ extension CartToolbarNode: ASCollectionDataSource, ASCollectionDelegate {
     }
 
     func collectionNode(_ collectionNode: ASCollectionNode, numberOfItemsInSection section: Int) -> Int {
-        return contexts?.count ?? 0
+        return contexts.count
     }
 
     func collectionNode(_ collectionNode: ASCollectionNode, constrainedSizeForItemAt indexPath: IndexPath) -> ASSizeRange {

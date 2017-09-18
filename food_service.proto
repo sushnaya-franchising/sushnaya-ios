@@ -15,6 +15,7 @@ message DidUpdateTermsOfServicesDto {
 
 message GetRecommendationsDto {
     int32 userId = 1;
+    int32 menuId = 2;
 }
 
 message GetCategoryProductsDto {
@@ -23,16 +24,13 @@ message GetCategoryProductsDto {
 
 message CreateAddressDto {
     AddressDto address = 1;
-    int32 trackId = 2;
 }
 
 message DidCreateAddressDto {
-    int32 trackId = 1;
 }
 
 message DidNotCreateAddressDto {
-    int32 trackId = 1;
-    string error = 2;
+    string error = 1;
 }
 
 message GetUserAddressesDto {
@@ -44,31 +42,25 @@ message UserAddressesDto {
 }
 
 message UpdateAddressDto {
-    int32 trackId = 1;
-    AddressDto address = 2;
+    AddressDto address = 1;
 }
 
 message DidUpdateAddressDto {
-    int32 trackId = 1;
 }
 
 message DidNotUpdateAddressDto {
-    int32 trackId = 1;
-    string error = 2;
+    string error = 1;
 }
 
 message DeleteAddressDto {
     int32 addressId = 1;
-    int32 trackId = 2;
 }
 
 message DidDeleteAddressDto {
-    int32 trackId = 1;
 }
 
 message DidNotDeleteAddressDto {
-    int32 trackId = 1;
-    string error = 2;
+    string error = 1;
 }
 
 message MenuDto {
@@ -100,7 +92,7 @@ message CategoriesDto {
 message CategoryDto {
     int32 id = 1;
     string name = 2;
-    PhotoDto photo = 3;
+    ImageDto image = 3;
     float rank = 4;
 }
 
@@ -116,7 +108,7 @@ message ProductDto {
     string name = 1;
     string subheading = 2;
     repeated PriceDto pricing = 3;
-    PhotoDto photo = 4;
+    ImageDto image = 4;
     int32 id = 5;
     int32 categoryId = 6;
     repeated ProductOptionDto options = 7;
@@ -137,7 +129,7 @@ message PriceDto {
     string currencyLocale = 4;
 }
 
-message PhotoDto {
+message ImageDto {
     int32 height = 1;
     int32 width = 2;
     string url = 3;

@@ -108,6 +108,8 @@ struct GetRecommendationsDto: SwiftProtobuf.Message {
 
   var userID: Int32 = 0
 
+  var menuID: Int32 = 0
+
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
   init() {}
@@ -120,6 +122,7 @@ struct GetRecommendationsDto: SwiftProtobuf.Message {
     while let fieldNumber = try decoder.nextFieldNumber() {
       switch fieldNumber {
       case 1: try decoder.decodeSingularInt32Field(value: &self.userID)
+      case 2: try decoder.decodeSingularInt32Field(value: &self.menuID)
       default: break
       }
     }
@@ -132,6 +135,9 @@ struct GetRecommendationsDto: SwiftProtobuf.Message {
   func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
     if self.userID != 0 {
       try visitor.visitSingularInt32Field(value: self.userID, fieldNumber: 1)
+    }
+    if self.menuID != 0 {
+      try visitor.visitSingularInt32Field(value: self.menuID, fieldNumber: 2)
     }
     try unknownFields.traverse(visitor: &visitor)
   }
@@ -183,11 +189,6 @@ struct CreateAddressDto: SwiftProtobuf.Message {
   /// Clears the value of `address`. Subsequent reads from it will return its default value.
   mutating func clearAddress() {_storage._address = nil}
 
-  var trackID: Int32 {
-    get {return _storage._trackID}
-    set {_uniqueStorage()._trackID = newValue}
-  }
-
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
   init() {}
@@ -202,7 +203,6 @@ struct CreateAddressDto: SwiftProtobuf.Message {
       while let fieldNumber = try decoder.nextFieldNumber() {
         switch fieldNumber {
         case 1: try decoder.decodeSingularMessageField(value: &_storage._address)
-        case 2: try decoder.decodeSingularInt32Field(value: &_storage._trackID)
         default: break
         }
       }
@@ -218,9 +218,6 @@ struct CreateAddressDto: SwiftProtobuf.Message {
       if let v = _storage._address {
         try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
       }
-      if _storage._trackID != 0 {
-        try visitor.visitSingularInt32Field(value: _storage._trackID, fieldNumber: 2)
-      }
     }
     try unknownFields.traverse(visitor: &visitor)
   }
@@ -231,8 +228,6 @@ struct CreateAddressDto: SwiftProtobuf.Message {
 struct DidCreateAddressDto: SwiftProtobuf.Message {
   static let protoMessageName: String = "DidCreateAddressDto"
 
-  var trackID: Int32 = 0
-
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
   init() {}
@@ -242,11 +237,7 @@ struct DidCreateAddressDto: SwiftProtobuf.Message {
   /// initializers are defined in the SwiftProtobuf library. See the Message and
   /// Message+*Additions` files.
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
-    while let fieldNumber = try decoder.nextFieldNumber() {
-      switch fieldNumber {
-      case 1: try decoder.decodeSingularInt32Field(value: &self.trackID)
-      default: break
-      }
+    while let _ = try decoder.nextFieldNumber() {
     }
   }
 
@@ -255,17 +246,12 @@ struct DidCreateAddressDto: SwiftProtobuf.Message {
   /// other serializer methods are defined in the SwiftProtobuf library. See the
   /// `Message` and `Message+*Additions` files.
   func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    if self.trackID != 0 {
-      try visitor.visitSingularInt32Field(value: self.trackID, fieldNumber: 1)
-    }
     try unknownFields.traverse(visitor: &visitor)
   }
 }
 
 struct DidNotCreateAddressDto: SwiftProtobuf.Message {
   static let protoMessageName: String = "DidNotCreateAddressDto"
-
-  var trackID: Int32 = 0
 
   var error: String = String()
 
@@ -280,8 +266,7 @@ struct DidNotCreateAddressDto: SwiftProtobuf.Message {
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
       switch fieldNumber {
-      case 1: try decoder.decodeSingularInt32Field(value: &self.trackID)
-      case 2: try decoder.decodeSingularStringField(value: &self.error)
+      case 1: try decoder.decodeSingularStringField(value: &self.error)
       default: break
       }
     }
@@ -292,11 +277,8 @@ struct DidNotCreateAddressDto: SwiftProtobuf.Message {
   /// other serializer methods are defined in the SwiftProtobuf library. See the
   /// `Message` and `Message+*Additions` files.
   func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    if self.trackID != 0 {
-      try visitor.visitSingularInt32Field(value: self.trackID, fieldNumber: 1)
-    }
     if !self.error.isEmpty {
-      try visitor.visitSingularStringField(value: self.error, fieldNumber: 2)
+      try visitor.visitSingularStringField(value: self.error, fieldNumber: 1)
     }
     try unknownFields.traverse(visitor: &visitor)
   }
@@ -373,11 +355,6 @@ struct UserAddressesDto: SwiftProtobuf.Message {
 struct UpdateAddressDto: SwiftProtobuf.Message {
   static let protoMessageName: String = "UpdateAddressDto"
 
-  var trackID: Int32 {
-    get {return _storage._trackID}
-    set {_uniqueStorage()._trackID = newValue}
-  }
-
   var address: AddressDto {
     get {return _storage._address ?? AddressDto()}
     set {_uniqueStorage()._address = newValue}
@@ -400,8 +377,7 @@ struct UpdateAddressDto: SwiftProtobuf.Message {
     try withExtendedLifetime(_storage) { (_storage: _StorageClass) in
       while let fieldNumber = try decoder.nextFieldNumber() {
         switch fieldNumber {
-        case 1: try decoder.decodeSingularInt32Field(value: &_storage._trackID)
-        case 2: try decoder.decodeSingularMessageField(value: &_storage._address)
+        case 1: try decoder.decodeSingularMessageField(value: &_storage._address)
         default: break
         }
       }
@@ -414,11 +390,8 @@ struct UpdateAddressDto: SwiftProtobuf.Message {
   /// `Message` and `Message+*Additions` files.
   func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
     try withExtendedLifetime(_storage) { (_storage: _StorageClass) in
-      if _storage._trackID != 0 {
-        try visitor.visitSingularInt32Field(value: _storage._trackID, fieldNumber: 1)
-      }
       if let v = _storage._address {
-        try visitor.visitSingularMessageField(value: v, fieldNumber: 2)
+        try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
       }
     }
     try unknownFields.traverse(visitor: &visitor)
@@ -430,8 +403,6 @@ struct UpdateAddressDto: SwiftProtobuf.Message {
 struct DidUpdateAddressDto: SwiftProtobuf.Message {
   static let protoMessageName: String = "DidUpdateAddressDto"
 
-  var trackID: Int32 = 0
-
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
   init() {}
@@ -441,11 +412,7 @@ struct DidUpdateAddressDto: SwiftProtobuf.Message {
   /// initializers are defined in the SwiftProtobuf library. See the Message and
   /// Message+*Additions` files.
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
-    while let fieldNumber = try decoder.nextFieldNumber() {
-      switch fieldNumber {
-      case 1: try decoder.decodeSingularInt32Field(value: &self.trackID)
-      default: break
-      }
+    while let _ = try decoder.nextFieldNumber() {
     }
   }
 
@@ -454,17 +421,12 @@ struct DidUpdateAddressDto: SwiftProtobuf.Message {
   /// other serializer methods are defined in the SwiftProtobuf library. See the
   /// `Message` and `Message+*Additions` files.
   func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    if self.trackID != 0 {
-      try visitor.visitSingularInt32Field(value: self.trackID, fieldNumber: 1)
-    }
     try unknownFields.traverse(visitor: &visitor)
   }
 }
 
 struct DidNotUpdateAddressDto: SwiftProtobuf.Message {
   static let protoMessageName: String = "DidNotUpdateAddressDto"
-
-  var trackID: Int32 = 0
 
   var error: String = String()
 
@@ -479,8 +441,7 @@ struct DidNotUpdateAddressDto: SwiftProtobuf.Message {
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
       switch fieldNumber {
-      case 1: try decoder.decodeSingularInt32Field(value: &self.trackID)
-      case 2: try decoder.decodeSingularStringField(value: &self.error)
+      case 1: try decoder.decodeSingularStringField(value: &self.error)
       default: break
       }
     }
@@ -491,11 +452,8 @@ struct DidNotUpdateAddressDto: SwiftProtobuf.Message {
   /// other serializer methods are defined in the SwiftProtobuf library. See the
   /// `Message` and `Message+*Additions` files.
   func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    if self.trackID != 0 {
-      try visitor.visitSingularInt32Field(value: self.trackID, fieldNumber: 1)
-    }
     if !self.error.isEmpty {
-      try visitor.visitSingularStringField(value: self.error, fieldNumber: 2)
+      try visitor.visitSingularStringField(value: self.error, fieldNumber: 1)
     }
     try unknownFields.traverse(visitor: &visitor)
   }
@@ -505,8 +463,6 @@ struct DeleteAddressDto: SwiftProtobuf.Message {
   static let protoMessageName: String = "DeleteAddressDto"
 
   var addressID: Int32 = 0
-
-  var trackID: Int32 = 0
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
@@ -520,7 +476,6 @@ struct DeleteAddressDto: SwiftProtobuf.Message {
     while let fieldNumber = try decoder.nextFieldNumber() {
       switch fieldNumber {
       case 1: try decoder.decodeSingularInt32Field(value: &self.addressID)
-      case 2: try decoder.decodeSingularInt32Field(value: &self.trackID)
       default: break
       }
     }
@@ -534,17 +489,12 @@ struct DeleteAddressDto: SwiftProtobuf.Message {
     if self.addressID != 0 {
       try visitor.visitSingularInt32Field(value: self.addressID, fieldNumber: 1)
     }
-    if self.trackID != 0 {
-      try visitor.visitSingularInt32Field(value: self.trackID, fieldNumber: 2)
-    }
     try unknownFields.traverse(visitor: &visitor)
   }
 }
 
 struct DidDeleteAddressDto: SwiftProtobuf.Message {
   static let protoMessageName: String = "DidDeleteAddressDto"
-
-  var trackID: Int32 = 0
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
@@ -555,11 +505,7 @@ struct DidDeleteAddressDto: SwiftProtobuf.Message {
   /// initializers are defined in the SwiftProtobuf library. See the Message and
   /// Message+*Additions` files.
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
-    while let fieldNumber = try decoder.nextFieldNumber() {
-      switch fieldNumber {
-      case 1: try decoder.decodeSingularInt32Field(value: &self.trackID)
-      default: break
-      }
+    while let _ = try decoder.nextFieldNumber() {
     }
   }
 
@@ -568,17 +514,12 @@ struct DidDeleteAddressDto: SwiftProtobuf.Message {
   /// other serializer methods are defined in the SwiftProtobuf library. See the
   /// `Message` and `Message+*Additions` files.
   func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    if self.trackID != 0 {
-      try visitor.visitSingularInt32Field(value: self.trackID, fieldNumber: 1)
-    }
     try unknownFields.traverse(visitor: &visitor)
   }
 }
 
 struct DidNotDeleteAddressDto: SwiftProtobuf.Message {
   static let protoMessageName: String = "DidNotDeleteAddressDto"
-
-  var trackID: Int32 = 0
 
   var error: String = String()
 
@@ -593,8 +534,7 @@ struct DidNotDeleteAddressDto: SwiftProtobuf.Message {
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
       switch fieldNumber {
-      case 1: try decoder.decodeSingularInt32Field(value: &self.trackID)
-      case 2: try decoder.decodeSingularStringField(value: &self.error)
+      case 1: try decoder.decodeSingularStringField(value: &self.error)
       default: break
       }
     }
@@ -605,11 +545,8 @@ struct DidNotDeleteAddressDto: SwiftProtobuf.Message {
   /// other serializer methods are defined in the SwiftProtobuf library. See the
   /// `Message` and `Message+*Additions` files.
   func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    if self.trackID != 0 {
-      try visitor.visitSingularInt32Field(value: self.trackID, fieldNumber: 1)
-    }
     if !self.error.isEmpty {
-      try visitor.visitSingularStringField(value: self.error, fieldNumber: 2)
+      try visitor.visitSingularStringField(value: self.error, fieldNumber: 1)
     }
     try unknownFields.traverse(visitor: &visitor)
   }
@@ -844,14 +781,14 @@ struct CategoryDto: SwiftProtobuf.Message {
     set {_uniqueStorage()._name = newValue}
   }
 
-  var photo: PhotoDto {
-    get {return _storage._photo ?? PhotoDto()}
-    set {_uniqueStorage()._photo = newValue}
+  var image: ImageDto {
+    get {return _storage._image ?? ImageDto()}
+    set {_uniqueStorage()._image = newValue}
   }
-  /// Returns true if `photo` has been explicitly set.
-  var hasPhoto: Bool {return _storage._photo != nil}
-  /// Clears the value of `photo`. Subsequent reads from it will return its default value.
-  mutating func clearPhoto() {_storage._photo = nil}
+  /// Returns true if `image` has been explicitly set.
+  var hasImage: Bool {return _storage._image != nil}
+  /// Clears the value of `image`. Subsequent reads from it will return its default value.
+  mutating func clearImage() {_storage._image = nil}
 
   var rank: Float {
     get {return _storage._rank}
@@ -873,7 +810,7 @@ struct CategoryDto: SwiftProtobuf.Message {
         switch fieldNumber {
         case 1: try decoder.decodeSingularInt32Field(value: &_storage._id)
         case 2: try decoder.decodeSingularStringField(value: &_storage._name)
-        case 3: try decoder.decodeSingularMessageField(value: &_storage._photo)
+        case 3: try decoder.decodeSingularMessageField(value: &_storage._image)
         case 4: try decoder.decodeSingularFloatField(value: &_storage._rank)
         default: break
         }
@@ -893,7 +830,7 @@ struct CategoryDto: SwiftProtobuf.Message {
       if !_storage._name.isEmpty {
         try visitor.visitSingularStringField(value: _storage._name, fieldNumber: 2)
       }
-      if let v = _storage._photo {
+      if let v = _storage._image {
         try visitor.visitSingularMessageField(value: v, fieldNumber: 3)
       }
       if _storage._rank != 0 {
@@ -992,14 +929,14 @@ struct ProductDto: SwiftProtobuf.Message {
     set {_uniqueStorage()._pricing = newValue}
   }
 
-  var photo: PhotoDto {
-    get {return _storage._photo ?? PhotoDto()}
-    set {_uniqueStorage()._photo = newValue}
+  var image: ImageDto {
+    get {return _storage._image ?? ImageDto()}
+    set {_uniqueStorage()._image = newValue}
   }
-  /// Returns true if `photo` has been explicitly set.
-  var hasPhoto: Bool {return _storage._photo != nil}
-  /// Clears the value of `photo`. Subsequent reads from it will return its default value.
-  mutating func clearPhoto() {_storage._photo = nil}
+  /// Returns true if `image` has been explicitly set.
+  var hasImage: Bool {return _storage._image != nil}
+  /// Clears the value of `image`. Subsequent reads from it will return its default value.
+  mutating func clearImage() {_storage._image = nil}
 
   var id: Int32 {
     get {return _storage._id}
@@ -1037,7 +974,7 @@ struct ProductDto: SwiftProtobuf.Message {
         case 1: try decoder.decodeSingularStringField(value: &_storage._name)
         case 2: try decoder.decodeSingularStringField(value: &_storage._subheading)
         case 3: try decoder.decodeRepeatedMessageField(value: &_storage._pricing)
-        case 4: try decoder.decodeSingularMessageField(value: &_storage._photo)
+        case 4: try decoder.decodeSingularMessageField(value: &_storage._image)
         case 5: try decoder.decodeSingularInt32Field(value: &_storage._id)
         case 6: try decoder.decodeSingularInt32Field(value: &_storage._categoryID)
         case 7: try decoder.decodeRepeatedMessageField(value: &_storage._options)
@@ -1063,7 +1000,7 @@ struct ProductDto: SwiftProtobuf.Message {
       if !_storage._pricing.isEmpty {
         try visitor.visitRepeatedMessageField(value: _storage._pricing, fieldNumber: 3)
       }
-      if let v = _storage._photo {
+      if let v = _storage._image {
         try visitor.visitSingularMessageField(value: v, fieldNumber: 4)
       }
       if _storage._id != 0 {
@@ -1189,8 +1126,8 @@ struct PriceDto: SwiftProtobuf.Message {
   }
 }
 
-struct PhotoDto: SwiftProtobuf.Message {
-  static let protoMessageName: String = "PhotoDto"
+struct ImageDto: SwiftProtobuf.Message {
+  static let protoMessageName: String = "ImageDto"
 
   var height: Int32 = 0
 
@@ -1938,10 +1875,12 @@ extension DidUpdateTermsOfServicesDto: SwiftProtobuf._MessageImplementationBase,
 extension GetRecommendationsDto: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     1: .same(proto: "userId"),
+    2: .same(proto: "menuId"),
   ]
 
   func _protobuf_generated_isEqualTo(other: GetRecommendationsDto) -> Bool {
     if self.userID != other.userID {return false}
+    if self.menuID != other.menuID {return false}
     if unknownFields != other.unknownFields {return false}
     return true
   }
@@ -1962,12 +1901,10 @@ extension GetCategoryProductsDto: SwiftProtobuf._MessageImplementationBase, Swif
 extension CreateAddressDto: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     1: .same(proto: "address"),
-    2: .same(proto: "trackId"),
   ]
 
   fileprivate class _StorageClass {
     var _address: AddressDto? = nil
-    var _trackID: Int32 = 0
 
     static let defaultInstance = _StorageClass()
 
@@ -1975,7 +1912,6 @@ extension CreateAddressDto: SwiftProtobuf._MessageImplementationBase, SwiftProto
 
     init(copying source: _StorageClass) {
       _address = source._address
-      _trackID = source._trackID
     }
   }
 
@@ -1992,7 +1928,6 @@ extension CreateAddressDto: SwiftProtobuf._MessageImplementationBase, SwiftProto
         let _storage = _args.0
         let other_storage = _args.1
         if _storage._address != other_storage._address {return false}
-        if _storage._trackID != other_storage._trackID {return false}
         return true
       }
       if !storagesAreEqual {return false}
@@ -2003,12 +1938,9 @@ extension CreateAddressDto: SwiftProtobuf._MessageImplementationBase, SwiftProto
 }
 
 extension DidCreateAddressDto: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "trackId"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap()
 
   func _protobuf_generated_isEqualTo(other: DidCreateAddressDto) -> Bool {
-    if self.trackID != other.trackID {return false}
     if unknownFields != other.unknownFields {return false}
     return true
   }
@@ -2016,12 +1948,10 @@ extension DidCreateAddressDto: SwiftProtobuf._MessageImplementationBase, SwiftPr
 
 extension DidNotCreateAddressDto: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "trackId"),
-    2: .same(proto: "error"),
+    1: .same(proto: "error"),
   ]
 
   func _protobuf_generated_isEqualTo(other: DidNotCreateAddressDto) -> Bool {
-    if self.trackID != other.trackID {return false}
     if self.error != other.error {return false}
     if unknownFields != other.unknownFields {return false}
     return true
@@ -2054,12 +1984,10 @@ extension UserAddressesDto: SwiftProtobuf._MessageImplementationBase, SwiftProto
 
 extension UpdateAddressDto: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "trackId"),
-    2: .same(proto: "address"),
+    1: .same(proto: "address"),
   ]
 
   fileprivate class _StorageClass {
-    var _trackID: Int32 = 0
     var _address: AddressDto? = nil
 
     static let defaultInstance = _StorageClass()
@@ -2067,7 +1995,6 @@ extension UpdateAddressDto: SwiftProtobuf._MessageImplementationBase, SwiftProto
     private init() {}
 
     init(copying source: _StorageClass) {
-      _trackID = source._trackID
       _address = source._address
     }
   }
@@ -2084,7 +2011,6 @@ extension UpdateAddressDto: SwiftProtobuf._MessageImplementationBase, SwiftProto
       let storagesAreEqual: Bool = withExtendedLifetime((_storage, other._storage)) { (_args: (_StorageClass, _StorageClass)) in
         let _storage = _args.0
         let other_storage = _args.1
-        if _storage._trackID != other_storage._trackID {return false}
         if _storage._address != other_storage._address {return false}
         return true
       }
@@ -2096,12 +2022,9 @@ extension UpdateAddressDto: SwiftProtobuf._MessageImplementationBase, SwiftProto
 }
 
 extension DidUpdateAddressDto: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "trackId"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap()
 
   func _protobuf_generated_isEqualTo(other: DidUpdateAddressDto) -> Bool {
-    if self.trackID != other.trackID {return false}
     if unknownFields != other.unknownFields {return false}
     return true
   }
@@ -2109,12 +2032,10 @@ extension DidUpdateAddressDto: SwiftProtobuf._MessageImplementationBase, SwiftPr
 
 extension DidNotUpdateAddressDto: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "trackId"),
-    2: .same(proto: "error"),
+    1: .same(proto: "error"),
   ]
 
   func _protobuf_generated_isEqualTo(other: DidNotUpdateAddressDto) -> Bool {
-    if self.trackID != other.trackID {return false}
     if self.error != other.error {return false}
     if unknownFields != other.unknownFields {return false}
     return true
@@ -2124,24 +2045,19 @@ extension DidNotUpdateAddressDto: SwiftProtobuf._MessageImplementationBase, Swif
 extension DeleteAddressDto: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     1: .same(proto: "addressId"),
-    2: .same(proto: "trackId"),
   ]
 
   func _protobuf_generated_isEqualTo(other: DeleteAddressDto) -> Bool {
     if self.addressID != other.addressID {return false}
-    if self.trackID != other.trackID {return false}
     if unknownFields != other.unknownFields {return false}
     return true
   }
 }
 
 extension DidDeleteAddressDto: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "trackId"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap()
 
   func _protobuf_generated_isEqualTo(other: DidDeleteAddressDto) -> Bool {
-    if self.trackID != other.trackID {return false}
     if unknownFields != other.unknownFields {return false}
     return true
   }
@@ -2149,12 +2065,10 @@ extension DidDeleteAddressDto: SwiftProtobuf._MessageImplementationBase, SwiftPr
 
 extension DidNotDeleteAddressDto: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "trackId"),
-    2: .same(proto: "error"),
+    1: .same(proto: "error"),
   ]
 
   func _protobuf_generated_isEqualTo(other: DidNotDeleteAddressDto) -> Bool {
-    if self.trackID != other.trackID {return false}
     if self.error != other.error {return false}
     if unknownFields != other.unknownFields {return false}
     return true
@@ -2264,14 +2178,14 @@ extension CategoryDto: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._
   static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     1: .same(proto: "id"),
     2: .same(proto: "name"),
-    3: .same(proto: "photo"),
+    3: .same(proto: "image"),
     4: .same(proto: "rank"),
   ]
 
   fileprivate class _StorageClass {
     var _id: Int32 = 0
     var _name: String = String()
-    var _photo: PhotoDto? = nil
+    var _image: ImageDto? = nil
     var _rank: Float = 0
 
     static let defaultInstance = _StorageClass()
@@ -2281,7 +2195,7 @@ extension CategoryDto: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._
     init(copying source: _StorageClass) {
       _id = source._id
       _name = source._name
-      _photo = source._photo
+      _image = source._image
       _rank = source._rank
     }
   }
@@ -2300,7 +2214,7 @@ extension CategoryDto: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._
         let other_storage = _args.1
         if _storage._id != other_storage._id {return false}
         if _storage._name != other_storage._name {return false}
-        if _storage._photo != other_storage._photo {return false}
+        if _storage._image != other_storage._image {return false}
         if _storage._rank != other_storage._rank {return false}
         return true
       }
@@ -2340,7 +2254,7 @@ extension ProductDto: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._P
     1: .same(proto: "name"),
     2: .same(proto: "subheading"),
     3: .same(proto: "pricing"),
-    4: .same(proto: "photo"),
+    4: .same(proto: "image"),
     5: .same(proto: "id"),
     6: .same(proto: "categoryId"),
     7: .same(proto: "options"),
@@ -2351,7 +2265,7 @@ extension ProductDto: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._P
     var _name: String = String()
     var _subheading: String = String()
     var _pricing: [PriceDto] = []
-    var _photo: PhotoDto? = nil
+    var _image: ImageDto? = nil
     var _id: Int32 = 0
     var _categoryID: Int32 = 0
     var _options: [ProductOptionDto] = []
@@ -2365,7 +2279,7 @@ extension ProductDto: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._P
       _name = source._name
       _subheading = source._subheading
       _pricing = source._pricing
-      _photo = source._photo
+      _image = source._image
       _id = source._id
       _categoryID = source._categoryID
       _options = source._options
@@ -2388,7 +2302,7 @@ extension ProductDto: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._P
         if _storage._name != other_storage._name {return false}
         if _storage._subheading != other_storage._subheading {return false}
         if _storage._pricing != other_storage._pricing {return false}
-        if _storage._photo != other_storage._photo {return false}
+        if _storage._image != other_storage._image {return false}
         if _storage._id != other_storage._id {return false}
         if _storage._categoryID != other_storage._categoryID {return false}
         if _storage._options != other_storage._options {return false}
@@ -2438,7 +2352,7 @@ extension PriceDto: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._Pro
   }
 }
 
-extension PhotoDto: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+extension ImageDto: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     1: .same(proto: "height"),
     2: .same(proto: "width"),
@@ -2446,7 +2360,7 @@ extension PhotoDto: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._Pro
     4: .same(proto: "id"),
   ]
 
-  func _protobuf_generated_isEqualTo(other: PhotoDto) -> Bool {
+  func _protobuf_generated_isEqualTo(other: ImageDto) -> Bool {
     if self.height != other.height {return false}
     if self.width != other.width {return false}
     if self.url != other.url {return false}

@@ -121,7 +121,7 @@ class ProductsViewController: ASViewController<ASDisplayNode> {
 
         navigationController?.setNavigationBarHidden(true, animated: false)
 
-        FoodServiceRest.requestMenus(authToken: app.authToken!) // sync menus        
+        FoodServiceRest.requestMenus(authToken: app.authToken!)        
     }
 
     override func viewDidAppear(_ animated: Bool) {

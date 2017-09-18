@@ -9,7 +9,7 @@ class SlidePresentationController: UIPresentationController {
         }
     }
     
-    init(presentedViewController: UIViewController, presenting presentingViewController: UIViewController?, dimmingViewAlpha: CGFloat = 0.4) {
+    init(presentedViewController: UIViewController, presenting presentingViewController: UIViewController?, dimmingViewAlpha: CGFloat = 0.3) {
         self.dimmingViewAlpha = dimmingViewAlpha
         super.init(presentedViewController: presentedViewController, presenting: presentingViewController)
         setupDimmingView()

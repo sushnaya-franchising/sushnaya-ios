@@ -21,10 +21,6 @@ class CheckoutViewController: ASViewController<CheckoutContentNode> {
         return addresses.objectsInAllSections().count
     }
     
-    fileprivate var noAddresses: Bool {
-        return addressesCount == 0
-    }
-
     convenience init() {
         let editAddressVC = EditAddressViewController()
         let selectAddressVC = SelectAddressViewController()
@@ -66,7 +62,8 @@ class CheckoutViewController: ASViewController<CheckoutContentNode> {
         }
 
         EventBus.onMainThread(self, name: DidRemoveAddressEvent.name) { [unowned self] (notification) in
-            if self.noAddresses {
+            if self.addressesCount == 0 {
+                self.editAddressVC.addressToEdit = nil
                 self.node.state = .editAddress
                 self.node.transitionLayout(withAnimation: true, shouldMeasureAsync: false)
             }
@@ -107,7 +104,7 @@ class CheckoutViewController: ASViewController<CheckoutContentNode> {
 
 extension CheckoutViewController: EditAddressViewControllerDelegate {
     func editAddressViewControllerDidTapBackButton(_ vc: EditAddressViewController) {
-        if noAddresses {
+        if addressesCount == 0 {
             self.dismiss(animated: true)
 
         } else {

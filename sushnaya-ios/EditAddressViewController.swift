@@ -12,17 +12,19 @@ class EditAddressViewController: ASViewController<EditAddressContentNode> {
     
     var addressToEdit: AddressEntity? {
         didSet {
-            if let addressToEdit = addressToEdit {
-                mapNode.setCenter(coordinate: addressToEdit.coordinate, animated: false)
-                pagerNode.scrollToPage(at: 1, animated: false)
-                node.navbarNode.selectedSegment = 1
-                formNode.address = addressToEdit
-            
-            } else {
-                mapNode.setCenter(coordinate: selectedMenuLocality.coordinate, animated: false)
-                pagerNode.scrollToPage(at: 0, animated: false)
-                node.navbarNode.selectedSegment = 0
-                formNode.address = nil
+            DispatchQueue.main.async { [unowned self] _ in
+                if let addressToEdit = self.addressToEdit {
+                    self.mapNode.setCenter(coordinate: addressToEdit.coordinate, animated: false)
+                    self.pagerNode.scrollToPage(at: 1, animated: false)
+                    self.node.navbarNode.selectedSegment = 1
+                    self.formNode.address = addressToEdit
+                    
+                } else {
+                    self.mapNode.setCenter(coordinate: self.selectedMenuLocality.coordinate, animated: false)
+                    self.pagerNode.scrollToPage(at: 0, animated: false)
+                    self.node.navbarNode.selectedSegment = 0
+                    self.formNode.address = nil
+                }
             }
         }
     }
@@ -41,7 +43,7 @@ class EditAddressViewController: ASViewController<EditAddressContentNode> {
     
     fileprivate var addressOnMap: YandexAddress?
     
-    weak var delegate: EditAddressViewControllerDelegate?
+    weak var delegate: EditAddressViewControllerDelegate?    
     
     var pagerNode: ASPagerNode {
         return node.pagerNode
@@ -65,9 +67,7 @@ class EditAddressViewController: ASViewController<EditAddressContentNode> {
         self.addressSuggestionsWidget = AddressSuggestionsWidget()
         self.addressSuggestionsWidget.delegate = self
         
-        self.mapNode = EditAddressMapNode(locality: self.selectedMenuLocality)
-        self.mapNode.delegate = self
-        self.mapNode.addressCallout.delegate = self
+        setupMapNode()
         
         self.pagerNode.setDataSource(self)
         self.pagerNode.setDelegate(self)
@@ -83,7 +83,7 @@ class EditAddressViewController: ASViewController<EditAddressContentNode> {
         self.dadataSuggestionsProvider = DadataSuggestionsProvider(cityFiasId: selectedMenuLocality.fiasId)
         self.addressSuggestionsWidget.provider = dadataSuggestionsProvider
         
-        self.geocoding = debounce (delay: 0.1) { [unowned self] in
+        self.geocoding = debounce (delay: 0.1) { [unowned self] in            
             YandexGeocoder.requestAddress(coordinate: self.mapNode.centerCoordinate).then { address -> () in
                 guard let address = address else {
                     self.mapNode.addressCallout.state = .addressIsUndefined
@@ -106,10 +106,12 @@ class EditAddressViewController: ASViewController<EditAddressContentNode> {
         // todo: reveal form if no internet connection available
     }
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
-        geocoding?.apply()                
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -117,22 +119,24 @@ class EditAddressViewController: ASViewController<EditAddressContentNode> {
         
         self.view.addGestureRecognizer(tapRecognizer!)
         
-        adjustMapLocationButtonVisibility()// todo: also update when application will resign active
-        
         subscribeToKeyboardNotifications()                
     }
     
-    private func adjustMapLocationButtonVisibility() {
-        guard CLLocationManager.locationServicesEnabled() else {
-            mapNode.isLocationButtonHidden = true
-            return
-        }
+    private func setupMapNode() {
+        self.mapNode = EditAddressMapNode(locality: self.selectedMenuLocality)
+        self.mapNode.delegate = self
+        self.mapNode.addressCallout.delegate = self
         
-        switch CLLocationManager.authorizationStatus() {
-        case .authorizedAlways, .authorizedWhenInUse:
-            mapNode.isLocationButtonHidden = false
-        default:
-            mapNode.isLocationButtonHidden = true
+        CLLocationManager.promise().then { location -> () in
+            self.mapNode.setCenter(coordinate: location.coordinate, animated: false)
+            self.mapNode.isLocationButtonHidden = false
+            
+        }.catch { error in
+            self.mapNode.isLocationButtonHidden = true
+            self.mapNode.setCenter(coordinate: self.selectedMenuLocality.coordinate, animated: false)
+            
+        }.always {
+            self.geocoding?.apply()
         }
     }
     

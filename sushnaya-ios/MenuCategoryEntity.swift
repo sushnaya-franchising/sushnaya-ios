@@ -71,13 +71,13 @@ extension MenuCategoryEntity: ImportableUniqueObject {
         self.serverId = source["id"].int32!
         self.name = source["name"].string!
         self.rank = source["rank"].float!
-        self.imageUrl = source["photo"]["url"].string
+        self.imageUrl = source["image"]["url"].string
         
-        if let imageWidth = source["photo"]["width"].float {
+        if let imageWidth = source["image"]["width"].float {
             self.imageWidth = NSNumber(value: imageWidth)
         }
         
-        if let imageHeight = source["photo"]["height"].float {
+        if let imageHeight = source["image"]["height"].float {
             self.imageHeight = NSNumber(value: imageHeight)
         }
     }

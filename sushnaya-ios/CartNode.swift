@@ -21,6 +21,7 @@ class CartNode: ASDisplayNode {
         automaticallyManagesSubnodes = true
 
         iconNode.image = UIImage.fontAwesomeIcon(name: .shoppingBasket, textColor: PaperColor.White, size: CGSize(width: 130, height: 130))
+        iconNode.contentMode = .bottom
         iconNode.setTargetClosure { [unowned self] _ in
             self.delegate?.cartNodeDidTouchUpInsideCloseButton()
         }
@@ -54,7 +55,9 @@ class CartNode: ASDisplayNode {
         let backPusher = ASLayoutSpec()
         backPusher.style.height = ASDimension(unit: .points, value: 8)
 
-        iconNode.style.preferredSize = iconNode.image!.size
+        let imageSize = iconNode.image!.size
+        iconNode.style.preferredSize = CGSize(width: constrainedSize.max.width,
+                                              height: imageSize.height)
 
         layout.children = [backPusher, iconNode]
 

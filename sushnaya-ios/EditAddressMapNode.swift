@@ -11,16 +11,17 @@ protocol EditAddressMapDelegate: class {
 
 class EditAddressMapNode: ASCellNode {
     fileprivate let zoomLevel:UInt = 16
+    
     fileprivate let locationArrowIconString = NSAttributedString(string: String.fontAwesomeIcon(name: .locationArrow),
                                                                  attributes: [NSFontAttributeName: UIFont.fontAwesome(ofSize: 16), NSForegroundColorAttributeName: PaperColor.Gray800])
     static let MapMarkerIconString = NSAttributedString(string: String.fontAwesomeIcon(name: .mapPin),
                                                         attributes: [NSFontAttributeName: UIFont.fontAwesome(ofSize: 32), NSForegroundColorAttributeName: PaperColor.Gray800])
     
     fileprivate var mapNode: ASDisplayNode!
+    fileprivate var mapView: YMKMapView!
     fileprivate let locationButton = ASButtonNode()
     fileprivate let mapMarker = ASTextNode()
     let addressCallout = EditAddressMapCalloutNode()
-    fileprivate var mapView: YMKMapView!
     
     var isLocationButtonHidden: Bool {
         get {
@@ -50,21 +51,13 @@ class EditAddressMapNode: ASCellNode {
         
         self.mapMarker.attributedText = EditAddressMapNode.MapMarkerIconString
         
+        self.mapView = YMKMapView()
+        self.mapView.showsUserLocation = false
+        self.mapView.showTraffic = false
+        self.mapView.delegate = self
+        
         self.mapNode = ASDisplayNode(viewBlock: { [unowned self] _ in
-            let mapView = YMKMapView()
-            self.mapView = mapView
-            mapView.showsUserLocation = false
-            mapView.showTraffic = false
-            mapView.delegate = self
-            
-            CLLocationManager.promise().then { location -> () in
-                mapView.setCenter(location.coordinate, atZoomLevel: self.zoomLevel, animated: false)
-                
-            }.catch { _ in
-                mapView.setCenter(locality.coordinate, atZoomLevel: self.zoomLevel, animated: false)
-            }
-            
-            return mapView
+            return self.mapView
         })
     }
     
@@ -77,7 +70,11 @@ class EditAddressMapNode: ASCellNode {
     }
     
     func setCenter(coordinate: CLLocationCoordinate2D, animated: Bool) {
-        mapView.setCenter(YMKMapCoordinateMake(coordinate.latitude, coordinate.longitude), animated: animated)
+        guard mapView != nil else {
+            fatalError("mapView was not initiated")
+            return
+        }
+        mapView.setCenter(YMKMapCoordinateMake(coordinate.latitude, coordinate.longitude), atZoomLevel: zoomLevel, animated: animated)        
     }
     
     override func didLoad() {

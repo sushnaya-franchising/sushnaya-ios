@@ -7,7 +7,7 @@ import Foundation
 import AsyncDisplayKit
 
 protocol OneColumnLayoutDelegate: ASCollectionDelegate {
-    func collectionView(_ collectionView: UICollectionView, heightForPhotoAtIndexPath indexPath: IndexPath,
+    func collectionView(_ collectionView: UICollectionView, heightForImageAtIndexPath indexPath: IndexPath,
                         withWidth width: CGFloat) -> CGFloat
 
     func collectionView(_ collectionView: UICollectionView, heightForTitleAtIndexPath indexPath: IndexPath,
@@ -53,12 +53,12 @@ class OneColumnLayout: UICollectionViewFlowLayout {
         for idx in 0..<dataSource.collectionView(collectionView, numberOfItemsInSection: 0) {
             let indexPath = IndexPath(item: idx, section: 0)
 
-            let photoHeight = delegate.collectionView(collectionView,
-                    heightForPhotoAtIndexPath: indexPath, withWidth: width)
+            let imageHeight = delegate.collectionView(collectionView,
+                    heightForImageAtIndexPath: indexPath, withWidth: width)
             let titleHeight = delegate.collectionView(collectionView,
                     heightForTitleAtIndexPath: indexPath, withWidth: width)
 
-            let height = cellPadding + photoHeight + titleHeight + cellPadding
+            let height = cellPadding + imageHeight + titleHeight + cellPadding
             let frame = CGRect(x: xOffset, y: yOffset, width: columnWidth, height: height)
             let insetFrame = frame.insetBy(dx: cellPadding, dy: cellPadding)
 

@@ -26,7 +26,7 @@ class AddressCellNode: ASCellNode {
         didSet { setupNodes() }
     }
     
-    fileprivate let mapImageBuilder = YMKMapImageBuilder()
+    fileprivate var mapImageBuilder: YMKMapImageBuilder!
     fileprivate var labelNode: ASTextNode?
     let mapMarkerTextNode = ASTextNode()
     let editButtonNode = ASButtonNode()
@@ -45,7 +45,10 @@ class AddressCellNode: ASCellNode {
         
         self.automaticallyManagesSubnodes = true
         
-        self.mapImageBuilder?.delegate = self                
+        DispatchQueue.main.async { [unowned self] _ in
+            self.mapImageBuilder = YMKMapImageBuilder()
+            self.mapImageBuilder.delegate = self
+        }
         
         setupNodes()
     }
@@ -55,6 +58,7 @@ class AddressCellNode: ASCellNode {
         setupMapMarkerNode()
         setupEditButtonNode()
         setupRemoveButtonNode()
+        setupMapImageNode()
     }
     
     private func setupLabelNode() {
@@ -86,6 +90,21 @@ class AddressCellNode: ASCellNode {
         }
     }
     
+    private func setupMapImageNode() {
+        DispatchQueue.main.async { [unowned self] _ in
+            self.mapImageBuilder.cancel()
+            
+            self.mapImageBuilder.centerCoordinate = self.address.coordinate
+            self.mapImageBuilder.zoomLevel = 16
+            self.mapImageBuilder.imageSize = AddressCellNode.calculateMapImageSize()
+            self.mapImageBuilder.build()
+        }
+    }
+    
+    fileprivate func mapRenderingDoneWithImage(image: UIImage?) {
+        self.mapImageNode.image = image
+    }
+    
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let layout = ASStackLayoutSpec.vertical()
         var resultLayoutChildren = [ASLayoutElement]()
@@ -95,7 +114,10 @@ class AddressCellNode: ASCellNode {
         
         let mapImageNodeSize = AddressCellNode.calculateMapImageSize()
         self.mapImageNode.style.preferredSize = mapImageNodeSize
-        createStaticMap(imageSize: mapImageNodeSize)
+        
+        //let mapImageNodeSize = AddressCellNode.calculateMapImageSize()
+        //self.mapImageNode.style.preferredSize = mapImageNodeSize
+        //createStaticMap(imageSize: mapImageNodeSize)
         
         let editModeButtonsLayout = ASStackLayoutSpec.horizontal()
         
@@ -116,21 +138,6 @@ class AddressCellNode: ASCellNode {
         layout.children = resultLayoutChildren
 
         return ASInsetLayoutSpec(insets: UIEdgeInsetsMake(0, 0, AddressCellNode.InsetBottom, 0), child: layout)
-    }
-    
-    private func createStaticMap(imageSize: CGSize) {
-        DispatchQueue.main.async { [unowned self] _ in
-            self.mapImageBuilder?.cancel()
-        
-            self.mapImageBuilder?.centerCoordinate = self.address.coordinate
-            self.mapImageBuilder?.zoomLevel = 16
-            self.mapImageBuilder?.imageSize = imageSize
-            self.mapImageBuilder?.build()
-        }
-    }
-    
-    fileprivate func mapRenderingDoneWithImage(image: UIImage?) {
-        self.mapImageNode.image = image
     }
 }
 

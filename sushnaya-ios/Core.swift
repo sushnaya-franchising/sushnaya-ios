@@ -2,6 +2,22 @@ import Foundation
 import CoreStore
 import SwiftyJSON
 
+enum CurrentCategory: Equatable {
+    case Recommendations
+    case Concrete(category: MenuCategoryEntity)
+}
+
+func ==(lhs: CurrentCategory, rhs: CurrentCategory)->Bool {
+    switch (lhs, rhs) {
+    case let (.Concrete(l), .Concrete(r)):
+        return l.serverId == r.serverId
+    case (.Recommendations, .Recommendations):
+        return true
+    default:
+        return false
+    }
+}
+
 class Core: ObjectObserver {
     static let Singleton = Core()
     
@@ -19,6 +35,8 @@ class Core: ObjectObserver {
     var selectedMenuId: Int32? {
         return settings.object?.selectedMenu?.serverId
     }
+    
+    fileprivate var currentCategory = CurrentCategory.Recommendations
     
     private init() {
         func createSettingsMonitor() -> ObjectMonitor<UserSettingsEntity> {
@@ -164,23 +182,23 @@ class Core: ObjectObserver {
             }
         }
         
-        EventBus.onMainThread(self, name: SyncAddressesEvent.name) { notification in
-            let event = (notification.object as! SyncAddressesEvent)
-            
-            if let addressesJSON = event.addressesJSON.array {
-                do {
-                    _ = try CoreStore.perform(synchronous: { [unowned self] (transaction) in
-                        try! self.deleteDeprecatedAddresses(update: addressesJSON, localityId: event.localityId, in: transaction)
-                        
-                        guard addressesJSON.count > 0 else { return }
-                        
-                        _ = try! transaction.importUniqueObjects(Into<AddressEntity>(), sourceArray: addressesJSON)
-                    })
-                } catch {
+        //EventBus.onMainThread(self, name: SyncAddressesEvent.name) { notification in
+        //    let event = (notification.object as! SyncAddressesEvent)
+        //
+        //    if let addressesJSON = event.addressesJSON.array {
+        //        do {
+        //            _ = try CoreStore.perform(synchronous: { [unowned self] (transaction) in
+        //                try! self.deleteDeprecatedAddresses(update: addressesJSON, localityId: event.localityId, in: transaction)
+        //
+        //                guard addressesJSON.count > 0 else { return }
+        //
+        //                _ = try! transaction.importUniqueObjects(Into<AddressEntity>(), sourceArray: addressesJSON)
+        //            })
+        //        } catch {
                     // todo: log corestore error
-                }
-            }
-        }
+        //        }
+        //    }
+        //}
         
         EventBus.onMainThread(self, name: DidSelectMenuEvent.name) { [unowned self] notification in
             let menuJSON = (notification.object as! DidSelectMenuEvent).menuJSON
@@ -200,6 +218,12 @@ class Core: ObjectObserver {
         
         EventBus.onMainThread(self, name: DidSelectCategoryEvent.name) { [unowned self] notification in
             if let category = (notification.object as! DidSelectCategoryEvent).category {
+                guard self.currentCategory != CurrentCategory.Concrete(category: category) else {
+                    return
+                }
+                
+                self.currentCategory = CurrentCategory.Concrete(category: category)
+                
                 self.products.refetch(
                     Where("category.serverId", isEqualTo: category.serverId),
                     OrderBy(.ascending(#keyPath(ProductEntity.rank))) +
@@ -208,6 +232,12 @@ class Core: ObjectObserver {
         }
 
         EventBus.onMainThread(self, name: DidSelectRecommendationsEvent.name) { [unowned self] notification in
+            guard self.currentCategory != CurrentCategory.Recommendations else {
+                return
+            }
+            
+            self.currentCategory = CurrentCategory.Recommendations
+            
             self.products.refetch(
                 Where("category.menu.serverId", isEqualTo: self.selectedMenuId) &&
                     Where("isRecommended", isEqualTo: true),
@@ -222,6 +252,8 @@ class Core: ObjectObserver {
                 try CoreStore.perform(synchronous: { (transaction) in
                     transaction.delete(address)
                 })
+                
+                DidRemoveAddressEvent.fire()
             } catch let error {
                 // todo: log error
                 print(error.localizedDescription)

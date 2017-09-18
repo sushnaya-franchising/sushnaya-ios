@@ -183,52 +183,10 @@ class App: UIResponder, UIApplicationDelegate {
             self.ensureMenuSelected()
         }
 
-//        EventBus.onMainThread(self, name: DidSelectMenuServerEvent.name) { [unowned self] notification in
-//            let menuDto = (notification.object as! DidSelectMenuServerEvent).menuDto
-//
-//            guard menuDto.menuID == (self.core.selectedMenuId ?? -1) else {
-//                return self.core.selectMenu(menuDto: menuDto)
-//            }
-//
-//            self.core.persistCategories(ofMenuDto: menuDto)
-//        }
-
         // MARK: Category events
-
-//        EventBus.onMainThread(self, name: CategoriesServerEvent.name) { notification in
-//            let categories = (notification.object as! CategoriesServerEvent).categories
-
-//            print("Categories received")
-
-//            do {
-//                try CoreStore.perform(synchronous: { [unowned self] (transaction) in
-//                    for categoryDto in categories {
-//                        let categoryEntity = transaction.fetchOne(From<MenuCategoryEntity>(), Where("serverId", isEqualTo: categoryDto.id)) ??
-//                            transaction.create(Into<MenuCategoryEntity>())
-//                        
-//                        categoryEntity.serverId = categoryDto.id
-//                        categoryEntity.title = categoryDto.name
-//                        categoryEntity.imageUrl = categoryDto.photo.url
-//                        categoryEntity.imageSize = CGSize(width: CGFloat(categoryDto.photo.width),
-//                                                          height: CGFloat(categoryDto.photo.height))
-//                        let menu = transaction.edit(self.selectedMenu)
-//                        categoryEntity.menu = menu
-//                    }                    
-//                })
-//            } catch {
-////                 todo: log error
-//            }
-//        }
 
         // MARK: Product events
 
-//        EventBus.onMainThread(self, name: RecommendationsServerEvent.name) { [unowned self] notification in
-//            let productDtos = (notification.object as! RecommendationsServerEvent).products
-//
-//            print("Recommendations received")
-//
-//            self.core.persistRecommendations(productDtos: productDtos)
-//        }
     }
 }
 

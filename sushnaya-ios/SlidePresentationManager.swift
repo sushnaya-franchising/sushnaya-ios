@@ -7,7 +7,7 @@ final class SlidePresentationManager: NSObject, UIViewControllerTransitioningDel
     
     var dimmingViewAlpha: CGFloat
     
-    init(dimmingViewAlpha: CGFloat = 0.4) {
+    init(dimmingViewAlpha: CGFloat = 0.3) {
         self.dimmingViewAlpha = dimmingViewAlpha
         super.init()
     }

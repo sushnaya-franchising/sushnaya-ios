@@ -50,6 +50,12 @@ class SelectAddressViewController: ASViewController<SelectAddressNode> {
         self.node.automaticallyManagesSubnodes = true
         
         setupNodes()
+        
+        addresses.addObserver(self)
+    }
+    
+    deinit {
+        addresses.removeObserver(self)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -151,7 +157,10 @@ extension SelectAddressViewController: ListSectionObserver {
     func listMonitor(_ monitor: ListMonitor<AddressEntity>, didDeleteObject object: AddressEntity, fromIndexPath indexPath: IndexPath) {
         collectionNode.deleteItems(at: [indexPath])
         
-        isEditMode = self.addressesCount > 0
+        if addressesCount == 0 {
+            isEditMode = false
+            
+        }
     }
     
     func listMonitor(_ monitor: ListMonitor<AddressEntity>, didUpdateObject object: AddressEntity, atIndexPath indexPath: IndexPath) {

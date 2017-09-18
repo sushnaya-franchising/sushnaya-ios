@@ -58,10 +58,8 @@ struct RemoveAddressEvent: Event {
 struct DidRemoveAddressEvent: Event {
     static var name: String = "\(DidRemoveAddressEvent.self)"
     
-    var addressId: Int
-    
-    static func fire(addressId: Int) {
-        EventBus.post(DidRemoveAddressEvent.name, sender: DidRemoveAddressEvent(addressId: addressId))
+    static func fire() {
+        EventBus.post(DidRemoveAddressEvent.name, sender: DidRemoveAddressEvent())
     }
 }
 
