@@ -93,7 +93,7 @@ class ProductCellNode: ASCellNode {
     private func setupPriceNodes() {
         priceNodes.removeAll()// todo: use monitor
         
-        for price in product.pricing {
+        for price in product.pricing {// todo: investigate this bug
             let priceNode = PriceNode(price: price)
             priceNode.delegate = self
             priceNodes.append(priceNode)

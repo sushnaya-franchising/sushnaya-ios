@@ -27,7 +27,7 @@ class AddressCellNode: ASCellNode {
     }
     
     fileprivate var mapImageBuilder: YMKMapImageBuilder!
-    fileprivate var labelNode: ASTextNode?
+    fileprivate var labelNode = ASTextNode()
     let mapMarkerTextNode = ASTextNode()
     let editButtonNode = ASButtonNode()
     let removeButtonNode = ASButtonNode()
@@ -62,8 +62,7 @@ class AddressCellNode: ASCellNode {
     }
     
     private func setupLabelNode() {
-        labelNode = ASTextNode()
-        labelNode?.attributedText = NSMutableAttributedString(string: address.displayName,
+        labelNode.attributedText = NSMutableAttributedString(string: address.displayName,
             attributes: AddressCellNode.LabelStringAttributes)
     }
     
@@ -126,10 +125,8 @@ class AddressCellNode: ASCellNode {
         
         resultLayoutChildren.append(mapLayout)
         
-        if let labelNode = labelNode {
-            let labelLayout = ASInsetLayoutSpec(insets: UIEdgeInsetsMake(8, 0, 0, 0), child: labelNode)
-            resultLayoutChildren.append(labelLayout)
-        }
+        let labelLayout = ASInsetLayoutSpec(insets: UIEdgeInsetsMake(8, 0, 0, 0), child: labelNode)
+        resultLayoutChildren.append(labelLayout)        
         
         layout.children = resultLayoutChildren
 

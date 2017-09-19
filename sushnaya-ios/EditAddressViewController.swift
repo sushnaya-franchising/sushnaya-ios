@@ -10,24 +10,7 @@ protocol EditAddressViewControllerDelegate: class {
 
 class EditAddressViewController: ASViewController<EditAddressContentNode> {
     
-    var addressToEdit: AddressEntity? {
-        didSet {
-            DispatchQueue.main.async { [unowned self] _ in
-                if let addressToEdit = self.addressToEdit {
-                    self.mapNode.setCenter(coordinate: addressToEdit.coordinate, animated: false)
-                    self.pagerNode.scrollToPage(at: 1, animated: false)
-                    self.node.navbarNode.selectedSegment = 1
-                    self.formNode.address = addressToEdit
-                    
-                } else {
-                    self.mapNode.setCenter(coordinate: self.selectedMenuLocality.coordinate, animated: false)
-                    self.pagerNode.scrollToPage(at: 0, animated: false)
-                    self.node.navbarNode.selectedSegment = 0
-                    self.formNode.address = nil
-                }
-            }
-        }
-    }
+    var addressToEdit: AddressEntity?
     
     var mapNode: EditAddressMapNode!
     var formNode: EditAddressFormNode!
@@ -119,7 +102,20 @@ class EditAddressViewController: ASViewController<EditAddressContentNode> {
         
         self.view.addGestureRecognizer(tapRecognizer!)
         
-        subscribeToKeyboardNotifications()                
+        subscribeToKeyboardNotifications()
+        
+        if let addressToEdit = self.addressToEdit {
+            self.mapNode.setCenter(coordinate: addressToEdit.coordinate, animated: false)
+            self.pagerNode.scrollToPage(at: 1, animated: false)
+            self.node.navbarNode.selectedSegment = 1
+            self.formNode.address = addressToEdit
+            
+        } else {
+            self.mapNode.setCenter(coordinate: self.selectedMenuLocality.coordinate, animated: false)
+            self.pagerNode.scrollToPage(at: 0, animated: false)
+            self.node.navbarNode.selectedSegment = 0
+            self.formNode.address = nil
+        }
     }
     
     private func setupMapNode() {
