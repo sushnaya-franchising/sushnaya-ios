@@ -84,7 +84,7 @@ class Core: ObjectObserver {
         func createAddressesMonitor() -> ListMonitor<AddressEntity> {
             return CoreStore.monitorList(
                 From<AddressEntity>(),
-                OrderBy(.ascending(#keyPath(AddressEntity.ordersCount))) +
+                OrderBy(.ascending(#keyPath(AddressEntity.orderCount))) +
                 OrderBy(.ascending(#keyPath(AddressEntity.timestamp))) +
                     OrderBy(.ascending(#keyPath(AddressEntity.streetAndHouse))))
         }
@@ -95,7 +95,7 @@ class Core: ObjectObserver {
             return CoreStore.monitorList(
                 From<AddressEntity>(),
                 Where("locality.serverId", isEqualTo: localityId),
-                OrderBy(.ascending(#keyPath(AddressEntity.ordersCount))) +
+                OrderBy(.ascending(#keyPath(AddressEntity.orderCount))) +
                 OrderBy(.ascending(#keyPath(AddressEntity.timestamp))) +
                     OrderBy(.ascending(#keyPath(AddressEntity.streetAndHouse))))
         }
@@ -182,23 +182,23 @@ class Core: ObjectObserver {
             }
         }
         
-        //EventBus.onMainThread(self, name: SyncAddressesEvent.name) { notification in
-        //    let event = (notification.object as! SyncAddressesEvent)
-        //
-        //    if let addressesJSON = event.addressesJSON.array {
-        //        do {
-        //            _ = try CoreStore.perform(synchronous: { [unowned self] (transaction) in
-        //                try! self.deleteDeprecatedAddresses(update: addressesJSON, localityId: event.localityId, in: transaction)
-        //
-        //                guard addressesJSON.count > 0 else { return }
-        //
-        //                _ = try! transaction.importUniqueObjects(Into<AddressEntity>(), sourceArray: addressesJSON)
-        //            })
-        //        } catch {
+        EventBus.onMainThread(self, name: SyncAddressesEvent.name) { notification in
+            let event = (notification.object as! SyncAddressesEvent)
+        
+            if let addressesJSON = event.addressesJSON.array {
+                do {
+                    _ = try CoreStore.perform(synchronous: { [unowned self] (transaction) in
+                        //try! self.deleteDeprecatedAddresses(update: addressesJSON, localityId: event.localityId, in: transaction)
+        
+                        //guard addressesJSON.count > 0 else { return }
+        
+                        //_ = try! transaction.importUniqueObjects(Into<AddressEntity>(), sourceArray: addressesJSON)
+                    })
+                } catch {
                     // todo: log corestore error
-        //        }
-        //    }
-        //}
+                }
+            }
+        }
         
         EventBus.onMainThread(self, name: DidSelectMenuEvent.name) { [unowned self] notification in
             let menuJSON = (notification.object as! DidSelectMenuEvent).menuJSON
@@ -356,8 +356,7 @@ extension Core {
         guard let currentAddresses = transaction.fetchAll(From<AddressEntity>(), fetchClause) else { return }
         
         for currentAddress in currentAddresses {
-            guard let currentAddressId = currentAddress.serverId?.int32Value else {
-                transaction.delete(currentAddress)
+            guard let currentAddressId = currentAddress.serverId?.int32Value else {                
                 continue
             }
             

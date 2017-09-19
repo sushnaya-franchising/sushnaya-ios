@@ -2,6 +2,7 @@ import Foundation
 import AsyncDisplayKit
 import UIKit
 import CoreStore
+import PromiseKit
 
 class SelectMenuViewController: ASViewController<SelectMenuNode> {
 
@@ -124,7 +125,17 @@ extension SelectMenuViewController: ASTableDataSource, ASTableDelegate {
     func tableNode(_ tableNode: ASTableNode, didSelectRowAt indexPath: IndexPath) {
         let menu = self.menus.objectsInSection(indexPath.section)[indexPath.row]
         
-        FoodServiceRest.requestSelectMenu(menuId: menu.serverId, authToken: app.authToken!)
+        firstly {
+            FoodServiceRest.selectMenu(menuId: menu.serverId, authToken: app.authToken!)
+            
+        }.then { menuJSON in
+            DidSelectMenuEvent.fire(menuJSON: menuJSON)
+                
+        }.catch { error in
+            print(error)
+            // todo: log error            
+        }
+
         
         self.dismiss(animated: true, completion: nil)
     }

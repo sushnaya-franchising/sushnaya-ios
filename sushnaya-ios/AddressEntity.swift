@@ -11,8 +11,8 @@ class AddressEntity: NSManagedObject {
     @NSManaged var entrance: String?
     @NSManaged var floor: String?
     @NSManaged var comment: String?
-    @NSManaged var ordersCount: Int32    
-    @NSManaged var timestamp: Int64
+    @NSManaged var orderCount: Int32
+    @NSManaged var timestamp: NSNumber?
 
     @NSManaged var locality: LocalityEntity
 

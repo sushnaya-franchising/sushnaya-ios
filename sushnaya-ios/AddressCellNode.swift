@@ -5,7 +5,7 @@ import SwiftEventBus
 class AddressCellNode: ASCellNode {
     static let LabelStringAttributes:[String: Any] = [
         NSForegroundColorAttributeName: PaperColor.Gray800,
-        NSFontAttributeName: UIFont.boldSystemFont(ofSize: 14)
+        NSFontAttributeName: UIFont.systemFont(ofSize: 14)
     ]
     
     static let InsetBottom: CGFloat = 32
@@ -109,15 +109,11 @@ class AddressCellNode: ASCellNode {
         let layout = ASStackLayoutSpec.vertical()
         var resultLayoutChildren = [ASLayoutElement]()
      
-        mapMarkerTextNode.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 44, right: 0)
+        mapMarkerTextNode.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 32, right: 0)
         let mapMarkerLayout = ASCenterLayoutSpec(centeringOptions: .XY, sizingOptions: [], child: mapMarkerTextNode)
         
         let mapImageNodeSize = AddressCellNode.calculateMapImageSize()
         self.mapImageNode.style.preferredSize = mapImageNodeSize
-        
-        //let mapImageNodeSize = AddressCellNode.calculateMapImageSize()
-        //self.mapImageNode.style.preferredSize = mapImageNodeSize
-        //createStaticMap(imageSize: mapImageNodeSize)
         
         let editModeButtonsLayout = ASStackLayoutSpec.horizontal()
         
@@ -159,7 +155,7 @@ extension AddressCellNode {
     static func calculateMapImageSize() -> CGSize {
         let screenBounds = UIScreen.main.bounds
         let width = screenBounds.width - 32
-        let height = width / (Constants.GoldenRatio * Constants.GoldenRatio)
+        let height:CGFloat = 64
         
         return CGSize(width: ceil(width), height: ceil(height))
     }

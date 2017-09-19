@@ -1,7 +1,7 @@
 import Foundation
 import AsyncDisplayKit
 import CoreStore
-
+import PromiseKit
 
 class CategoriesViewController: ASViewController<ASDisplayNode>, PaperFoldAsyncView {
 
@@ -53,11 +53,8 @@ class CategoriesViewController: ASViewController<ASDisplayNode>, PaperFoldAsyncV
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
         onViewUpdated?()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
     }
     
     fileprivate func setCollectionEnabled(_ enabled: Bool) {
@@ -82,6 +79,7 @@ extension CategoriesViewController: ListSectionObserver {
     
     func listMonitorDidChange(_ monitor: ListMonitor<MenuCategoryEntity>) {
         collectionNode.view.endUpdates(animated: true)
+        onViewUpdated?()
     }
     
     func listMonitorWillRefetch(_ monitor: ListMonitor<MenuCategoryEntity>) {
@@ -91,6 +89,7 @@ extension CategoriesViewController: ListSectionObserver {
     func listMonitorDidRefetch(_ monitor: ListMonitor<MenuCategoryEntity>) {
         collectionNode.reloadData()
         setCollectionEnabled(true)
+        onViewUpdated?()
     }
     
     func listMonitor(_ monitor: ListMonitor<MenuCategoryEntity>, didInsertObject object: MenuCategoryEntity, toIndexPath indexPath: IndexPath) {
@@ -152,7 +151,16 @@ extension CategoriesViewController: ASCollectionDelegate, ASCollectionDataSource
         
         DidSelectCategoryEvent.fire(category: category)
         
-        FoodServiceRest.requestProducts(categoryId: category.serverId, authToken: app.authToken!)
+        firstly {
+            FoodServiceRest.getProducts(categoryId: category.serverId, authToken: app.authToken!)
+        
+        }.then { productsJSON in
+            SyncProductsEvent.fire(productsJSON: productsJSON, categoryId: category.serverId)
+        
+        }.catch { error in
+            // todo: handle error
+            print(error)
+        }
     }
 }
 

@@ -4,6 +4,7 @@ import FontAwesome_swift
 import pop
 import PaperFold
 import CoreStore
+import PromiseKit
 
 
 class ProductsViewController: ASViewController<ASDisplayNode> {
@@ -20,8 +21,7 @@ class ProductsViewController: ASViewController<ASDisplayNode> {
     let priceStringAttrs = Constants.ProductCellLayout.PriceStringAttributes
     let priceWithModifierStringAttrs = Constants.ProductCellLayout.PriceWithModifierStringAttributes
     let modifierStringAttrs = Constants.ProductCellLayout.PriceModifierStringAttributes
-
-    fileprivate var headerTextCellNode: ASTextCellNode!
+    
     fileprivate var collectionNode: ASCollectionNode!
     fileprivate let layoutInspector = MosaicCollectionViewLayoutInspector()
     fileprivate var selectedProductIndexPath: IndexPath?
@@ -34,16 +34,11 @@ class ProductsViewController: ASViewController<ASDisplayNode> {
         return app.core.products
     }
 
-    var categoryName = App.brandName {
-        didSet {
-            headerTextCellNode.text = categoryName
-        }
-    }
+    var categoryName = App.brandName
 
     convenience init() {
         self.init(node: ASDisplayNode())
-
-        setupHeaderTextCellNode()
+        
         setupCollectionNode()
 
         self.node.automaticallyManagesSubnodes = true
@@ -59,16 +54,6 @@ class ProductsViewController: ASViewController<ASDisplayNode> {
         productOptionsVC.modalPresentationStyle = .custom
                 
         presentationManager.interactionController.destinationVC = productOptionsVC
-    }
-
-    private func setupHeaderTextCellNode() {
-        let textAttributes: NSDictionary = [
-            NSForegroundColorAttributeName: PaperColor.Gray800,
-            NSFontAttributeName: UIFont.boldSystemFont(ofSize: 19)
-        ]
-        let textInsets = UIEdgeInsets(top: 11, left: 0, bottom: 11, right: 0)
-        headerTextCellNode = ASTextCellNode(attributes: textAttributes as! [AnyHashable: Any], insets: textInsets)
-        headerTextCellNode.text = categoryName
     }
 
     private func setupCollectionNode() {
@@ -121,7 +106,16 @@ class ProductsViewController: ASViewController<ASDisplayNode> {
 
         navigationController?.setNavigationBarHidden(true, animated: false)
 
-        FoodServiceRest.requestMenus(authToken: app.authToken!)        
+        firstly {
+            FoodServiceRest.getMenus(authToken: app.authToken!)
+        
+        }.then { menusJSON in
+            SyncMenusEvent.fire(menusJSON: menusJSON)
+        
+        }.catch { error in
+            print(error)
+            // todo: handle error
+        }
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -166,6 +160,14 @@ extension ProductsViewController: ASCollectionDataSource, ASCollectionDelegate {
     }
 
     func collectionNode(_ collectionNode: ASCollectionNode, nodeForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> ASCellNode {
+        let textAttributes: NSDictionary = [
+            NSForegroundColorAttributeName: PaperColor.Gray800,
+            NSFontAttributeName: UIFont.boldSystemFont(ofSize: 19)
+        ]
+        let textInsets = UIEdgeInsets(top: 11, left: 0, bottom: 11, right: 0)
+        let headerTextCellNode = ASTextCellNode(attributes: textAttributes as! [AnyHashable: Any], insets: textInsets)
+        headerTextCellNode.text = categoryName
+        
         return headerTextCellNode
     }
 

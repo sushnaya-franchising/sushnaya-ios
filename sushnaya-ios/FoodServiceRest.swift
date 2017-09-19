@@ -1,6 +1,8 @@
 import Foundation
 import Alamofire
 import SwiftyJSON
+import PromiseKit
+
 
 class FoodServiceRest {
     static let baseUrl = "http://localhost:8080/0.1.0"
@@ -10,87 +12,110 @@ class FoodServiceRest {
     static let productsUrl = baseUrl + "/categories/%d/products"
     static let addressesUrl = baseUrl + "/addresses"
     
-    class func requestMenus(authToken: String) {
+    class func getMenus(authToken: String) -> Promise<JSON> {
+        let q = DispatchQueue.global()
         let headers: HTTPHeaders = [ "Authorization": authToken ]
-
-        Alamofire.request(menusUrl, method: .get, headers: headers).validate().responseJSON { response in
-            switch response.result {
-            case .success(let data):
-                SyncMenusEvent.fire(menusJSON: JSON(data))
-                
-            case .failure(let error):
-                print(error) // todo: handle get menus response error
-                
-                // todo: fire failed to request menus
-            }
+        
+        return firstly { _ in
+            Alamofire.request(menusUrl, method: .get, headers: headers).responseData()
+        }.then(on: q) { data in
+            JSON(data)
         }
     }
     
-    class func requestSelectMenu(menuId: Int32, authToken: String) {
+    class func selectMenu(menuId: Int32, authToken: String) -> Promise<JSON> {
+        let q = DispatchQueue.global()
         let headers: HTTPHeaders = [ "Authorization": authToken ]
         let url = String(format: selectMenuUrl, menuId)
         
-        Alamofire.request(url, method: .post, headers: headers).validate().responseJSON { response in
-            switch response.result {
-            case .success(let data):
-                DidSelectMenuEvent.fire(menuJSON: JSON(data))
-                
-            case .failure(let error):
-                print(error) // todo: handle select menu response error
-                
-                // todo: fire failed to select menu
-            }
+        return firstly { _ in
+            Alamofire.request(url, method: .post, headers: headers).responseData()
+        
+        }.then(on: q) { data in
+                JSON(data)
         }
     }
     
-    class func requestCategories(menuId: Int32, authToken: String) {
+    class func getCategories(menuId: Int32, authToken: String) -> Promise<JSON> {
+        let q = DispatchQueue.global()
         let headers: HTTPHeaders = [ "Authorization": authToken ]
         let url = String(format: categoriesUrl, menuId)
         
-        Alamofire.request(url, method: .get, headers: headers).validate().responseJSON { response in
-            switch response.result {
-            case .success(let data):
-                SyncCategoriesEvent.fire(categoriesJSON: JSON(data), menuId: menuId)
-                
-            case .failure(let error):
-                print(error) // todo: handle categories response error
-                
-                // todo: fire failed to select menu
-            }
+        return firstly {
+            Alamofire.request(url, method: .get, headers: headers).responseData()
+            
+        }.then(on: q) { data in
+            JSON(data)
         }
     }
     
-    class func requestProducts(categoryId: Int32, authToken: String) {
+    class func getProducts(categoryId: Int32, authToken: String) -> Promise<JSON> {
+        let q = DispatchQueue.global()
         let headers: HTTPHeaders = [ "Authorization": authToken ]
         let url = String(format: productsUrl, categoryId)
         
-        Alamofire.request(url, method: .get, headers: headers).validate().responseJSON { response in
-            switch response.result {
-            case .success(let data):
-                SyncProductsEvent.fire(productsJSON: JSON(data), categoryId: categoryId)
-                
-            case .failure(let error):
-                print(error) // todo: handle categories response error
-                
-                // todo: fire failed to select menu
-            }
+        return firstly {
+            Alamofire.request(url, method: .get, headers: headers).responseData()
+            
+        }.then(on: q) { data in
+            JSON(data)
         }
     }
     
-    class func requestAddresses(authToken: String, localityId: Int32?) {
+    class func getAddresses(authToken: String, localityId: Int32?) -> Promise<JSON> {
+        let q = DispatchQueue.global()
         let headers: HTTPHeaders = [ "Authorization": authToken ]
         let parameters: Parameters? = (localityId == nil ? nil: [ "localityId": localityId! ])
         
-        Alamofire.request(addressesUrl, method: .get, parameters: parameters, headers: headers).validate().responseJSON { response in
-            switch response.result {
-            case .success(let data):
-                SyncAddressesEvent.fire(addressesJSON: JSON(data), localityId: localityId)
-                
-            case .failure(let error):
-                print(error) // todo: handle categories response error
-                
-                // todo: fire failed to select menu
-            }
+        return firstly {
+            Alamofire.request(addressesUrl, method: .get, parameters: parameters, headers: headers).responseData()
+            
+        }.then(on: q) { data in
+            JSON(data)
+        }
+    }
+    
+    class func postAddress(address: AddressEntity, authToken: String) -> Promise<JSON> {
+        let headers: HTTPHeaders = [ "Authorization": authToken ]
+        var parameters: Parameters = [
+            "localityId": address.locality.serverId,
+            "location": [
+                "latitude": address.latitude,
+                "longitude": address.longitude
+            ],
+            "streetAndHouse": address.streetAndHouse,
+            "orderCount": address.orderCount,
+            ]
+        
+        if let id = address.serverId?.int32Value {
+            parameters["id"] = id
+        }
+        
+        if let apartment = address.apartment {
+            parameters["apartment"] = apartment
+        }
+        
+        if let entrance = address.entrance {
+            parameters["entrance"] = entrance
+        }
+        
+        if let floor = address.floor {
+            parameters["floor"] = floor
+        }
+        
+        if let comment = address.comment {
+            parameters["comment"] = comment
+        }
+        
+        return firstly {
+            Alamofire.request(addressesUrl,
+                              method: .post,
+                              parameters: parameters,
+                              encoding: JSONEncoding.default,
+                              headers: headers).responseData()
+            
+        }.then { data in
+            JSON(data)
         }
     }
 }

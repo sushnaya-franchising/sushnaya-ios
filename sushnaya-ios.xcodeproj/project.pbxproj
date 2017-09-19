@@ -43,12 +43,12 @@
 		2E6AF3081EB3AB5800254D3B /* EditAddressNavbarNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E6AF3071EB3AB5800254D3B /* EditAddressNavbarNode.swift */; };
 		2E7AE6FD1EC9AEAB00748C33 /* CheckoutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E7AE6FC1EC9AEAB00748C33 /* CheckoutViewController.swift */; };
 		2E7AED301F07AEA800E01884 /* AddressCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E7AED2F1F07AEA700E01884 /* AddressCellNode.swift */; };
-		2E7AED321F07B45D00E01884 /* AddAddressCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E7AED311F07B45D00E01884 /* AddAddressCellNode.swift */; };
 		2E7EBC431F6D770A0062F803 /* ProductOptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E7EBC421F6D770A0062F803 /* ProductOptionsViewController.swift */; };
 		2E7EBC461F6D77AB0062F803 /* ProductOptionsNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E7EBC451F6D77AB0062F803 /* ProductOptionsNode.swift */; };
 		2E7EBC501F6E918F0062F803 /* SwipeInteractionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E7EBC4F1F6E918F0062F803 /* SwipeInteractionController.swift */; };
 		2E7EBC701F6EEB3E0062F803 /* SlidePresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E7EBC6F1F6EEB3E0062F803 /* SlidePresentationController.swift */; };
 		2E7EBC721F6EEC870062F803 /* SlidePresentationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E7EBC711F6EEC870062F803 /* SlidePresentationManager.swift */; };
+		2E7EBC741F714A820062F803 /* AddAddressCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E7EBC731F714A820062F803 /* AddAddressCellNode.swift */; };
 		2E80ACEA1E8FAC9B00D0DBCF /* DefaultCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E80ACE91E8FAC9B00D0DBCF /* DefaultCellNode.swift */; };
 		2E81AA6C1F53208C003F8D27 /* Appnbot.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2E81AA6A1F53208C003F8D27 /* Appnbot.xcdatamodeld */; };
 		2E81AA911F5B38DE003F8D27 /* intro_video.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 2E81AA901F5B38DE003F8D27 /* intro_video.mp4 */; };
@@ -186,12 +186,12 @@
 		2E6AF3071EB3AB5800254D3B /* EditAddressNavbarNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditAddressNavbarNode.swift; sourceTree = "<group>"; };
 		2E7AE6FC1EC9AEAB00748C33 /* CheckoutViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CheckoutViewController.swift; sourceTree = "<group>"; };
 		2E7AED2F1F07AEA700E01884 /* AddressCellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddressCellNode.swift; sourceTree = "<group>"; };
-		2E7AED311F07B45D00E01884 /* AddAddressCellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddAddressCellNode.swift; sourceTree = "<group>"; };
 		2E7EBC421F6D770A0062F803 /* ProductOptionsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductOptionsViewController.swift; sourceTree = "<group>"; };
 		2E7EBC451F6D77AB0062F803 /* ProductOptionsNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductOptionsNode.swift; sourceTree = "<group>"; };
 		2E7EBC4F1F6E918F0062F803 /* SwipeInteractionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwipeInteractionController.swift; sourceTree = "<group>"; };
 		2E7EBC6F1F6EEB3E0062F803 /* SlidePresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SlidePresentationController.swift; sourceTree = "<group>"; };
 		2E7EBC711F6EEC870062F803 /* SlidePresentationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SlidePresentationManager.swift; sourceTree = "<group>"; };
+		2E7EBC731F714A820062F803 /* AddAddressCellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddAddressCellNode.swift; sourceTree = "<group>"; };
 		2E80ACE91E8FAC9B00D0DBCF /* DefaultCellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultCellNode.swift; sourceTree = "<group>"; };
 		2E81AA6B1F53208C003F8D27 /* Appnbot.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Appnbot.xcdatamodel; sourceTree = "<group>"; };
 		2E81AA8F1F5A6407003F8D27 /* sushnaya-ios.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "sushnaya-ios.entitlements"; sourceTree = "<group>"; };
@@ -449,6 +449,8 @@
 		2E6AF3021EB3A30500254D3B /* Address */ = {
 			isa = PBXGroup;
 			children = (
+				2E7EBC731F714A820062F803 /* AddAddressCellNode.swift */,
+				2E7AED2F1F07AEA700E01884 /* AddressCellNode.swift */,
 				2E6AF3031EB3A32C00254D3B /* EditAddressMapNode.swift */,
 				2E6AF3051EB3A34000254D3B /* EditAddressFormNode.swift */,
 				2E6AF3071EB3AB5800254D3B /* EditAddressNavbarNode.swift */,
@@ -496,8 +498,6 @@
 				2ECB50811ECDAF7000AF1204 /* SummarySectionNode.swift */,
 				2E3013371EEAF7F800CAD153 /* CashOptionsSectionNode.swift */,
 				2EF942191EEB41C000CEE0B7 /* CashOptionCellNode.swift */,
-				2E7AED2F1F07AEA700E01884 /* AddressCellNode.swift */,
-				2E7AED311F07B45D00E01884 /* AddAddressCellNode.swift */,
 			);
 			name = Order;
 			sourceTree = "<group>";
@@ -936,7 +936,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2E7AED321F07B45D00E01884 /* AddAddressCellNode.swift in Sources */,
 				2E37429F1F69D3AA008E4C03 /* ProductOptionEntity.swift in Sources */,
 				2E926E001E8E53F700070538 /* VerificationCodeViewController.swift in Sources */,
 				2E2FF1281EA65963006B9321 /* CartEvent.swift in Sources */,
@@ -1017,6 +1016,7 @@
 				2E2FF1201EA22F60006B9321 /* Label.swift in Sources */,
 				2E7EBC431F6D770A0062F803 /* ProductOptionsViewController.swift in Sources */,
 				2ED4C70C1EBC87AE00374132 /* UIViewExt.swift in Sources */,
+				2E7EBC741F714A820062F803 /* AddAddressCellNode.swift in Sources */,
 				2EA2CAA01F35DECA00ACAD93 /* FoodServiceImages.swift in Sources */,
 				2EB9383D1F5D3AF000A6F9A4 /* MenuCategory.swift in Sources */,
 				2E926E201E8E546A00070538 /* VerificationCodeNode.swift in Sources */,

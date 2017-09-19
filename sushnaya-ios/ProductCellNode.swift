@@ -91,7 +91,7 @@ class ProductCellNode: ASCellNode {
     }
 
     private func setupPriceNodes() {
-        priceNodes.removeAll()
+        priceNodes.removeAll()// todo: use monitor
         
         for price in product.pricing {
             let priceNode = PriceNode(price: price)

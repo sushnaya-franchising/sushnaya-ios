@@ -3,6 +3,7 @@ import AsyncDisplayKit
 import pop
 import SwiftEventBus
 import CoreStore
+import PromiseKit
 
 protocol SelectAddressViewControllerDelegate: class {
     func selectAddressViewController(_ vc: SelectAddressViewController, didSelectAddress address: AddressEntity)
@@ -61,14 +62,24 @@ class SelectAddressViewController: ASViewController<SelectAddressNode> {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        FoodServiceRest.requestAddresses(authToken: app.authToken!,
-                                         localityId: app.selectedMenu?.locality.serverId)
+        isEditMode = false
+        
+        let localityId = app.selectedMenu?.locality.serverId
+        
+        firstly {
+            FoodServiceRest.getAddresses(authToken: app.authToken!, localityId: localityId) // todo: for settings do not use selected menu locality id
+        
+        }.then { addressesJSON in
+            SyncAddressesEvent.fire(addressesJSON: addressesJSON, localityId: localityId) // todo: for settings do not use selected menu locality id
+        
+        }.catch { error in
+            // todo: handle error
+            print(error)
+        }
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        
-        EventBus.unregister(self)
     }
     
     private func setupNodes() {
@@ -159,7 +170,6 @@ extension SelectAddressViewController: ListSectionObserver {
         
         if addressesCount == 0 {
             isEditMode = false
-            
         }
     }
     
@@ -190,9 +200,6 @@ extension SelectAddressViewController: ListSectionObserver {
     }
 }
 
-// todo: support sections with cities headers
-// todo: address entity mappings
-// todo: edit address vcs
 extension SelectAddressViewController: ASCollectionDelegate, ASCollectionDataSource {
     func collectionNode(_ collectionNode: ASCollectionNode, numberOfItemsInSection section: Int) -> Int {
         return self.addressesCount + 1

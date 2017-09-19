@@ -213,17 +213,21 @@ extension App {
             self.window?.rootViewController?.present(SelectMenuViewController(), animated: true)
         }
         
-        func selectMenu(by location: CLLocation) -> Bool {
-            guard let menu = self.core.fetchMenu(by: location) else { return false }
-            
-            FoodServiceRest.requestSelectMenu(menuId: menu.serverId, authToken: authToken!)
-            
-            return true
-        }
-        
         CLLocationManager.promise().then { location -> () in
-            if !selectMenu(by: location) {
-                presentSelectMenuViewController()
+            guard let menu = self.core.fetchMenu(by: location) else {
+                return presentSelectMenuViewController()
+            }
+            
+            firstly { [unowned self] _ in
+                FoodServiceRest.selectMenu(menuId: menu.serverId, authToken: self.authToken!)
+                
+            }.then { menuJSON in
+                    DidSelectMenuEvent.fire(menuJSON: menuJSON)
+                    
+            }.catch { error in
+                    print(error)
+                    // todo: log error
+                    presentSelectMenuViewController()
             }
         }.catch { error in
             presentSelectMenuViewController()

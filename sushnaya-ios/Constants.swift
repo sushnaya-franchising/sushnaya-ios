@@ -120,12 +120,12 @@ struct Constants {
         
         static let SectionTitleStringAttributes = [
             NSForegroundColorAttributeName: PaperColor.Gray,
-            NSFontAttributeName: UIFont.systemFont(ofSize: 14)
+            NSFontAttributeName: UIFont.systemFont(ofSize: 13)
         ]
         
         static let ItemTitleStringAttributes = [
             NSForegroundColorAttributeName: PaperColor.Gray800,
-            NSFontAttributeName: UIFont.systemFont(ofSize: 14)
+            NSFontAttributeName: UIFont.systemFont(ofSize: 13)
         ]
         
         static let ItemPriceStringAttributes:  [String: Any] = {
@@ -134,7 +134,7 @@ struct Constants {
             
             return [
                 NSForegroundColorAttributeName: PaperColor.Gray800,
-                NSFontAttributeName: UIFont.systemFont(ofSize: 14),
+                NSFontAttributeName: UIFont.systemFont(ofSize: 13),
                 NSParagraphStyleAttributeName : paragraphStyle
             ]
         }()
@@ -145,7 +145,7 @@ struct Constants {
             
             return [
                 NSForegroundColorAttributeName: PaperColor.Gray800,
-                NSFontAttributeName: UIFont.systemFont(ofSize: 14),
+                NSFontAttributeName: UIFont.systemFont(ofSize: 13),
                 NSParagraphStyleAttributeName : paragraphStyle
             ]
         }()
