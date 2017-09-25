@@ -1,11 +1,3 @@
-//
-//  FormFieldNode.swift
-//  sushnaya-ios
-//
-//  Created by Igor Kurylenko on 5/9/17.
-//  Copyright © 2017 igor kurilenko. All rights reserved.
-//
-
 import Foundation
 import pop
 import AsyncDisplayKit

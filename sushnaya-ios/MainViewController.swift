@@ -58,8 +58,11 @@ class MainViewController: ASTabBarController {
     }
 
     private func retakeScreenshotIfAsyncView(_ vc: UIViewController, navigationController: PaperFoldNavigationController) {
-        if var asyncView = (vc as? PaperFoldAsyncView) {
-            asyncView.onViewUpdated = navigationController.retakeScreenShot
+        if let asyncView = (vc as? PaperFoldAsyncView) {
+            navigationController.onPaperFoldViewDidOffset = {
+                asyncView.stopAnimations?()
+            }
+            asyncView.onPaperFoldViewUpdated = navigationController.retakeScreenShot
         }
     }
 

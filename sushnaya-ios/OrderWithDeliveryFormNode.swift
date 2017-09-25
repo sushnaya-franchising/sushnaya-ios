@@ -60,7 +60,7 @@ class OrderWithDeliveryFormNode: ASCellNode {
             NSFontAttributeName: UIFont.boldSystemFont(ofSize: 14)
         ])
         submitButtonNode.setAttributedTitle(title, for: .normal)
-        submitButtonNode.backgroundColor = PaperColor.Gray300
+        submitButtonNode.backgroundColor = PaperColor.Gray200
         submitButtonNode.setTargetClosure { [unowned self] _ in
             self.view.endEditing(true)
             

@@ -16,7 +16,7 @@ class ProductCellNode: ASCellNode {
     let imageNode: ASNetworkImageNode = {
         let imageNode = ASNetworkImageNode()
         imageNode.contentMode = .scaleAspectFit
-        imageNode.imageModificationBlock = ImageNodePrecompositedCornerModification(cornerRadius: 15)
+        imageNode.imageModificationBlock = ImageNodePrecompositedCornerModification(cornerRadius: 10)
         return imageNode
     }()
     
@@ -54,7 +54,7 @@ class ProductCellNode: ASCellNode {
         imageNode.placeholderColor = PaperColor.Gray100
         imageNode.placeholderFadeDuration = 0.1
 
-        if let url = product.imageUrl {
+        if let url = product.imageUrl {            
             imageNode.url = URL(string: url)
             imageNode.addTarget(self, action: #selector(didTouchDownRepeatImage), forControlEvents: .touchDownRepeat)
         }        

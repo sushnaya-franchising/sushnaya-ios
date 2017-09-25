@@ -15,7 +15,7 @@ class CategoriesViewController: ASViewController<ASDisplayNode>, PaperFoldAsyncV
     
     fileprivate var collectionNode: ASCollectionNode!
     
-    var onViewUpdated: (() -> ())?    
+    var onPaperFoldViewUpdated: (() -> ())?
     
     convenience init() {
         self.init(node: ASDisplayNode())
@@ -54,7 +54,11 @@ class CategoriesViewController: ASViewController<ASDisplayNode>, PaperFoldAsyncV
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        onViewUpdated?()
+        onPaperFoldViewUpdated?()
+    }
+    
+    func stopAnimations() {
+        collectionNode.view.setContentOffset(collectionNode.view.contentOffset, animated: false)
     }
     
     fileprivate func setCollectionEnabled(_ enabled: Bool) {
@@ -79,7 +83,7 @@ extension CategoriesViewController: ListSectionObserver {
     
     func listMonitorDidChange(_ monitor: ListMonitor<MenuCategoryEntity>) {
         collectionNode.view.endUpdates(animated: true)
-        onViewUpdated?()
+        onPaperFoldViewUpdated?()
     }
     
     func listMonitorWillRefetch(_ monitor: ListMonitor<MenuCategoryEntity>) {
@@ -89,7 +93,7 @@ extension CategoriesViewController: ListSectionObserver {
     func listMonitorDidRefetch(_ monitor: ListMonitor<MenuCategoryEntity>) {
         collectionNode.reloadData()
         setCollectionEnabled(true)
-        onViewUpdated?()
+        onPaperFoldViewUpdated?()
     }
     
     func listMonitor(_ monitor: ListMonitor<MenuCategoryEntity>, didInsertObject object: MenuCategoryEntity, toIndexPath indexPath: IndexPath) {

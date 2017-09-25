@@ -5,7 +5,7 @@ import PromiseKit
 
 
 class FoodServiceRest {
-    static let baseUrl = "http://localhost:8080/0.1.0"
+    static let baseUrl = "http://appnbot.ngrok.io/0.1.0"
     static let menusUrl = baseUrl + "/menus"
     static let selectMenuUrl = menusUrl + "/%d/select"
     static let categoriesUrl = menusUrl + "/%d/categories"

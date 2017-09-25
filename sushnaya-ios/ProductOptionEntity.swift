@@ -4,7 +4,10 @@ import SwiftyJSON
 
 class ProductOptionEntity: NSManagedObject {
     @NSManaged var serverId: Int32
+    @NSManaged var name: String
+    @NSManaged var rank: Float
     
+    @NSManaged var price: ProductOptionPriceEntity
     @NSManaged var product: ProductEntity
 }
 
@@ -37,6 +40,19 @@ extension ProductOptionEntity: ImportableUniqueObject {
     
     func update(from source: JSON, in transaction: BaseDataTransaction, forProduct product: ProductEntity) throws {
         self.serverId = source["id"].int32!
+        self.name = source["name"].string!        
+        self.rank = source["rank"].float!
+        
+        try! updatePrice(from: source["price"], in: transaction)
+        
         self.product = product
+    }
+    
+    func updatePrice(from source: JSON, in transaction: BaseDataTransaction) throws {
+        let priceServerId = source["id"].int32!
+        let price = transaction.fetchOne(From<ProductOptionPriceEntity>(), Where("serverId", isEqualTo: priceServerId)) ??
+            transaction.create(Into<ProductOptionPriceEntity>())
+        
+        try! price.update(from: source, in: transaction, forProductOption: self)
     }
 }

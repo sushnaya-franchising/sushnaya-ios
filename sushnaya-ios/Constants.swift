@@ -181,7 +181,7 @@ struct Constants {
         static let BottomSpacerHeight:CGFloat = 32
         
         
-        static let DeliveryButtonBackgroundColor = PaperColor.Gray300
+        static let DeliveryButtonBackgroundColor = PaperColor.Gray200
         
         static let DeliveryButtonTitileStringAttributes = [
             NSForegroundColorAttributeName: PaperColor.Gray800,

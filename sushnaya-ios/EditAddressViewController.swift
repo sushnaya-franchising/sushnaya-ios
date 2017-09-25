@@ -147,7 +147,7 @@ class EditAddressViewController: ASViewController<EditAddressContentNode> {
     }
     
     func handleSingleTap(recognizer: UITapGestureRecognizer) {
-        self.addressSuggestionsWidget.state = .closed
+        self.addressSuggestionsWidget.isOpened = false
         self.view.endEditing(true)
     }
     
@@ -204,7 +204,7 @@ extension EditAddressViewController {
             return
         }
         
-        addressSuggestionsWidget.state = .opened
+        addressSuggestionsWidget.isOpened = true
         
         let keyboardHeight = getKeyboardHeight(notification: notification)
         let formFieldView = formNode.streetAndHouseFormFieldNode.view
@@ -257,7 +257,7 @@ extension EditAddressViewController: EditAddressFormDelegate, AddressSuggestions
 
     func editAddressFormDidFinishEditing(_ node: EditAddressFormNode, streetAndHouseFormFieldNode formFieldNode: FormFieldNode) {
         isStreetAndHouseFormFieldFirstResponder = false
-        addressSuggestionsWidget.state = .closed
+        addressSuggestionsWidget.isOpened = false
     }
     
     func editAddressFormDidUpdateValue(_ node: EditAddressFormNode, ofStreetAndHouseFormFieldNode formFieldNode: FormFieldNode) {
@@ -265,7 +265,7 @@ extension EditAddressViewController: EditAddressFormDelegate, AddressSuggestions
         dadataSuggestionsProvider.suggestHouseOnly = query.characters.contains(",")
         
         addressSuggestionsWidget.updateSuggestions(forQuery: query)
-        addressSuggestionsWidget.state = .opened
+        addressSuggestionsWidget.isOpened = true
     }
     
     func editAddressFormDidLayout(_ node: EditAddressFormNode, streetAndHouseFormFieldNode formFieldNode: FormFieldNode) {
@@ -290,7 +290,7 @@ extension EditAddressViewController: EditAddressFormDelegate, AddressSuggestions
     
     func addressSuggestionsWidget(_ widget: AddressSuggestionsWidget, didSelectSuggestion suggestion: String) {
         formNode.streetAndHouseFormFieldNode.setValue(suggestion, notifyDelegate: false)
-        addressSuggestionsWidget.state = .closed
+        addressSuggestionsWidget.isOpened = false
         
         if !suggestion.characters.contains(",") {
             formNode.streetAndHouseFormFieldNode.setValue("\(suggestion), ")

@@ -1,11 +1,3 @@
-//
-//  OrderViewController.swift
-//  sushnaya-ios
-//
-//  Created by Igor Kurylenko on 8/24/17.
-//  Copyright © 2017 igor kurilenko. All rights reserved.
-//
-
 import Foundation
 import AsyncDisplayKit
 import pop
@@ -56,12 +48,16 @@ class OrderViewController: ASViewController<OrderNode> {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+     
+        self.view.addGestureRecognizer(tapRecognizer)
         
         subscribeToKeyboardNotifications()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
+        
+        self.view.removeGestureRecognizer(tapRecognizer)
         
         unsubscribeFromKeyboardNotifications()
     }

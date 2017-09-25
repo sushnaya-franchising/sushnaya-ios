@@ -34,7 +34,7 @@ class AddressCellNode: ASCellNode {
     fileprivate let mapImageNode: ASImageNode = {
         let imageNode = ASImageNode()
         imageNode.contentMode = .scaleAspectFit
-        imageNode.imageModificationBlock = ImageNodePrecompositedCornerModification(cornerRadius: 11 * UIScreen.main.scale)
+        imageNode.imageModificationBlock = ImageNodePrecompositedCornerModification(cornerRadius: 11)
         
         return imageNode
     }()

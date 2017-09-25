@@ -1,11 +1,11 @@
 PODS:
-  - Alamofire (4.4.0)
-  - CoreStore (4.0.3)
-  - Crashlytics (3.8.4):
+  - Alamofire (4.5.1)
+  - CoreStore (4.1.1)
+  - Crashlytics (3.8.6):
     - Fabric (~> 1.6.3)
-  - Fabric (1.6.11)
-  - FontAwesome.swift (1.1.1)
-  - libPhoneNumber-iOS (0.9.6)
+  - Fabric (1.6.13)
+  - FontAwesome.swift (1.2.0)
+  - libPhoneNumber-iOS (0.9.10)
   - PaperFold (1.1)
   - PINCache (3.0.1-beta.5):
     - PINCache/Arc-exception-safe (= 3.0.1-beta.5)
@@ -22,26 +22,26 @@ PODS:
   - PINRemoteImage/PINCache (3.0.0-beta.11):
     - PINCache (= 3.0.1-beta.5)
     - PINRemoteImage/Core
-  - pop (1.0.9)
-  - PromiseKit (4.2.0):
-    - PromiseKit/Foundation (= 4.2.0)
-    - PromiseKit/QuartzCore (= 4.2.0)
-    - PromiseKit/UIKit (= 4.2.0)
-  - PromiseKit/Alamofire (4.2.0):
+  - pop (1.0.10)
+  - PromiseKit (4.4.0):
+    - PromiseKit/Foundation (= 4.4.0)
+    - PromiseKit/QuartzCore (= 4.4.0)
+    - PromiseKit/UIKit (= 4.4.0)
+  - PromiseKit/Alamofire (4.4.0):
     - Alamofire (~> 4.0)
     - PromiseKit/CorePromise
-  - PromiseKit/CoreLocation (4.2.0):
+  - PromiseKit/CoreLocation (4.4.0):
     - PromiseKit/CorePromise
-  - PromiseKit/CorePromise (4.2.0)
-  - PromiseKit/Foundation (4.2.0):
+  - PromiseKit/CorePromise (4.4.0)
+  - PromiseKit/Foundation (4.4.0):
     - PromiseKit/CorePromise
-  - PromiseKit/QuartzCore (4.2.0):
+  - PromiseKit/QuartzCore (4.4.0):
     - PromiseKit/CorePromise
-  - PromiseKit/UIKit (4.2.0):
+  - PromiseKit/UIKit (4.4.0):
     - PromiseKit/CorePromise
   - Starscream (2.0.4)
   - SwiftEventBus (2.2.0)
-  - SwiftProtobuf (0.9.903)
+  - SwiftProtobuf (0.9.905)
   - SwiftyJSON (3.1.4)
   - Texture (2.4):
     - Texture/PINRemoteImage (= 2.4)
@@ -54,7 +54,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire
-  - CoreStore (~> 4.0)
+  - CoreStore (from `https://github.com/JohnEstropia/CoreStore.git`, branch `prototype/Swift_3_2`)
   - Crashlytics
   - Fabric
   - FontAwesome.swift
@@ -72,35 +72,41 @@ DEPENDENCIES:
   - YandexMapKit
 
 EXTERNAL SOURCES:
+  CoreStore:
+    :branch: prototype/Swift_3_2
+    :git: https://github.com/JohnEstropia/CoreStore.git
   SwiftEventBus:
     :git: https://github.com/cesarferreira/SwiftEventBus.git
     :tag: 2.2.0
 
 CHECKOUT OPTIONS:
+  CoreStore:
+    :commit: be5da632b314500fc258ed68652894c84df0fa70
+    :git: https://github.com/JohnEstropia/CoreStore.git
   SwiftEventBus:
     :git: https://github.com/cesarferreira/SwiftEventBus.git
     :tag: 2.2.0
 
 SPEC CHECKSUMS:
-  Alamofire: dc44b1600b800eb63da6a19039a0083d62a6a62d
-  CoreStore: 1a1d452be84de445011d1c4c547b98e728287d38
-  Crashlytics: 79e236942ca1e7fc641df1feb9a275360a78ab6a
-  Fabric: 5911403591946b8228ab1c51d98f1d7137e863c6
-  FontAwesome.swift: f4ff5a9199dc3b510eba5bb377e834f159aef358
-  libPhoneNumber-iOS: 36044ed9658b5c11ee3cb3011751e47251d34992
+  Alamofire: 2d95912bf4c34f164fdfc335872e8c312acaea4a
+  CoreStore: 8971549d69b3885cd3542c7cc6a597059635e690
+  Crashlytics: 95d05f4e4c19a771250c4bd9ce344d996de32bbf
+  Fabric: 2fb5676bc811af011a04513451f463dac6803206
+  FontAwesome.swift: 60063e3f19ba4801155d4b0f2334ab7585763ab3
+  libPhoneNumber-iOS: f721ae4d5854bce60934f9fb9b0b28e8e68913cb
   PaperFold: 8eb23a27e4b8a9ee945e56af1617ce98c93ef12c
   PINCache: 98e7b1ef782824ad231ade51987c218b758c30d8
   PINOperation: ac23db44796d4a564ecf9b5ea7163510f579b71d
   PINRemoteImage: d71988f11914a050d6d4cf51efc4ad1de8c0a9d8
-  pop: f667631a5108a2e60d9e8797c9b32ddaf2080bce
-  PromiseKit: 08dfb783c161ddcd95b7912421f14c5113fd8318
+  pop: 82ca6b068ce9278fd350fd9dd09482a0ce9492e6
+  PromiseKit: ecf5fe92275d57ee77c9ede858af47a162e9b97e
   Starscream: df5974ee928b157c8eda8af8de7c620276b7dfcc
   SwiftEventBus: 39cde57d1881f9d6e8afb1f9e41f973e331bf847
-  SwiftProtobuf: d7efc9bea9d3c3bdfc8f6664fe19ee5dc19c04a8
+  SwiftProtobuf: 9dfa3d4109cf844241d5d055885d5c24cfa9ccdc
   SwiftyJSON: c2842d878f95482ffceec5709abc3d05680c0220
   Texture: a5526314780eab35f642d956627f09316b9514e8
   YandexMapKit: 70c6e0819e88f742e3800711f7aedecaf3029300
 
-PODFILE CHECKSUM: bd22592effceb7b537fcfae9f94bf28b35c15efb
+PODFILE CHECKSUM: d01a7288ca1d0c62d24499bc094c708be3f7d9a4
 
 COCOAPODS: 1.2.0

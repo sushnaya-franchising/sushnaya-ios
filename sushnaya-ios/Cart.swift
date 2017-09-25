@@ -1,11 +1,3 @@
-//
-//  Cart.swift
-//  sushnaya-ios
-//
-//  Created by Igor Kurylenko on 4/8/17.
-//  Copyright © 2017 igor kurilenko. All rights reserved.
-//
-
 import Foundation
 import AVFoundation
 
@@ -64,15 +56,7 @@ class Cart: NSObject {
             } else {
                 self.remove()
             }
-        }
-
-        EventBus.onMainThread(self, name: DidAddToCartEvent.name) { _ in
-            AudioServicesPlaySystemSound(1156)
-        }
-
-        EventBus.onMainThread(self, name: DidRemoveFromCartEvent.name) { _ in
-            AudioServicesPlaySystemSound(1155)
-        }
+        }        
     }
 
     func add(product: Product, withPrice price: Price) {

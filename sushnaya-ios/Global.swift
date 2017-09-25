@@ -27,7 +27,7 @@ func ImageNodePrecompositedCornerModification(cornerRadius: CGFloat) -> ((UIImag
 
         UIGraphicsBeginImageContextWithOptions(image.size, false, UIScreen.main.scale)
 
-        UIBezierPath.init(roundedRect: rect, cornerRadius: cornerRadius).addClip()
+        UIBezierPath.init(roundedRect: rect, cornerRadius: cornerRadius * UIScreen.main.scale).addClip()
         image.draw(in: rect)
         let modifiedImage = UIGraphicsGetImageFromCurrentImageContext()
 

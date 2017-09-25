@@ -6,6 +6,7 @@ class ProductEntity: NSManagedObject {
     @NSManaged var serverId: Int32
     @NSManaged var name: String
     @NSManaged var subheading: String?
+    @NSManaged var pageUrl: String?
     @NSManaged var imageUrl: String?
     @NSManaged var imageWidth: NSNumber?
     @NSManaged var imageHeight: NSNumber?
@@ -98,6 +99,7 @@ extension ProductEntity: ImportableUniqueObject {
         self.serverId = source["id"].int32!
         self.name = source["name"].string!
         self.subheading = source["subheading"].string
+        self.pageUrl = source["pageUrl"].string
         self.rank = source["rank"].float!
         self.imageUrl = source["image"]["url"].string
         
@@ -125,10 +127,10 @@ extension ProductEntity: ImportableUniqueObject {
     }
     
     private func deleteDeprecatedPrices(update: [JSON], in transaction: BaseDataTransaction) throws {
-        let currentPricing = transaction.fetchAll(
-            From<PriceEntity>(),
+        guard let currentPricing = transaction.fetchAll(
+            From<ProductPriceEntity>(),
             Where("product.serverId", isEqualTo: self.serverId),
-            OrderBy(.ascending(#keyPath(PriceEntity.serverId)))) ?? [PriceEntity]()
+            OrderBy(.ascending(#keyPath(PriceEntity.serverId)))) else { return }
         
         for currentPrice in currentPricing {
             if update.filter({$0["id"].int32! == currentPrice.serverId}).first == nil {
@@ -146,10 +148,10 @@ extension ProductEntity: ImportableUniqueObject {
     }
     
     private func deleteDeprecatedOptions(update: [JSON], in transaction: BaseDataTransaction) throws {
-        let currentOptions = transaction.fetchAll(
+        guard let currentOptions = transaction.fetchAll(
             From<ProductOptionEntity>(),
             Where("product.serverId", isEqualTo: self.serverId),
-            OrderBy(.ascending(#keyPath(ProductOptionEntity.serverId)))) ?? [ProductOptionEntity]()
+            OrderBy(.ascending(#keyPath(ProductOptionEntity.serverId)))) else { return }
         
         for currentOption in currentOptions {
             if update.filter({$0["id"].int32! == currentOption.serverId}).first == nil {
@@ -160,8 +162,8 @@ extension ProductEntity: ImportableUniqueObject {
     
     func updatePrice(from source: JSON, in transaction: BaseDataTransaction) throws {
         let priceServerId = source["id"].int32!
-        let price = transaction.fetchOne(From<PriceEntity>(), Where("serverId", isEqualTo: priceServerId)) ??
-            transaction.create(Into<PriceEntity>())
+        let price = transaction.fetchOne(From<ProductPriceEntity>(), Where("serverId", isEqualTo: priceServerId)) ??
+            transaction.create(Into<ProductPriceEntity>())
         
         try! price.update(from: source, in: transaction, forProduct: self)
     }

@@ -1,26 +1,22 @@
-//
-//  FoldableNavigationController.swift
-//  Food
-//
-//  Created by Igor Kurylenko on 3/30/17.
-//  Copyright © 2017 igor kurilenko. All rights reserved.
-//
-
 import Foundation
 import AsyncDisplayKit
 import PaperFold
 import UIKit
 
-protocol PaperFoldAsyncView {
-    var onViewUpdated: (() -> ())? { get set }
+@objc protocol PaperFoldAsyncView {
+    @objc optional func stopAnimations()
+    
+    var onPaperFoldViewUpdated: (() -> ())? { get set }
 }
 
-class PaperFoldNavigationController: ASNavigationController, PaperFoldViewDelegate {
-    private var paperFoldView: PaperFoldView!
-    private var rootViewController: UIViewController!
-    private var leftViewController: UIViewController?
-    private var updateScreenShotDelayed: Debouncer!
+class PaperFoldNavigationController: ASNavigationController {
+    fileprivate var paperFoldView: PaperFoldView!
+    fileprivate var rootViewController: UIViewController!
+    fileprivate var leftViewController: UIViewController?
+    fileprivate var updateScreenShotDelayed: Debouncer!
 
+    var onPaperFoldViewDidOffset: (() -> ())?
+    
     func setPaperFoldState(isFolded: Bool, animated: Bool) {
         if isFolded {
             self.paperFoldView.setPaperFoldState(PaperFoldStateDefault, animated: animated)
@@ -70,30 +66,36 @@ class PaperFoldNavigationController: ASNavigationController, PaperFoldViewDelega
         self.leftViewController = leftViewController
     }
 
-    func retakeScreenShot() {
+    func retakeScreenShot() {        
         // DIRTY HACK TO TACKLE ASYNC DISPLAYING. Retake screenshot after some period of time.
         updateScreenShotDelayed.apply()
     }
+}
 
+extension PaperFoldNavigationController: PaperFoldViewDelegate {
     func paperFoldView(_ paperFoldView: Any!, didFoldAutomatically automated: Bool, to paperFoldState: PaperFoldState) {
         switch paperFoldState {
-
+            
         case PaperFoldStateDefault:
             leftViewController?.viewWillDisappear(true)
             leftViewController?.viewDidDisappear(true)
-
+            
             rootViewController.viewWillAppear(true)
             rootViewController.viewDidAppear(true)
-
+            
         case PaperFoldStateLeftUnfolded:
             rootViewController.viewWillDisappear(true)
             rootViewController.viewDidDisappear(true)
-
+            
             leftViewController?.viewWillAppear(true)
             leftViewController?.viewDidAppear(true)
-
+            
         default:
             return
         }
+    }
+    
+    func paperFoldView(_ paperFoldView: Any!, viewDidOffset offset: CGPoint) {
+        onPaperFoldViewDidOffset?()
     }
 }

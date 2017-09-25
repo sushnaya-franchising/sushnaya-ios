@@ -33,18 +33,14 @@ class DadataSuggestionsProvider: AddressSuggestionsProvider {
     }
 }
 
-enum AddressSuggestionsWidgetState {
-    case opened, closed
-}
-
 protocol AddressSuggestionsWidgetDelegate: class {
     func addressSuggestionsWidget(_ widget: AddressSuggestionsWidget, didSelectSuggestion suggestion: String)
 }
 
 class AddressSuggestionsWidget: NSObject {
-    var state: AddressSuggestionsWidgetState = .closed {
+    var isOpened: Bool = false {
         didSet {
-            guard oldValue != state else { return }
+            guard oldValue != isOpened else { return }
             
             updateVisiblity()
         }
@@ -144,7 +140,7 @@ class AddressSuggestionsWidget: NSObject {
     func updateVisiblity() {
         DispatchQueue.main.async {[unowned self] in
             self.tableNode.reloadData()
-            self.tableNode.isHidden = (self.state == .closed || self.suggestionsCount == 0)
+            self.tableNode.isHidden = (!self.isOpened || self.suggestionsCount == 0)
         }
     }
     

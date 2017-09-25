@@ -5,7 +5,7 @@ class DefaultCellNode: ASCellNode {
     let imageNode: ASNetworkImageNode = {
         let imageNode = ASNetworkImageNode()
         imageNode.contentMode = .scaleAspectFit
-        imageNode.imageModificationBlock = ImageNodePrecompositedCornerModification(cornerRadius: 20)
+        imageNode.imageModificationBlock = ImageNodePrecompositedCornerModification(cornerRadius: 10)
         return imageNode
     }()
 

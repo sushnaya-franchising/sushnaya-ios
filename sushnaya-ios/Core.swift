@@ -265,7 +265,7 @@ class Core: ObjectObserver {
         self.settings.removeObserver(self)
     }
     
-    func objectMonitor(_ monitor: ObjectMonitor<UserSettingsEntity>, didUpdateObject object: UserSettingsEntity, changedPersistentKeys: Set<KeyPath>) {
+    func objectMonitor(_ monitor: ObjectMonitor<UserSettingsEntity>, didUpdateObject object: UserSettingsEntity, changedPersistentKeys: Set<RawKeyPath>) {
         if changedPersistentKeys.contains(#keyPath(UserSettingsEntity.selectedMenu)) {
             categories.refetch(
                 Where("menu.serverId", isEqualTo: selectedMenuId ?? -1),

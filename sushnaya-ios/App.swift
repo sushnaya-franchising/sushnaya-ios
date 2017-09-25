@@ -186,7 +186,16 @@ class App: UIResponder, UIApplicationDelegate {
         // MARK: Category events
 
         // MARK: Product events
-
+        
+        // MARK: Cart events
+        
+        EventBus.onMainThread(self, name: DidAddToCartEvent.name) { _ in
+            AudioServicesPlaySystemSound(1156)
+        }
+        
+        EventBus.onMainThread(self, name: DidRemoveFromCartEvent.name) { _ in
+            AudioServicesPlaySystemSound(1155)
+        }
     }
 }
 
@@ -222,12 +231,12 @@ extension App {
                 FoodServiceRest.selectMenu(menuId: menu.serverId, authToken: self.authToken!)
                 
             }.then { menuJSON in
-                    DidSelectMenuEvent.fire(menuJSON: menuJSON)
+                DidSelectMenuEvent.fire(menuJSON: menuJSON)
                     
             }.catch { error in
-                    print(error)
-                    // todo: log error
-                    presentSelectMenuViewController()
+                print(error)
+                // todo: log error
+                presentSelectMenuViewController()
             }
         }.catch { error in
             presentSelectMenuViewController()

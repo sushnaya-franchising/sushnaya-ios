@@ -41,12 +41,11 @@
         <relationship name="categories" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="MenuCategoryEntity" inverseName="menu" inverseEntity="MenuCategoryEntity" syncable="YES"/>
         <relationship name="locality" maxCount="1" deletionRule="Cascade" destinationEntity="LocalityEntity" inverseName="menu" inverseEntity="LocalityEntity" syncable="YES"/>
     </entity>
-    <entity name="PriceEntity" representedClassName=".PriceEntity" syncable="YES">
-        <attribute name="currencyLocale" optional="YES" attributeType="String" syncable="YES"/>
+    <entity name="PriceEntity" representedClassName=".PriceEntity" isAbstract="YES" syncable="YES">
+        <attribute name="currencyLocale" attributeType="String" syncable="YES"/>
         <attribute name="modifierName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="serverId" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="value" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
-        <relationship name="product" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ProductEntity" inverseName="pricing" inverseEntity="ProductEntity" syncable="YES"/>
     </entity>
     <entity name="ProductEntity" representedClassName=".ProductEntity" syncable="YES">
         <attribute name="imageHeight" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
@@ -54,16 +53,26 @@
         <attribute name="imageWidth" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="isRecommended" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="name" attributeType="String" syncable="YES"/>
+        <attribute name="pageUrl" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="rank" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="serverId" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="subheading" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="category" maxCount="1" deletionRule="Nullify" destinationEntity="MenuCategoryEntity" inverseName="products" inverseEntity="MenuCategoryEntity" syncable="YES"/>
         <relationship name="options" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="ProductOptionEntity" inverseName="product" inverseEntity="ProductOptionEntity" syncable="YES"/>
-        <relationship name="pricing" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="PriceEntity" inverseName="product" inverseEntity="PriceEntity" syncable="YES"/>
+        <relationship name="pricing" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="ProductPriceEntity" inverseName="product" inverseEntity="ProductPriceEntity" syncable="YES"/>
     </entity>
     <entity name="ProductOptionEntity" representedClassName=".ProductOptionEntity" syncable="YES">
+        <attribute name="name" attributeType="String" syncable="YES"/>
+        <attribute name="rank" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="serverId" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
-        <relationship name="product" maxCount="1" deletionRule="Nullify" destinationEntity="ProductEntity" inverseName="options" inverseEntity="ProductEntity" syncable="YES"/>
+        <relationship name="price" maxCount="1" deletionRule="Nullify" destinationEntity="ProductOptionPriceEntity" inverseName="productOption" inverseEntity="ProductOptionPriceEntity" syncable="YES"/>
+        <relationship name="product" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ProductEntity" inverseName="options" inverseEntity="ProductEntity" syncable="YES"/>
+    </entity>
+    <entity name="ProductOptionPriceEntity" representedClassName=".ProductOptionPriceEntity" parentEntity="PriceEntity" syncable="YES">
+        <relationship name="productOption" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ProductOptionEntity" inverseName="price" inverseEntity="ProductOptionEntity" syncable="YES"/>
+    </entity>
+    <entity name="ProductPriceEntity" representedClassName=".ProductPriceEntity" parentEntity="PriceEntity" syncable="YES">
+        <relationship name="product" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ProductEntity" inverseName="pricing" inverseEntity="ProductEntity" syncable="YES"/>
     </entity>
     <entity name="UserSettingsEntity" representedClassName=".UserSettingsEntity" syncable="YES">
         <attribute name="authToken" optional="YES" attributeType="String" syncable="YES"/>
@@ -74,9 +83,11 @@
         <element name="LocalityEntity" positionX="-36" positionY="81" width="128" height="210"/>
         <element name="MenuCategoryEntity" positionX="-27" positionY="108" width="128" height="165"/>
         <element name="MenuEntity" positionX="-18" positionY="90" width="128" height="90"/>
-        <element name="PriceEntity" positionX="-9" positionY="126" width="128" height="120"/>
-        <element name="ProductEntity" positionX="-18" positionY="117" width="128" height="210"/>
-        <element name="ProductOptionEntity" positionX="-27" positionY="135" width="128" height="75"/>
+        <element name="PriceEntity" positionX="-9" positionY="126" width="128" height="105"/>
+        <element name="ProductEntity" positionX="-18" positionY="117" width="128" height="225"/>
+        <element name="ProductOptionEntity" positionX="-27" positionY="135" width="128" height="120"/>
         <element name="UserSettingsEntity" positionX="0" positionY="99" width="128" height="75"/>
+        <element name="ProductPriceEntity" positionX="-27" positionY="144" width="128" height="60"/>
+        <element name="ProductOptionPriceEntity" positionX="-18" positionY="153" width="128" height="60"/>
     </elements>
 </model>
