@@ -15,6 +15,9 @@ class LocalityEntity: NSManagedObject {
     @NSManaged var upperLatitude: Double
     @NSManaged var upperLongitude: Double
 
+    @NSManaged var addedAt: Int64
+    @NSManaged var updatedAt: Int64
+    
     var boundedBy: (lowerCorner: CLLocationCoordinate2D, upperCorner: CLLocationCoordinate2D) {
         get {
             return (lowerCorner: CLLocationCoordinate2D(latitude: lowerLatitude, longitude: lowerLongitude),
@@ -60,6 +63,8 @@ extension LocalityEntity {
     
     func update(from source: JSON, in transaction: BaseDataTransaction) throws {
         self.serverId = source["id"].int32!
+        self.addedAt = source["addedAt"].int64!
+        self.updatedAt = source["updatedAt"].int64!
         self.name = source["name"].string!
         self.descr = source["description"].string!
         self.fiasId = source["fiasId"].string!

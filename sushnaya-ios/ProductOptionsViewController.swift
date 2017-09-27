@@ -34,7 +34,7 @@ struct ProductOptionsContext {
             amount += $0.price.value
         }
         
-        return PriceEntity.formattedPrice(value: amount, currencyLocale: currencyLocale)
+        return PriceEntity.formattedPrice(value: amount * Double(count), currencyLocale: currencyLocale)
     }
 }
 
@@ -73,11 +73,15 @@ class ProductOptionsViewController: ASViewController<ProductOptionsNode> {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        subscribeToKeyboardNotifications()
+        
         self.view.addGestureRecognizer(tapRecognizer)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        
+        unsubscribeFromKeyboardNotifications()
         
         self.view.removeGestureRecognizer(tapRecognizer)
     }
@@ -89,11 +93,13 @@ class ProductOptionsViewController: ASViewController<ProductOptionsNode> {
 
 extension ProductOptionsViewController: ProductOptionsDelegate {
     func productOptionsDidUpdateCount(count: Int) {
-        if count == 0 {
-            dismiss(animated: true)
+        guard count > 0 else {
+            return dismiss(animated: true)
         }
+        
+        context.count = count
     }
-
+    
     func productOptionsDidSubmit() {
         // todo: add to cart
     }
@@ -107,8 +113,6 @@ extension ProductOptionsViewController: ProductOptionCellNodeDelegate {
         currentOptions.append(option)
         
         context.selectedOptions = currentOptions
-        
-        self.node.context = context
     }
     
     func productOptionsNodeDidUncheck(node: ProductOptionCellNode, option: ProductOptionEntity) {
@@ -117,9 +121,7 @@ extension ProductOptionsViewController: ProductOptionCellNodeDelegate {
         var currentOptions = context.selectedOptions!
         currentOptions.remove(at: index)
         
-        context.selectedOptions = currentOptions
-        
-        self.node.context = context
+        context.selectedOptions = currentOptions        
     }
 }
 
@@ -160,3 +162,45 @@ extension ProductOptionsViewController: ObjectObserver {
         self.dismiss(animated: true)
     }
 }
+
+extension ProductOptionsViewController {
+    func subscribeToKeyboardNotifications() {
+        notificationCenter.addObserver(self, selector: #selector(keyboardWillShow(notification:)),
+                                       name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        
+        notificationCenter.addObserver(self, selector: #selector(keyboardWillHide(notification:)),
+                                       name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+    }
+    
+    func unsubscribeFromKeyboardNotifications() {
+        notificationCenter.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        
+        notificationCenter.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+    }
+    
+    func keyboardWillShow(notification: NSNotification) {
+        let keyboardHeight = getKeyboardHeight(notification: notification)
+        
+        node.contentNode.toolbarOffsetBottom = keyboardHeight
+        
+        let frame = node.toolbarNode.frame.offsetBy(dx: 0, dy: -keyboardHeight)
+        node.toolbarNode.frame = frame
+    }
+    
+    func keyboardWillHide(notification: NSNotification) {
+        let keyboardHeight = getKeyboardHeight(notification: notification)
+        
+        node.contentNode.toolbarOffsetBottom = 0
+        
+        let frame = node.toolbarNode.frame.offsetBy(dx: 0, dy: keyboardHeight)
+        node.toolbarNode.frame = frame
+    }
+    
+    func getKeyboardHeight(notification: NSNotification) -> CGFloat {
+        let userInfo = notification.userInfo
+        let keyboardSize = userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue
+        
+        return keyboardSize.cgRectValue.height
+    }
+}
+

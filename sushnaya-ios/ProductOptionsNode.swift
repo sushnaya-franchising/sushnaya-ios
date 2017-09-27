@@ -29,7 +29,7 @@ class ProductOptionsNode: ASDisplayNode {
         }
     }
     
-    private var contentNode = ProductOptionsContentNode()
+     var contentNode = ProductOptionsContentNode()
     
     var toolbarNode: ProductOptionsToolbarNode {
         return contentNode.toolbarNode
@@ -84,9 +84,6 @@ class ProductOptionsNode: ASDisplayNode {
 
 class ProductOptionsContentNode: ASDisplayNode {
     
-    let headerHeight:CGFloat = 64
-    let toolbarHeight:CGFloat = 128
-    
     var context: ProductOptionsContext? {
         didSet {
             headerNode.context = context
@@ -107,6 +104,8 @@ class ProductOptionsContentNode: ASDisplayNode {
     fileprivate let tableNode = ASTableNode()
     fileprivate let toolbarNode = ProductOptionsToolbarNode()
     
+    var toolbarOffsetBottom: CGFloat = 0
+    
     override init() {
         super.init()
         
@@ -123,11 +122,14 @@ class ProductOptionsContentNode: ASDisplayNode {
         let bottomInset = toolbarNode.calculatedSize.height
         
         tableNode.view.contentInset = UIEdgeInsets(top: topInset, left: 0, bottom: bottomInset, right: 0)
+        toolbarNode.frame = toolbarNode.frame.offsetBy(dx: 0, dy: -toolbarOffsetBottom)
     }
     
     override func didLoad() {
         super.didLoad()
         tableNode.view.separatorStyle = .none
+        tableNode.view.showsHorizontalScrollIndicator = false
+        tableNode.view.showsVerticalScrollIndicator = false
     }
     
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
@@ -151,7 +153,7 @@ class ProductOptionsContentNode: ASDisplayNode {
 class ProductOptionsHeaderNode: ASDisplayNode {
     var context: ProductOptionsContext? {
         didSet {
-            controlsNode.reset()
+            controlsNode.context = context
             setupNodes()
             setNeedsLayout()
         }
@@ -225,6 +227,12 @@ class ProductOptionsHeaderControlsNode: ASDisplayNode {
                                                     attributes: [NSFontAttributeName: UIFont.fontAwesome(ofSize: 16),
                                                                  NSForegroundColorAttributeName: PaperColor.Gray])
     
+    var context: ProductOptionsContext? {
+        didSet {
+            addControlNode.context = context
+        }
+    }
+    
     let removeButtonNode = ASButtonNode()
     let addControlNode = ProductOptionsAddControlNode()
     
@@ -237,23 +245,13 @@ class ProductOptionsHeaderControlsNode: ASDisplayNode {
         self.backgroundColor = PaperColor.White
         
         addControlNode.setTargetClosure { [unowned self] _ in
-            self.addControlNode.count += 1
-            
-            self.delegate?.productOptionsDidUpdateCount(count: self.addControlNode.count)
+            self.delegate?.productOptionsDidUpdateCount(count: self.addControlNode.count + 1)
         }
         
         removeButtonNode.setAttributedTitle(ProductOptionsHeaderControlsNode.MinusIconString, for: .normal)
         removeButtonNode.setTargetClosure { [unowned self] _ in
-            guard self.addControlNode.count > 0 else { return }
-            
-            self.addControlNode.count -= 1
-            
-            self.delegate?.productOptionsDidUpdateCount(count: self.addControlNode.count)
+            self.delegate?.productOptionsDidUpdateCount(count: self.addControlNode.count - 1)
         }
-    }
-    
-    func reset() {
-        addControlNode.count = 1
     }
     
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
@@ -270,6 +268,14 @@ class ProductOptionsHeaderControlsNode: ASDisplayNode {
 class ProductOptionsAddControlNode: ASControlNode {
     let countTextNode = ASTextNode()
     let addTextNode = ASTextNode()
+    
+    var context: ProductOptionsContext? {
+        didSet {
+            guard let context = context else { return }
+            
+            count = context.count
+        }
+    }
     
     var count = 1 {
         didSet {
@@ -337,16 +343,16 @@ class ProductOptionsAddControlNode: ASControlNode {
 }
 
 class ProductOptionsToolbarNode: ASDisplayNode {
-    
+
     var context: ProductOptionsContext? {
         didSet {
             setupNodes()
             setNeedsLayout()
         }
     }
-    
+
     weak var delegate: ProductOptionsDelegate?
-    
+
     let sumTitleTextNode = ASTextNode()
     let sumValueTextNode = ASTextNode()
     let commentFormFieldNode = FormFieldNode(label: "Комментарий повару")
@@ -385,10 +391,7 @@ class ProductOptionsToolbarNode: ASDisplayNode {
     }
     
     private func setupCommentFormFieldNode() {
-        if let comment = context?.comment {
-            commentFormFieldNode.setValue(comment)
-        }
-        
+        commentFormFieldNode.setValue(context?.comment)
         commentFormFieldNode.returnKeyType = .done
         commentFormFieldNode.onReturn = { [unowned self] in
             self.commentFormFieldNode.resignFirstResponder()
@@ -493,7 +496,7 @@ class ProductOptionCellNode: ASCellNode {
         modifierTextNode = ASTextNode()
         modifierTextNode?.attributedText =  NSAttributedString(
             string: modifierName,
-            attributes: [NSFontAttributeName: UIFont.fontAwesome(ofSize: 14),
+            attributes: [NSFontAttributeName: UIFont.fontAwesome(ofSize: 10),
                          NSForegroundColorAttributeName: PaperColor.Gray])
     }
     
@@ -516,6 +519,8 @@ class ProductOptionCellNode: ASCellNode {
         spacer.style.flexGrow = 1
         
         addButtonNode.style.preferredSize = CGSize(width: 44, height: 44)
+        
+        nameTextNode.style.flexShrink = 1
         
         let layout = ASStackLayoutSpec.horizontal()
         layout.spacing = 8

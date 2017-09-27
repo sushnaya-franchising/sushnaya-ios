@@ -101,11 +101,6 @@ extension OrderViewController: OrderWithDeliveryFormDelegate {
 }
 
 extension OrderViewController {
-    
-    var notificationCenter: NotificationCenter {
-        return NotificationCenter.default
-    }
-    
     func subscribeToKeyboardNotifications() {
         notificationCenter.addObserver(self, selector: #selector(keyboardWillShow(notification:)),
                                        name: NSNotification.Name.UIKeyboardWillShow, object: nil)

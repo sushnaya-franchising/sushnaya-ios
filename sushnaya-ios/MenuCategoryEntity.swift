@@ -5,11 +5,15 @@ import SwiftyJSON
 
 class MenuCategoryEntity: NSManagedObject {
     @NSManaged var serverId: Int32
+    @NSManaged var serverProductCount: Int32
     @NSManaged var name: String
     @NSManaged var imageUrl: String?
     @NSManaged var imageWidth: NSNumber?
     @NSManaged var imageHeight: NSNumber?
     @NSManaged var rank: Float
+    
+    @NSManaged var addedAt: Int64
+    @NSManaged var updatedAt: Int64
     
     @NSManaged var menu: MenuEntity?
     @NSManaged var products: [ProductEntity]?
@@ -69,6 +73,9 @@ extension MenuCategoryEntity: ImportableUniqueObject {
     func update(from source: ImportSource, in transaction: BaseDataTransaction, forMenu menu: MenuEntity) throws {
         self.menu = menu
         self.serverId = source["id"].int32!
+        self.addedAt = source["addedAt"].int64!
+        self.updatedAt = source["updatedAt"].int64!
+        self.serverProductCount = source["productCount"].int32!
         self.name = source["name"].string!
         self.rank = source["rank"].float!
         self.imageUrl = source["image"]["url"].string

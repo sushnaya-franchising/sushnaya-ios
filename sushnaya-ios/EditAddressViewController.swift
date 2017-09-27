@@ -186,10 +186,6 @@ class EditAddressViewController: ASViewController<EditAddressContentNode> {
 }
 
 extension EditAddressViewController {
-    var notificationCenter: NotificationCenter {
-        return NotificationCenter.default
-    }
-    
     func subscribeToKeyboardNotifications() {
         notificationCenter.addObserver(self, selector: #selector(keyboardDidShow(notification:)),
                                        name: NSNotification.Name.UIKeyboardDidShow, object: nil)

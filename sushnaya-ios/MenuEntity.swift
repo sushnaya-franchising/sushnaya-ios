@@ -7,6 +7,9 @@ class MenuEntity: NSManagedObject {
     @NSManaged var serverId: Int32
     @NSManaged var locality: LocalityEntity
     
+    @NSManaged var addedAt: Int64
+    @NSManaged var updatedAt: Int64
+    
     @NSManaged var categories: [MenuCategoryEntity]?
 }
 
@@ -29,6 +32,8 @@ extension MenuEntity: ImportableUniqueObject {
     
     func update(from source: JSON, in transaction: BaseDataTransaction) throws {
         self.serverId = source["id"].int32!
+        self.addedAt = source["addedAt"].int64!
+        self.updatedAt = source["updatedAt"].int64!
         
         self.locality = transaction.edit(self.locality) ??
             transaction.create(Into<LocalityEntity>())

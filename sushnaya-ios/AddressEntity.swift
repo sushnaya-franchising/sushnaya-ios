@@ -14,6 +14,9 @@ class AddressEntity: NSManagedObject {
     @NSManaged var orderCount: Int32
     @NSManaged var timestamp: NSNumber?
 
+    @NSManaged var addedAt: NSNumber?
+    @NSManaged var updatedAt: NSNumber?
+    
     @NSManaged var locality: LocalityEntity
 
     var displayName: String {
@@ -54,6 +57,18 @@ extension AddressEntity: ImportableUniqueObject {
     }
     
     func update(from source: ImportSource, in transaction: BaseDataTransaction) throws {
+        if let serverId = source["id"].int64 {
+            self.serverId = NSNumber(value: serverId)
+        }
+        
+        if let addedAt = source["addedAt"].int64 {
+            self.addedAt = NSNumber(value: addedAt)
+        }
+        
+        if let updatedAt = source["updatedAt"].int64 {
+            self.updatedAt = NSNumber(value: updatedAt)
+        }
+        
         // todo: impl
     }
 }

@@ -1,11 +1,3 @@
-//
-//  CGFloatExt.swift
-//  Food
-//
-//  Created by Igor Kurylenko on 3/28/17.
-//  Copyright © 2017 igor kurilenko. All rights reserved.
-//
-
 import UIKit
 
 extension Float {
@@ -21,7 +13,6 @@ extension Float {
         return CFTimeInterval(self)
     }
 }
-
 
 extension CGFloat {
     var asNSNumber: NSNumber {

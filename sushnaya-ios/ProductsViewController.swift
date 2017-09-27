@@ -176,9 +176,12 @@ extension ProductsViewController: ASCollectionDataSource, ASCollectionDelegate {
     }
 
     func collectionNode(_ collectionNode: ASCollectionNode, nodeBlockForItemAt indexPath: IndexPath) -> ASCellNodeBlock {
+        let product  = self.products[indexPath.row]
+        
         return { [unowned self] _ in
-            let cellNode = ProductCellNode(product: self.products[indexPath.row])
+            let cellNode = ProductCellNode(product: product)
             cellNode.delegate = self
+            
             return cellNode
         }
     }

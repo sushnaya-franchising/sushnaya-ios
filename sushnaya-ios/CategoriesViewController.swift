@@ -145,8 +145,10 @@ extension CategoriesViewController: ASCollectionDelegate, ASCollectionDataSource
     }    
     
     func collectionNode(_ collectionNode: ASCollectionNode, nodeBlockForItemAt indexPath: IndexPath) -> ASCellNodeBlock {
-        return { [unowned self] _ in
-            DefaultCellNode(context: CategoryCellContext(self.categories[indexPath.row]))
+        let category = self.categories[indexPath.row]
+        
+        return {
+            DefaultCellNode(context: CategoryCellContext(category))
         }
     }
     

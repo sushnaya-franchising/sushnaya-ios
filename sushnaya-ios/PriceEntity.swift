@@ -8,6 +8,9 @@ class PriceEntity: NSManagedObject {
     @NSManaged var modifierName: String?
     @NSManaged var currencyLocale: String
     
+    @NSManaged var addedAt: Int64
+    @NSManaged var updatedAt: Int64
+    
     var plain: Price {
         return Price(value: value,
                      currencyLocale: currencyLocale,
@@ -69,6 +72,8 @@ extension ProductPriceEntity: ImportableUniqueObject {
     
     func update(from source: JSON, in transaction: BaseDataTransaction, forProduct product: ProductEntity) throws {
         self.serverId = source["id"].int32!
+        self.addedAt = source["addedAt"].int64!
+        self.updatedAt = source["updatedAt"].int64!
         self.value = source["value"].double!
         self.currencyLocale = source["currencyLocale"].string!
         self.modifierName = source["modifierName"].string
@@ -105,6 +110,8 @@ extension ProductOptionPriceEntity: ImportableUniqueObject {
     
     func update(from source: JSON, in transaction: BaseDataTransaction, forProductOption option: ProductOptionEntity) throws {
         self.serverId = source["id"].int32!
+        self.addedAt = source["addedAt"].int64!
+        self.updatedAt = source["updatedAt"].int64!
         self.value = source["value"].double!
         self.currencyLocale = source["currencyLocale"].string!
         self.modifierName = source["modifierName"].string

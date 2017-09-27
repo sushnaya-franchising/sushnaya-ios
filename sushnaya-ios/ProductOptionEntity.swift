@@ -7,6 +7,9 @@ class ProductOptionEntity: NSManagedObject {
     @NSManaged var name: String
     @NSManaged var rank: Float
     
+    @NSManaged var addedAt: Int64
+    @NSManaged var updatedAt: Int64
+    
     @NSManaged var price: ProductOptionPriceEntity
     @NSManaged var product: ProductEntity
 }
@@ -40,6 +43,8 @@ extension ProductOptionEntity: ImportableUniqueObject {
     
     func update(from source: JSON, in transaction: BaseDataTransaction, forProduct product: ProductEntity) throws {
         self.serverId = source["id"].int32!
+        self.addedAt = source["addedAt"].int64!
+        self.updatedAt = source["updatedAt"].int64!
         self.name = source["name"].string!        
         self.rank = source["rank"].float!
         

@@ -13,6 +13,9 @@ class ProductEntity: NSManagedObject {
     @NSManaged var isRecommended: Bool
     @NSManaged var rank: Float
     
+    @NSManaged var addedAt: Int64
+    @NSManaged var updatedAt: Int64
+    
     @NSManaged var options: [ProductOptionEntity]?
     @NSManaged var pricing: [PriceEntity]
     @NSManaged var category: MenuCategoryEntity
@@ -97,6 +100,8 @@ extension ProductEntity: ImportableUniqueObject {
     func update(from source: JSON, in transaction: BaseDataTransaction, forCategory category: MenuCategoryEntity) throws {
         self.category = category
         self.serverId = source["id"].int32!
+        self.addedAt = source["addedAt"].int64!
+        self.updatedAt = source["updatedAt"].int64!
         self.name = source["name"].string!
         self.subheading = source["subheading"].string
         self.pageUrl = source["pageUrl"].string
