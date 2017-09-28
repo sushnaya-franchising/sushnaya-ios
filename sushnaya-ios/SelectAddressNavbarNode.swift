@@ -30,6 +30,14 @@ class SelectAddressNavbarNode: ASDisplayNode {
         
         self.automaticallyManagesSubnodes = true
         
+        editButtonNode.setTargetClosure { [unowned self] _ in
+            self.delegate?.selectAddressNavbarDidTapEditButton(node: self)
+        }
+        
+        backButtonNode.setTargetClosure { [unowned self] _ in
+            self.delegate?.selectAddressNavbarDidTapBackButton(node: self)
+        }
+        
         setupNodes()
     }
     
@@ -45,9 +53,6 @@ class SelectAddressNavbarNode: ASDisplayNode {
         editButtonNode.setAttributedTitle(SelectAddressNavbarNode.EditIconString, for: .normal)
         editButtonNode.setBackgroundImage(UIImage.init(color: PaperColor.Gray100), for: .selected)
         editButtonNode.setAttributedTitle(SelectAddressNavbarNode.EditDarkIconString, for: .selected)
-        editButtonNode.setTargetClosure { [unowned self] _ in
-            self.delegate?.selectAddressNavbarDidTapEditButton(node: self)
-        }
     }
     
     private func setupTitleNode() {
@@ -63,9 +68,6 @@ class SelectAddressNavbarNode: ASDisplayNode {
     
     private func setupBackButtonNode() {
         backButtonNode.setAttributedTitle(SelectAddressNavbarNode.DismissIconString, for: .normal)
-        backButtonNode.setTargetClosure { [unowned self] _ in
-            self.delegate?.selectAddressNavbarDidTapBackButton(node: self)
-        }
     }
     
     private func setupBackgroundNode() {

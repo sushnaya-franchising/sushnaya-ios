@@ -49,9 +49,9 @@ class EditAddressFormNode: ASCellNode {
     }()
     
     let streetAndHouseFormFieldNode = FormFieldNode(label: "Улица, дом", isRequired: true)
-    let apartmentFormFieldNode = FormFieldNode(label: "Квартира/Офис")
-    let entranceFormFieldNode = FormFieldNode(label: "Подъезд")
-    let floorFormFieldNode = FormFieldNode(label: "Этаж", maxValueLength: 16)
+    let apartmentFormFieldNode = FormFieldNode(label: "Квартира/Офис", maxValueLength: 64)
+    let entranceFormFieldNode = FormFieldNode(label: "Подъезд", maxValueLength: 64)
+    let floorFormFieldNode = FormFieldNode(label: "Этаж", maxValueLength: 64)
     let commentFormFieldNode = FormFieldNode(label: "Комментарий")
     
     fileprivate let submitButton = ASButtonNode()        
@@ -61,6 +61,18 @@ class EditAddressFormNode: ASCellNode {
     override init() {
         super.init()
         self.automaticallyManagesSubnodes = true
+        
+        submitButton.setTargetClosure { [unowned self] _ in
+            self.view.endEditing(true)
+            
+            guard self.streetAndHouseFormFieldNode.isValid else {
+                self.onStreetAndHouseConstraintViolation()
+                return
+            }
+            
+            self.delegate?.editAddressFormDidSubmit(self)
+        }
+        
         setupNodes()
         subscribeToKeyboardNotifications()
     }
@@ -164,16 +176,6 @@ class EditAddressFormNode: ASCellNode {
         ])
         submitButton.setAttributedTitle(title, for: .normal)
         submitButton.backgroundColor = PaperColor.Gray300
-        submitButton.setTargetClosure { [unowned self] _ in
-            self.view.endEditing(true)
-            
-            guard self.streetAndHouseFormFieldNode.isValid else {
-                self.onStreetAndHouseConstraintViolation()
-                return
-            }                        
-            
-            self.delegate?.editAddressFormDidSubmit(self)
-        }
     }
     
     private func setupScrollNode() {

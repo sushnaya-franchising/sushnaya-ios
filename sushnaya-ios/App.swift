@@ -13,8 +13,7 @@ class App: UIResponder, UIApplicationDelegate {
     static let brandName = "Сушная" // todo: move to settings
 
     var window: UIWindow?
-
-    let cart = Cart()
+    
     let core: Core = Core.Singleton
 
     private let foodServiceWebsocket = FoodServiceWebSocket()
@@ -30,15 +29,15 @@ class App: UIResponder, UIApplicationDelegate {
     }
     
     var selectedMenu: MenuEntity? {
-        return core.settings.object?.selectedMenu
+        return core.settingsMonitor.object?.selectedMenu
     }
 
     var authToken: String? {
-        return core.settings.object?.authToken
+        return core.settingsMonitor.object?.authToken
     }
 
     var isLoggedIn: Bool {
-        return core.settings.object?.authToken != nil
+        return core.settingsMonitor.object?.authToken != nil
     }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {

@@ -15,6 +15,24 @@
         <attribute name="updatedAt" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <relationship name="locality" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="LocalityEntity" syncable="YES"/>
     </entity>
+    <entity name="CartUnitEntity" representedClassName=".CartUnitEntity" syncable="YES">
+        <attribute name="addedAt" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="serverAddedAt" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="serverId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="serverUpdatedAt" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <relationship name="options" toMany="YES" deletionRule="Cascade" destinationEntity="CartUnitOptionEntity" inverseName="cartUnit" inverseEntity="CartUnitOptionEntity" syncable="YES"/>
+        <relationship name="price" maxCount="1" deletionRule="Nullify" destinationEntity="ProductPriceEntity" syncable="YES"/>
+        <relationship name="product" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ProductEntity" syncable="YES"/>
+    </entity>
+    <entity name="CartUnitOptionEntity" representedClassName=".CartUnitOptionEntity" syncable="YES">
+        <attribute name="addedAt" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="serverAddedAt" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="serverId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="serverUpdatedAt" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <relationship name="cartUnit" maxCount="1" deletionRule="Nullify" destinationEntity="CartUnitEntity" inverseName="options" inverseEntity="CartUnitEntity" syncable="YES"/>
+        <relationship name="price" maxCount="1" deletionRule="Nullify" destinationEntity="ProductOptionPriceEntity" syncable="YES"/>
+        <relationship name="productOption" maxCount="1" deletionRule="Nullify" destinationEntity="ProductOptionEntity" syncable="YES"/>
+    </entity>
     <entity name="LocalityEntity" representedClassName=".LocalityEntity" syncable="YES">
         <attribute name="addedAt" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="descr" attributeType="String" syncable="YES"/>
@@ -80,11 +98,11 @@
         <attribute name="rank" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="serverId" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="updatedAt" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
-        <relationship name="price" maxCount="1" deletionRule="Nullify" destinationEntity="ProductOptionPriceEntity" inverseName="productOption" inverseEntity="ProductOptionPriceEntity" syncable="YES"/>
+        <relationship name="pricing" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="ProductOptionPriceEntity" inverseName="productOption" inverseEntity="ProductOptionPriceEntity" syncable="YES"/>
         <relationship name="product" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ProductEntity" inverseName="options" inverseEntity="ProductEntity" syncable="YES"/>
     </entity>
     <entity name="ProductOptionPriceEntity" representedClassName=".ProductOptionPriceEntity" parentEntity="PriceEntity" syncable="YES">
-        <relationship name="productOption" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ProductOptionEntity" inverseName="price" inverseEntity="ProductOptionEntity" syncable="YES"/>
+        <relationship name="productOption" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ProductOptionEntity" inverseName="pricing" inverseEntity="ProductOptionEntity" syncable="YES"/>
     </entity>
     <entity name="ProductPriceEntity" representedClassName=".ProductPriceEntity" parentEntity="PriceEntity" syncable="YES">
         <relationship name="product" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ProductEntity" inverseName="pricing" inverseEntity="ProductEntity" syncable="YES"/>
@@ -95,6 +113,8 @@
     </entity>
     <elements>
         <element name="AddressEntity" positionX="-54" positionY="-9" width="128" height="240"/>
+        <element name="CartUnitEntity" positionX="-18" positionY="153" width="128" height="150"/>
+        <element name="CartUnitOptionEntity" positionX="-27" positionY="144" width="128" height="150"/>
         <element name="LocalityEntity" positionX="-36" positionY="81" width="128" height="240"/>
         <element name="MenuCategoryEntity" positionX="-27" positionY="108" width="128" height="210"/>
         <element name="MenuEntity" positionX="-18" positionY="90" width="128" height="120"/>

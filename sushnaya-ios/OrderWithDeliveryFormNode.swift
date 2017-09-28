@@ -42,6 +42,15 @@ class OrderWithDeliveryFormNode: ASCellNode {
         
         super.init()
         self.automaticallyManagesSubnodes = true
+        
+        submitButtonNode.setTargetClosure { [unowned self] _ in
+            self.view.endEditing(true)
+            
+            // todo: validate
+            
+            self.delegate?.orderWithDeliveryFormDidSubmit(self)
+        }
+        
         setupNodes()        
     }
     
@@ -61,13 +70,6 @@ class OrderWithDeliveryFormNode: ASCellNode {
         ])
         submitButtonNode.setAttributedTitle(title, for: .normal)
         submitButtonNode.backgroundColor = PaperColor.Gray200
-        submitButtonNode.setTargetClosure { [unowned self] _ in
-            self.view.endEditing(true)
-            
-            // todo: validate
-            
-            self.delegate?.orderWithDeliveryFormDidSubmit(self)
-        }
     }
     
     override func didLoad() {

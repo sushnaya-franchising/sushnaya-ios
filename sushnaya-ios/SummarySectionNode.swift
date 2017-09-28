@@ -1,15 +1,11 @@
-//
-//  OrderFormSummarySectionNode.swift
-//  sushnaya-ios
-//
-//  Created by Igor Kurylenko on 5/18/17.
-//  Copyright © 2017 igor kurilenko. All rights reserved.
-//
-
 import Foundation
 import AsyncDisplayKit
 
 class OrderFormSummarySectionNode: ASDisplayNode {
+    let currencyLocale = "ru_RU" // todo: move selected currency locale to user settings
+    
+    let deliveryPrice = 0.0 // todo: get delivery price from server
+    
     fileprivate var titleTextNode = ASTextNode()
     fileprivate let iconImageNode: ASImageNode = {
         let imageNode = ASImageNode()
@@ -58,7 +54,10 @@ class OrderFormSummarySectionNode: ASDisplayNode {
     }
     
     private func setupSubtotalValueTextNode() {
-        subtotalValueTextNode.attributedText = NSAttributedString.attributedString(string: cart.sum.formattedValue, fontSize: 14, color: PaperColor.Gray, bold: false)
+        let sum = cart.sum(forCurrencyLocale: currencyLocale)
+        let formattedSum = PriceEntity.formattedPrice(value: sum, currencyLocale: currencyLocale)
+        subtotalValueTextNode.attributedText = NSAttributedString.attributedString(
+            string: formattedSum, fontSize: 14, color: PaperColor.Gray, bold: false)
     }
     
     private func setupDeliveryPriceTitleTextNode() {
@@ -66,7 +65,9 @@ class OrderFormSummarySectionNode: ASDisplayNode {
     }
     
     private func setupDeliveryPriceValueTextNode() {
-        deliveryPriceValueTextNode.attributedText = NSAttributedString.attributedString(string: Price(value: 0, currencyLocale: "ru_RU", modifierName: nil).formattedValue, fontSize: 14, color: PaperColor.Gray, bold: false)
+        let deliveryFormattedPrice = PriceEntity.formattedPrice(value: deliveryPrice, currencyLocale: currencyLocale)
+        deliveryPriceValueTextNode.attributedText = NSAttributedString.attributedString(
+            string: deliveryFormattedPrice, fontSize: 14, color: PaperColor.Gray, bold: false)
     }
     
     private func setupTotalTitleTextNode() {
@@ -74,7 +75,10 @@ class OrderFormSummarySectionNode: ASDisplayNode {
     }
     
     private func setupTotalValueTextNode() {
-        totalValueTextNode.attributedText = NSAttributedString.attributedString(string: cart.sum.formattedValue, fontSize: 14, color: PaperColor.Gray800)
+        let sum = cart.sum(forCurrencyLocale: currencyLocale)
+        let formattedSum = PriceEntity.formattedPrice(value: sum, currencyLocale: currencyLocale)
+        totalValueTextNode.attributedText = NSAttributedString.attributedString(
+            string: formattedSum, fontSize: 14, color: PaperColor.Gray800)
     }
     
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {

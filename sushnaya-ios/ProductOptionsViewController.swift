@@ -7,16 +7,16 @@ import CoreStore
 
 struct ProductOptionsContext {
     var product: ProductEntity
-    var selectedPrice: PriceEntity
+    var selectedPrice: ProductPriceEntity
     var count: Int
-    var selectedOptions: [ProductOptionEntity]?
+    var selectedOptionPrices: [ProductOptionEntity : Set<ProductOptionPriceEntity>]?
     var comment: String?
     
-    init(product: ProductEntity, selectedPrice: PriceEntity) {
+    init(product: ProductEntity, selectedPrice: ProductPriceEntity) {
         self.init(product: product, selectedPrice: selectedPrice, count: 1)
     }
     
-    init(product: ProductEntity, selectedPrice: PriceEntity, count: Int) {
+    init(product: ProductEntity, selectedPrice: ProductPriceEntity, count: Int) {
         self.product = product
         self.selectedPrice = selectedPrice
         self.count = count
@@ -30,8 +30,10 @@ struct ProductOptionsContext {
         let currencyLocale = selectedPrice.currencyLocale
         var amount = selectedPrice.value
         
-        selectedOptions?.forEach {
-            amount += $0.price.value
+        selectedOptionPrices?.values.forEach {
+            $0.forEach {
+                amount += $0.value
+            }
         }
         
         return PriceEntity.formattedPrice(value: amount * Double(count), currencyLocale: currencyLocale)
@@ -106,22 +108,24 @@ extension ProductOptionsViewController: ProductOptionsDelegate {
 }
 
 extension ProductOptionsViewController: ProductOptionCellNodeDelegate {
-    func productOptionsNodeDidCheck(node: ProductOptionCellNode, option: ProductOptionEntity) {
-        guard context.selectedOptions?.filter({$0.serverId == option.serverId}).first == nil else { return }
+    func productOptionsNodeDidCheck(option: ProductOptionEntity, withPrice price: ProductOptionPriceEntity) {
+        var selectedOptionPrices = context.selectedOptionPrices ?? [ProductOptionEntity: Set<ProductOptionPriceEntity>]()
+        var selectedPrices = selectedOptionPrices[option] ?? Set<ProductOptionPriceEntity>()
         
-        var currentOptions = context.selectedOptions ?? [ProductOptionEntity]()
-        currentOptions.append(option)
+        selectedPrices.insert(price)
+        selectedOptionPrices[option] = selectedPrices
         
-        context.selectedOptions = currentOptions
+        context.selectedOptionPrices = selectedOptionPrices
     }
     
-    func productOptionsNodeDidUncheck(node: ProductOptionCellNode, option: ProductOptionEntity) {
-        guard let index = context.selectedOptions?.index(where: {$0.serverId == option.serverId}) else { return }
+    func productOptionsNodeDidUncheck(option: ProductOptionEntity, withPrice price: ProductOptionPriceEntity) {
+        guard var selectedOptionPrices = context.selectedOptionPrices,
+            var selectedPrices = selectedOptionPrices[option] else { return }
         
-        var currentOptions = context.selectedOptions!
-        currentOptions.remove(at: index)
+        selectedPrices.remove(price)
+        selectedOptionPrices[option] = selectedPrices
         
-        context.selectedOptions = currentOptions        
+        context.selectedOptionPrices = selectedOptionPrices
     }
 }
 
@@ -131,15 +135,16 @@ extension ProductOptionsViewController: ASTableDelegate, ASTableDataSource {
     }
     
     func tableNode(_ tableNode: ASTableNode, nodeBlockForRowAt indexPath: IndexPath) -> ASCellNodeBlock {
-        guard let productOption = productMonitor?.object?.options?[indexPath.row] else {
+        guard let option = productMonitor?.object?.options?[indexPath.row] else {
             return { ASCellNode() }
         }
         
+        let selectedPrices = context.selectedOptionPrices?[option]
+
         return { [unowned self] _ in
-            let cellNode = ProductOptionCellNode(productOption: productOption)
-            cellNode.isChecked = self.context.selectedOptions?.filter({$0.serverId == productOption.serverId}).first != nil
+            let cellNode = ProductOptionCellNode(option: option, selectedPrices: selectedPrices)
             cellNode.delegate = self
-            
+
             return cellNode
         }
     }

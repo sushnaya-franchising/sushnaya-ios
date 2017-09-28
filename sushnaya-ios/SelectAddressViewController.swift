@@ -34,7 +34,7 @@ class SelectAddressViewController: ASViewController<SelectAddressNode> {
     }
     
     fileprivate var addresses: ListMonitor<AddressEntity> {
-        return app.core.addressesByLocality
+        return app.core.addressesByLocalityMonitor
     }
     
     fileprivate var addressesCount: Int {

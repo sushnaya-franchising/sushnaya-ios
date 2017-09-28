@@ -50,6 +50,14 @@ class AddressCellNode: ASCellNode {
             self.mapImageBuilder.delegate = self
         }
         
+        editButtonNode.setTargetClosure { [unowned self] _ in
+            ShowEditAddressViewControllerEvent.fire(address: self.address)
+        }
+        
+        removeButtonNode.setTargetClosure { [unowned self] _ in
+            RemoveAddressEvent.fire(address: self.address)
+        }
+        
         setupNodes()
     }
     
@@ -74,19 +82,12 @@ class AddressCellNode: ASCellNode {
         editButtonNode.setAttributedTitle(AddressCellNode.EditIconString, for: .normal)
         editButtonNode.setBackgroundImage(UIImage.init(color: PaperColor.White.withAlphaComponent(0.5)), for: .normal)
         editButtonNode.isHidden = true
-        editButtonNode.setTargetClosure { [unowned self] _ in
-            ShowEditAddressViewControllerEvent.fire(address: self.address)
-        }
     }
     
     private func setupRemoveButtonNode() {
         removeButtonNode.setAttributedTitle(AddressCellNode.RemoveIconString, for: .normal)
         removeButtonNode.setBackgroundImage(UIImage.init(color: PaperColor.White.withAlphaComponent(0.5)), for: .normal)
         removeButtonNode.isHidden = true
-        
-        removeButtonNode.setTargetClosure { [unowned self] _ in
-            RemoveAddressEvent.fire(address: self.address)
-        }
     }
     
     private func setupMapImageNode() {

@@ -1,5 +1,6 @@
 import Foundation
 import AVFoundation
+import CoreStore
 
 class Cart: NSObject {
 
@@ -14,24 +15,24 @@ class Cart: NSObject {
         return history.isEmpty
     }
 
-    var sum: Price {
+    private let cartUnitsMonitor: ListMonitor<CartUnitEntity>
+    
+    func sum(forCurrencyLocale currencyLocale: String) -> Double {
         var sumValue: Double = 0
-        // todo: use app default locale
-        // todo: implement support for multicurrency
-        let currencyLocale = history.count == 0 ? "ru_RU" : history[0].price.currencyLocale
 
         history.forEach {
-            assert(currencyLocale == $0.price.currencyLocale)
-
-            sumValue = sumValue + $0.price.value
+            if currencyLocale == $0.price.currencyLocale {
+                sumValue = sumValue + $0.price.value
+            }
         }
 
-        return Price(value: sumValue, currencyLocale: currencyLocale, modifierName: nil)
+        return sumValue
     }
 
-    override init() {
+    init(cartUnitsMonitor: ListMonitor<CartUnitEntity>) {
+        self.cartUnitsMonitor = cartUnitsMonitor
         super.init()
-        registerEventHandlers()
+        registerEventHandlers()                
     }
 
     deinit {

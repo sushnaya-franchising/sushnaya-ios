@@ -1,17 +1,11 @@
-//
-//  CartToolBarNode.swift
-//  sushnaya-ios
-//
-//  Created by Igor Kurylenko on 4/16/17.
-//  Copyright © 2017 igor kurilenko. All rights reserved.
-//
-
 import Foundation
 import AsyncDisplayKit
 import FontAwesome_swift
 
 class CartToolbarNode: ASDisplayNode {
 
+    let currencyLocale = "ru_RU"
+    
     let cart: Cart
 
     let subtotalTextNode = ASTextNode()
@@ -88,7 +82,8 @@ class CartToolbarNode: ASDisplayNode {
     }
 
     private func updateSubtotalTextNode() {
-        subtotalTextNode.attributedText = NSAttributedString.attributedString(string: "Сумма: \(cart.sum.formattedValue)", fontSize: 14, color: PaperColor.Gray800)
+        subtotalTextNode.attributedText = NSAttributedString.attributedString(string: "Сумма: \(cart.sum(forCurrencyLocale: currencyLocale))", fontSize: 14, color: PaperColor.Gray800)
+//                subtotalTextNode.attributedText = NSAttributedString.attributedString(string: "Сумма: ", fontSize: 14, color: PaperColor.Gray800)
     }
 
     private func setupDeliveryButton() {

@@ -33,6 +33,10 @@ class OrderNavbarNode: ASDisplayNode {
         
         self.automaticallyManagesSubnodes = true
         
+        backButton.setTargetClosure { [unowned self] _ in
+            self.delegate?.orderNavbarDidTapBackButton(node: self)
+        }
+        
         setupNodes()
     }
     
@@ -55,9 +59,6 @@ class OrderNavbarNode: ASDisplayNode {
     
     private func setupBackButtonNode() {
         backButton.setAttributedTitle(dismissIconString, for: .normal)
-        backButton.setTargetClosure { [unowned self] _ in
-            self.delegate?.orderNavbarDidTapBackButton(node: self)
-        }
     }
     
     private func setupBackgroundNode() {

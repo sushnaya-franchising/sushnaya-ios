@@ -3,7 +3,7 @@ import AsyncDisplayKit
 import pop
 
 protocol PriceNodeDelegate: class {
-    func priceNode(_ node: PriceNode, didTouchPrice price: PriceEntity)
+    func priceNode(_ node: PriceNode, didTouchPrice price: ProductPriceEntity)
 }
 
 class PriceNode: ASDisplayNode {
@@ -12,9 +12,9 @@ class PriceNode: ASDisplayNode {
     let checkIconNode = ASImageNode()
     
     weak var delegate: PriceNodeDelegate?
-    let price: PriceEntity
+    let price: ProductPriceEntity
     
-    init(price: PriceEntity) {
+    init(price: ProductPriceEntity) {
         self.price = price
         super.init()
         

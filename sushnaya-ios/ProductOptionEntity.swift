@@ -10,7 +10,7 @@ class ProductOptionEntity: NSManagedObject {
     @NSManaged var addedAt: Int64
     @NSManaged var updatedAt: Int64
     
-    @NSManaged var price: ProductOptionPriceEntity
+    @NSManaged var pricing: [ProductOptionPriceEntity]
     @NSManaged var product: ProductEntity
 }
 
@@ -48,9 +48,30 @@ extension ProductOptionEntity: ImportableUniqueObject {
         self.name = source["name"].string!        
         self.rank = source["rank"].float!
         
-        try! updatePrice(from: source["price"], in: transaction)
+        try! updatePricing(from: source["pricing"].array!, in: transaction)        
         
         self.product = product
+    }
+    
+    func updatePricing(from source: [JSON], in transaction: BaseDataTransaction) throws {
+        try! deleteDeprecatedPrices(update: source, in: transaction)
+        
+        for priceJSON in source {
+            try! updatePrice(from: priceJSON, in: transaction)
+        }
+    }
+    
+    private func deleteDeprecatedPrices(update: [JSON], in transaction: BaseDataTransaction) throws {
+        guard let currentPricing = transaction.fetchAll(
+            From<ProductOptionPriceEntity>(),
+            Where("productOption.serverId", isEqualTo: self.serverId),
+            OrderBy(.ascending(#keyPath(PriceEntity.serverId)))) else { return }
+        
+        for currentPrice in currentPricing {
+            if update.filter({$0["id"].int32! == currentPrice.serverId}).first == nil {
+                transaction.delete(currentPrice)
+            }
+        }
     }
     
     func updatePrice(from source: JSON, in transaction: BaseDataTransaction) throws {

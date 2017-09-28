@@ -1,16 +1,9 @@
-//
-//  CashOptionsSectionNode.swift
-//  sushnaya-ios
-//
-//  Created by Igor Kurylenko on 6/9/17.
-//  Copyright © 2017 igor kurilenko. All rights reserved.
-//
-
 import Foundation
 import AsyncDisplayKit
 
-
 class CashOptionsSectionNode: ASDisplayNode {
+    
+    let currencyLocale = "ru_RU" // todo: move selected currency locale to user settings
     
     fileprivate let titleTextNode = ASTextNode()
     fileprivate let collectionNode: ASCollectionNode
@@ -18,7 +11,7 @@ class CashOptionsSectionNode: ASDisplayNode {
     fileprivate let cart: Cart        
     
     fileprivate var cashCalculator:CashCalculator!
-    fileprivate var cashValues: [Price]?
+    fileprivate var cashValues: [Double]?
     
     init(cart: Cart) {
         self.cart = cart // todo: add cart sum field and observe value change to update layout
@@ -43,9 +36,7 @@ class CashOptionsSectionNode: ASDisplayNode {
         DispatchQueue.global().async { [unowned self] _ in
             let cashCalculator = CashCalculator(faces: Constants.NominalValues,
                                                 monetaryUnitCentsCount: 1)
-            let cashValues = cashCalculator.getPossibleCashValues(price: self.cart.sum.value)?.map {
-                Price(value: $0, currencyLocale: "ru_RU", modifierName: nil)
-            }
+            let cashValues = cashCalculator.getPossibleCashValues(price: self.cart.sum(forCurrencyLocale: self.currencyLocale))
             
             DispatchQueue.main.async { [unowned self] _ in
                 self.cashCalculator = cashCalculator
@@ -103,11 +94,13 @@ extension CashOptionsSectionNode: ASCollectionDataSource, ASCollectionDelegate {
     }
     
     func collectionNode(_ collectionNode: ASCollectionNode, nodeBlockForItemAt indexPath: IndexPath) -> ASCellNodeBlock {
-        return { [unowned self] _ in
-            return indexPath.row == 0 ?
-                CashOptionCellNode(text: "Без сдачи") :
-                CashOptionCellNode(text: "\(self.cashValues![indexPath.row - 1].formattedValue)")
-        }
+        guard indexPath.row > 0 else {return {CashOptionCellNode(text: "Без сдачи")} }
+        guard indexPath.row - 1 < (cashValues?.count ?? 0) else {return {ASCellNode()}}
+        
+        let cashValue = cashValues![indexPath.row - 1]
+        let formattedCashValue = PriceEntity.formattedPrice(value: cashValue, currencyLocale: currencyLocale)
+        
+        return { CashOptionCellNode(text: "\(formattedCashValue)") }
     }
     
     func collectionNode(_ collectionNode: ASCollectionNode, didSelectItemAt indexPath: IndexPath) {

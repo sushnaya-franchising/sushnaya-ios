@@ -17,7 +17,7 @@ class ProductEntity: NSManagedObject {
     @NSManaged var updatedAt: Int64
     
     @NSManaged var options: [ProductOptionEntity]?
-    @NSManaged var pricing: [PriceEntity]
+    @NSManaged var pricing: [ProductPriceEntity]
     @NSManaged var category: MenuCategoryEntity
 
     var imageSize: CGSize? {
@@ -36,8 +36,8 @@ class ProductEntity: NSManagedObject {
         }
     }
     
-    var highestPrice: PriceEntity? {
-        var result: PriceEntity?
+    var highestPrice: ProductPriceEntity? {
+        var result: ProductPriceEntity?
         var highestValue: Double = 0
         
         pricing.forEach {

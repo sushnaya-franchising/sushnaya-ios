@@ -60,7 +60,6 @@ extension Product: Hashable {
         
         return result
     }
-
 }
 
 func ==(lhs: Product, rhs: Product) -> Bool {

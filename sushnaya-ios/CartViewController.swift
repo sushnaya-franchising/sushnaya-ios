@@ -7,8 +7,8 @@ class CartViewController: ASViewController<ASDisplayNode> {
     fileprivate var cartNode: CartNode!
     
     var cart: Cart {
-        return app.cart
-    }    
+        return app.core.cart
+    }
     
     fileprivate let presentationManager = SlidePresentationManager(dimmingViewAlpha: 0.1)
     

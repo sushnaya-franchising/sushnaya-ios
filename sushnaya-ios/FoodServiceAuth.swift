@@ -11,6 +11,8 @@ enum AuthenticationError: Error {
 class FoodServiceAuth {
     // todo: use ssl
     static let baseUrl = "http://appnbot.ngrok.io/0.1.0"
+//    static let baseUrl = "http://8555382b.ngrok.io/0.1.0"
+    
     static let authenticateUrl = baseUrl + "/authenticate"
     static let tokenUrl = baseUrl + "/token"
     

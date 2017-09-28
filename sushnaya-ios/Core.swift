@@ -21,19 +21,22 @@ func ==(lhs: CurrentCategory, rhs: CurrentCategory)->Bool {
 class Core: ObjectObserver {
     static let Singleton = Core()
     
-    let settings: ObjectMonitor<UserSettingsEntity>
-    let menus: ListMonitor<MenuEntity>
-    let categories: ListMonitor<MenuCategoryEntity>
-    let products: ListMonitor<ProductEntity>
-    let addresses: ListMonitor<AddressEntity>
-    let addressesByLocality: ListMonitor<AddressEntity>
+    let cart: Cart
+    
+    let settingsMonitor: ObjectMonitor<UserSettingsEntity>
+    let menusMonitor: ListMonitor<MenuEntity>
+    let categoriesMonitor: ListMonitor<MenuCategoryEntity>
+    let productsMonitor: ListMonitor<ProductEntity>
+    let addressesMonitor: ListMonitor<AddressEntity>
+    let addressesByLocalityMonitor: ListMonitor<AddressEntity>
+    let cartUnitsMonitor: ListMonitor<CartUnitEntity>
 
     var authToken: String? {
-        return settings.object?.authToken
+        return settingsMonitor.object?.authToken
     }
 
     var selectedMenuId: Int32? {
-        return settings.object?.selectedMenu?.serverId
+        return settingsMonitor.object?.selectedMenu?.serverId
     }
     
     fileprivate var currentCategory = CurrentCategory.Recommendations
@@ -100,6 +103,11 @@ class Core: ObjectObserver {
                     OrderBy(.ascending(#keyPath(AddressEntity.streetAndHouse))))
         }
         
+        func createCartUnitsMonitor() -> ListMonitor<CartUnitEntity> {
+            return CoreStore.monitorList(
+                From<CartUnitEntity>(),
+                OrderBy(.descending(#keyPath(CartUnitEntity.addedAt))))
+        }
         
         CoreStore.defaultStack = DataStack(xcodeModelName: "Appnbot")
         
@@ -109,15 +117,18 @@ class Core: ObjectObserver {
             // todo: report fatal error
         }
         
-        self.settings = createSettingsMonitor()
-        self.menus = createMenusMonitor()
-        self.categories = createCategoriesMonitor(self.settings.object)
-        self.products = createProductsMonitor(self.settings.object)
-        self.addresses = createAddressesMonitor()
-        self.addressesByLocality = createAddressesByLocalityMonitor(self.settings.object)
+        self.settingsMonitor = createSettingsMonitor()
+        self.menusMonitor = createMenusMonitor()
+        self.categoriesMonitor = createCategoriesMonitor(self.settingsMonitor.object)
+        self.productsMonitor = createProductsMonitor(self.settingsMonitor.object)
+        self.addressesMonitor = createAddressesMonitor()
+        self.addressesByLocalityMonitor = createAddressesByLocalityMonitor(self.settingsMonitor.object)
+        self.cartUnitsMonitor = createCartUnitsMonitor()
         
-        self.settings.addObserver(self)
-
+        cart = Cart(cartUnitsMonitor: cartUnitsMonitor)
+        
+        self.settingsMonitor.addObserver(self)
+        
         bindEventHandlers()
     }
 
@@ -130,7 +141,7 @@ class Core: ObjectObserver {
                         try! self.deleteDeprecatedMenus(update: menusJSON, in: transaction)
                         
                         guard menusJSON.count > 0 else {
-                            transaction.edit(self.settings.object)!.selectedMenu = nil
+                            transaction.edit(self.settingsMonitor.object)!.selectedMenu = nil
                             return
                         }
                         
@@ -205,7 +216,7 @@ class Core: ObjectObserver {
             
             do {
                 try CoreStore.perform(synchronous: { [unowned self] (transaction) in
-                    if let userSettings = transaction.edit(self.settings.object),
+                    if let userSettings = transaction.edit(self.settingsMonitor.object),
                         let menu = try! transaction.importObject(Into<MenuEntity>(), source: menuJSON) {
                         userSettings.selectedMenu = menu
                     }
@@ -224,7 +235,7 @@ class Core: ObjectObserver {
                 
                 self.currentCategory = CurrentCategory.Concrete(category: category)
                 
-                self.products.refetch(
+                self.productsMonitor.refetch(
                     Where("category.serverId", isEqualTo: category.serverId),
                     OrderBy(.ascending(#keyPath(ProductEntity.rank))) +
                         OrderBy(.ascending(#keyPath(ProductEntity.name))))
@@ -238,7 +249,7 @@ class Core: ObjectObserver {
             
             self.currentCategory = CurrentCategory.Recommendations
             
-            self.products.refetch(
+            self.productsMonitor.refetch(
                 Where("category.menu.serverId", isEqualTo: self.selectedMenuId) &&
                     Where("isRecommended", isEqualTo: true),
                 OrderBy(.ascending(#keyPath(ProductEntity.rank))) +
@@ -262,17 +273,17 @@ class Core: ObjectObserver {
     }
 
     deinit {
-        self.settings.removeObserver(self)
+        self.settingsMonitor.removeObserver(self)
     }
     
     func objectMonitor(_ monitor: ObjectMonitor<UserSettingsEntity>, didUpdateObject object: UserSettingsEntity, changedPersistentKeys: Set<RawKeyPath>) {
         if changedPersistentKeys.contains(#keyPath(UserSettingsEntity.selectedMenu)) {
-            categories.refetch(
+            categoriesMonitor.refetch(
                 Where("menu.serverId", isEqualTo: selectedMenuId ?? -1),
                 OrderBy(.ascending(#keyPath(MenuCategoryEntity.rank))) +
                     OrderBy(.ascending(#keyPath(MenuCategoryEntity.name))))
             
-            products.refetch(
+            productsMonitor.refetch(
                 Where("category.menu.serverId", isEqualTo: selectedMenuId ?? -1) &&
                     Where("isRecommended", isEqualTo: true),
                 OrderBy(.ascending(#keyPath(ProductEntity.rank))) +
@@ -285,7 +296,7 @@ extension Core {
     func persistAuthToken(_ authToken: String) {
         do {
             try CoreStore.perform(synchronous: { [unowned self] (transaction) in
-                if let settings = transaction.edit(self.settings.object) {
+                if let settings = transaction.edit(self.settingsMonitor.object) {
                     settings.authToken = authToken
                 }
             })
@@ -314,7 +325,7 @@ extension Core {
                 
                 if let selectedMenuId = self.selectedMenuId,
                     currentMenu.serverId == selectedMenuId {
-                    transaction.edit(settings.object)?.selectedMenu = nil
+                    transaction.edit(settingsMonitor.object)?.selectedMenu = nil
                 }
             }
         }

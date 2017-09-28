@@ -5,10 +5,8 @@ import SwiftyJSON
 struct DidEditAddressEvent: Event {
     static var name: String = "\(DidEditAddressEvent.self)"
     
-    var address: AddressEntity
-    
-    static func fire(address: AddressEntity) {
-        EventBus.post(DidEditAddressEvent.name, sender: DidEditAddressEvent(address: address))
+    static func fire() {
+        EventBus.post(DidEditAddressEvent.name, sender: DidEditAddressEvent())
     }
 }
 

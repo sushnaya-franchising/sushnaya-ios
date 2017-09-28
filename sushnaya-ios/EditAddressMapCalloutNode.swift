@@ -72,6 +72,10 @@ class EditAddressMapCalloutNode: ASDisplayNode {
         
         self.automaticallyManagesSubnodes = true
         
+        submitButtonNode.setTargetClosure { [unowned self] _ in
+            self.delegate?.editAddressMapCalloutDidSubmit(self)
+        }
+        
         setupNodes()
     }
     
@@ -115,9 +119,6 @@ class EditAddressMapCalloutNode: ASDisplayNode {
         submitButtonNode.setAttributedTitle(NSAttributedString.attributedString(string: "Да", fontSize: 14, color: PaperColor.Gray800.withAlphaComponent(0.5)), for: .disabled)
         submitButtonNode.isEnabled = state != .loading
         submitButtonNode.isHidden = state == .outOfDeliveryZone
-        submitButtonNode.setTargetClosure { [unowned self] _ in
-            self.delegate?.editAddressMapCalloutDidSubmit(self)
-        }
     }
     
     override func setNeedsLayout() {

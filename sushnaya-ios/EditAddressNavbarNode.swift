@@ -52,6 +52,10 @@ class EditAddressNavbarNode: ASDisplayNode {
                 
         self.automaticallyManagesSubnodes = true
         
+        backButton.setTargetClosure { [unowned self] _ in
+            self.delegate?.editAddressNavbarDidTapBackButton(node: self)
+        }
+        
         setupNodes()
     }
     
@@ -62,9 +66,6 @@ class EditAddressNavbarNode: ASDisplayNode {
     
     private func setupBackButtonNode() {
         backButton.setAttributedTitle(dismissIconString, for: .normal)
-        backButton.setTargetClosure { [unowned self] _ in
-            self.delegate?.editAddressNavbarDidTapBackButton(node: self)
-        }
     }
     
     private func setupSegmentedControlNode() {

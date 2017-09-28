@@ -1,11 +1,3 @@
-//
-//  CartContentNode.swift
-//  sushnaya-ios
-//
-//  Created by Igor Kurylenko on 4/13/17.
-//  Copyright © 2017 igor kurilenko. All rights reserved.
-//
-
 import Foundation
 import AsyncDisplayKit
 
@@ -128,20 +120,20 @@ class CartContentNode: ASDisplayNode {
         
         let layout = ASStackLayoutSpec.vertical()
         layout.alignItems = .center
-        
+
         headerNode.textContainerInset = Constants.CartLayout.HeaderTextContainerInsets
         let headerHeight = headerNode.attributedText!.size().height +
             Constants.CartLayout.HeaderTextContainerInsets.top + Constants.CartLayout.HeaderTextContainerInsets.bottom
-        
+
         cartItemsTableNode.style.preferredSize = CGSize(width: constrainedSize.max.width,
                                                         height: constrainedSize.max.height - headerHeight)
-        
+
         let insets = UIEdgeInsets(top: CGFloat.infinity, left: 0, bottom: 0, right: 0)
         let toolBarOverlay = ASInsetLayoutSpec(insets: insets, child: toolBarNode)
         let contentLayout = ASOverlayLayoutSpec(child: cartItemsTableNode, overlay: toolBarOverlay)
-        
+
         layout.children = [headerNode, contentLayout]
-        
+
         return layout
     }
     

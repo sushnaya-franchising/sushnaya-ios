@@ -152,7 +152,7 @@ class EditAddressViewController: ASViewController<EditAddressContentNode> {
     }
     
     fileprivate func submitAddress(_ yandexAddress: YandexAddress) {
-        if let address = try? CoreStore.perform(synchronous: { [unowned self] (transaction) -> AddressEntity in
+        try? CoreStore.perform(synchronous: { [unowned self] (transaction) -> Void in
             let address = transaction.edit(self.addressToEdit) ?? transaction.create(Into<AddressEntity>())
             address.locality = transaction.edit(address.locality) ?? transaction.edit(self.selectedMenuLocality)!
             address.coordinate = yandexAddress.coordinate
@@ -162,26 +162,23 @@ class EditAddressViewController: ASViewController<EditAddressContentNode> {
             address.floor = self.formNode.floorFormFieldNode.value
             address.comment = self.formNode.commentFormFieldNode.value
             
-            return address
-            
-        }) {
             firstly { [unowned self] _ in
                 FoodServiceRest.postAddress(address: address, authToken: self.app.authToken!)
-            
-            }.then { addressJSON -> () in
-                let serverId = addressJSON["id"].int32Value
                 
-                try? CoreStore.perform(synchronous: { transaction in
-                    transaction.edit(address)?.serverId = NSNumber(value: serverId)
-                })
-                
-            }.catch { error in
-                print(error)
-                // todo: handle error
+                }.then { addressJSON -> () in
+                    let serverId = addressJSON["id"].int32Value
+                    
+                    try? CoreStore.perform(synchronous: { transaction in
+                        transaction.edit(address)?.serverId = NSNumber(value: serverId)
+                    })
+                    
+                }.catch { error in
+                    print(error)
+                    // todo: handle error
             }
-            
-            DidEditAddressEvent.fire(address: address)
-        }
+        })
+        
+        DidEditAddressEvent.fire()
     }
 }
 

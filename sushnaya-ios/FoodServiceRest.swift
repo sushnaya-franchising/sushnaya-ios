@@ -6,6 +6,7 @@ import PromiseKit
 
 class FoodServiceRest {
     static let baseUrl = "http://appnbot.ngrok.io/0.1.0"
+//    static let baseUrl = "http://8555382b.ngrok.io/0.1.0"
     static let menusUrl = baseUrl + "/menus"
     static let selectMenuUrl = menusUrl + "/%d/select"
     static let categoriesUrl = menusUrl + "/%d/categories"
@@ -112,10 +113,20 @@ class FoodServiceRest {
                               method: .post,
                               parameters: parameters,
                               encoding: JSONEncoding.default,
-                              headers: headers).responseData()
+                              headers: headers).debugLog().responseData()
             
-        }.then { data in
+        }.then { data in            
             JSON(data)
         }
     }
 }
+
+extension Request {
+    public func debugLog() -> Self {
+        #if DEBUG
+            debugPrint(self)
+        #endif
+        return self
+    }
+}
+

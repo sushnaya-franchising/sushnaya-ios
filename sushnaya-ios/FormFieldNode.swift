@@ -106,6 +106,11 @@ class FormFieldNode: ASDisplayNode {
         self.maxValueLength = maxValueLength
         super.init()
         self.automaticallyManagesSubnodes = true
+        
+        iconImageNode.setTargetClosure { [unowned self] _ in
+            self.editableTextNode.becomeFirstResponder()
+        }
+        
         setupNodes()
     }
     
@@ -195,9 +200,6 @@ class FormFieldNode: ASDisplayNode {
     
     private func setupIconImageNode() {
         iconImageNode.image = UIImage.fontAwesomeIcon(name: .pencil, textColor: iconImageColor, size: CGSize(width: 16, height: 16))
-        iconImageNode.setTargetClosure { [unowned self] _ in
-            self.editableTextNode.becomeFirstResponder()
-        }
     }
     
     private func setupLabelTextNode() {

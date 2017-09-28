@@ -45,6 +45,10 @@ class EditAddressMapNode: ASCellNode {
         
         self.automaticallyManagesSubnodes = true
         
+        self.locationButton.setTargetClosure {[unowned self] _ in
+            self.delegate?.editAddressMapDidTapLocationButton(self)
+        }
+        
         setupLocationButtonNode()
         
         self.addressCallout.backgroundColor = PaperColor.Gray200.withAlphaComponent(0.93)
@@ -58,15 +62,11 @@ class EditAddressMapNode: ASCellNode {
         
         self.mapNode = ASDisplayNode(viewBlock: { [unowned self] _ in
             return self.mapView
-        })
+        })                
     }
     
     private func setupLocationButtonNode() {
         self.locationButton.setAttributedTitle(locationArrowIconString, for: .normal)
-        
-        self.locationButton.setTargetClosure {[unowned self] _ in
-            self.delegate?.editAddressMapDidTapLocationButton(self)
-        }
     }
     
     func setCenter(coordinate: CLLocationCoordinate2D, animated: Bool) {

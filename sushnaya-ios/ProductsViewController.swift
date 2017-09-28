@@ -31,7 +31,7 @@ class ProductsViewController: ASViewController<ASDisplayNode> {
     fileprivate let presentationManager = SlidePresentationManager()
     
     var products: ListMonitor<ProductEntity> {
-        return app.core.products
+        return app.core.productsMonitor
     }
 
     var categoryName = App.brandName
@@ -143,7 +143,7 @@ class ProductsViewController: ASViewController<ASDisplayNode> {
 }
 
 extension ProductsViewController: ProductCellNodeDelegate {
-    func productCellNode(_ node: ProductCellNode, didSelectProduct product: ProductEntity, withPrice price: PriceEntity) {
+    func productCellNode(_ node: ProductCellNode, didSelectProduct product: ProductEntity, withPrice price: ProductPriceEntity) {
         if !(product.options?.isEmpty ?? true) {
             productOptionsVC.context = ProductOptionsContext(product: product, selectedPrice: price)
             present(productOptionsVC, animated: true)

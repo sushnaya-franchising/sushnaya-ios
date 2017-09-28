@@ -7,7 +7,7 @@ import PromiseKit
 class SelectMenuViewController: ASViewController<SelectMenuNode> {
 
     var menus: ListMonitor<MenuEntity> {
-        return app.core.menus
+        return app.core.menusMonitor
     }
     
     fileprivate var tableNode: ASTableNode {

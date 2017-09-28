@@ -5,6 +5,8 @@ import pop
 
 class CartButton: ASControlNode {
     
+    let currencyLocale = "ru_RU" // todo: fix it to handle multiplecurrency locales
+    
     let iconNode = ASImageNode()
     let priceBadgeNode = ASTextNode()
     private var originalX: CGFloat!
@@ -21,15 +23,15 @@ class CartButton: ASControlNode {
         EventBus.onMainThread(self, name: DidAddToCartEvent.name) { [unowned self] (notification) in
             let cart = (notification.object as! DidAddToCartEvent).cart
             
-            self.animatePriceUpdate(sum: cart.sum)
-            self.updatePriceBadgeText(sum: cart.sum)
+            self.animatePriceUpdate(sum: cart.sum(forCurrencyLocale: self.currencyLocale))
+            self.updatePriceBadgeText(sum: cart.sum(forCurrencyLocale: self.currencyLocale))
         }
         
         EventBus.onMainThread(self, name: DidRemoveFromCartEvent.name) { [unowned self] (notification) in
             let cart = (notification.object as! DidRemoveFromCartEvent).context.cart
             
-            self.animatePriceUpdate(sum: cart.sum)
-            self.updatePriceBadgeText(sum: cart.sum)
+            self.animatePriceUpdate(sum: cart.sum(forCurrencyLocale: self.currencyLocale))
+            self.updatePriceBadgeText(sum: cart.sum(forCurrencyLocale: self.currencyLocale))
         }
     }
     
@@ -37,9 +39,7 @@ class CartButton: ASControlNode {
         EventBus.unregister(self)
     }
     
-    private func animatePriceUpdate(sum: Price) {
-        let sum = sum.value
-        
+    private func animatePriceUpdate(sum: Double) {
         guard sum != 0 else {
             animatePriceDisappearing()
             return
@@ -93,15 +93,17 @@ class CartButton: ASControlNode {
     }
     
     private func setupPriceBadgeNode() {
-        updatePriceBadgeText(sum: Price(value: 0, currencyLocale: "ru_RU", modifierName: nil))// todo: use currency locale from settings
+        updatePriceBadgeText(sum: 0)
         priceBadgeNode.backgroundColor = PaperColor.Gray300
         priceBadgeNode.cornerRadius = 10
         priceBadgeNode.clipsToBounds = true
         priceBadgeNode.isHidden = true
     }
     
-    private func updatePriceBadgeText(sum: Price) {
-        priceBadgeNode.attributedText = NSAttributedString(string: sum.formattedValue, attributes: Constants.CartButtonBadgeStringAttributes)
+    private func updatePriceBadgeText(sum: Double) {
+        let formattedSum = PriceEntity.formattedPrice(value: sum, currencyLocale: currencyLocale)
+        priceBadgeNode.attributedText = NSAttributedString(string: formattedSum, 
+                                                           attributes: Constants.CartButtonBadgeStringAttributes)
     }
     
     override func didLoad() {

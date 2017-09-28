@@ -3,7 +3,7 @@ import AsyncDisplayKit
 import pop
 
 protocol ProductCellNodeDelegate: class {
-    func productCellNode(_ node: ProductCellNode, didSelectProduct product: ProductEntity, withPrice price: PriceEntity)
+    func productCellNode(_ node: ProductCellNode, didSelectProduct product: ProductEntity, withPrice price: ProductPriceEntity)
 }
 
 class ProductCellNode: ASCellNode {
@@ -93,7 +93,7 @@ class ProductCellNode: ASCellNode {
     private func setupPriceNodes() {
         priceNodes.removeAll()// todo: use monitor
         
-        for price in product.pricing {// todo: investigate this bug
+        for price in product.pricing {
             let priceNode = PriceNode(price: price)
             priceNode.delegate = self
             priceNodes.append(priceNode)
@@ -195,7 +195,7 @@ class ProductCellNode: ASCellNode {
 }
 
 extension ProductCellNode: PriceNodeDelegate {
-    func priceNode(_ node: PriceNode, didTouchPrice price: PriceEntity) {
+    func priceNode(_ node: PriceNode, didTouchPrice price: ProductPriceEntity) {
         delegate?.productCellNode(self, didSelectProduct: product, withPrice: price)
     }
 }

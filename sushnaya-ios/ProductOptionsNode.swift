@@ -1,5 +1,6 @@
 import Foundation
 import AsyncDisplayKit
+import CoreStore
 
 protocol ProductOptionsDelegate: class {
     func productOptionsDidUpdateCount(count: Int)
@@ -7,8 +8,8 @@ protocol ProductOptionsDelegate: class {
 }
 
 protocol ProductOptionCellNodeDelegate: class {
-    func productOptionsNodeDidCheck(node: ProductOptionCellNode, option: ProductOptionEntity)
-    func productOptionsNodeDidUncheck(node: ProductOptionCellNode, option: ProductOptionEntity)
+    func productOptionsNodeDidCheck(option: ProductOptionEntity, withPrice price: ProductOptionPriceEntity)
+    func productOptionsNodeDidUncheck(option: ProductOptionEntity, withPrice price: ProductOptionPriceEntity)
 }
 
 class ProductOptionsNode: ASDisplayNode {
@@ -364,6 +365,12 @@ class ProductOptionsToolbarNode: ASDisplayNode {
         self.automaticallyManagesSubnodes = true
         self.backgroundColor = PaperColor.White.withAlphaComponent(0.93)
         
+        addToCartButton.setTargetClosure { [unowned self] _ in
+            self.view.endEditing(true)
+            
+            self.delegate?.productOptionsDidSubmit()
+        }
+        
         setupNodes()
     }
     
@@ -405,11 +412,6 @@ class ProductOptionsToolbarNode: ASDisplayNode {
             ])
         addToCartButton.setAttributedTitle(title, for: .normal)
         addToCartButton.backgroundColor = PaperColor.Gray200
-        addToCartButton.setTargetClosure { [unowned self] _ in
-            self.view.endEditing(true)
-            
-            self.delegate?.productOptionsDidSubmit()
-        }
     }
     
     override func didLoad() {
@@ -440,85 +442,50 @@ class ProductOptionsToolbarNode: ASDisplayNode {
 }
 
 class ProductOptionCellNode: ASCellNode {
-    fileprivate var productOption: ProductOptionEntity
-    fileprivate let nameTextNode = ASTextNode()
-    fileprivate var modifierTextNode: ASTextNode?
-    fileprivate let priceTextNode = ASTextNode()
-    fileprivate var addButtonNode = ASButtonNode()
+    fileprivate var option: ProductOptionEntity
+    fileprivate var selectedPrices: Set<ProductOptionPriceEntity>?
     
-    var isChecked = false {
-        didSet {
-            guard isChecked != oldValue else { return }
-            
-            if isChecked {
-                delegate?.productOptionsNodeDidCheck(node: self, option: productOption)
-            
-            } else {
-                delegate?.productOptionsNodeDidUncheck(node: self, option: productOption)
-            }
-            
-            setupAddButtonNode()
-        }
-    }
+    fileprivate let nameTextNode = ASTextNode()
+    fileprivate var priceNodes = [ProductOptionPriceNode]()
     
     weak var delegate: ProductOptionCellNodeDelegate?
     
-    init(productOption: ProductOptionEntity) {
-        self.productOption = productOption
+    init(option: ProductOptionEntity, selectedPrices: Set<ProductOptionPriceEntity>?) {
+        self.option = option
+        self.selectedPrices = selectedPrices
         super.init()
         
         self.automaticallyManagesSubnodes = true
-        
-        addButtonNode.setTargetClosure { [unowned self] _ in
-            self.isChecked = !self.isChecked
-        }
         
         setupNodes()
     }
     
     private func setupNodes() {
         setupNameTextNode()
-        setupModifierTextNode()
-        setupPriceTextNode()
-        setupAddButtonNode()
+        setupPriceTextNodes()
     }
     
     private func setupNameTextNode() {
         nameTextNode.attributedText =  NSAttributedString(
-            string: productOption.name,
+            string: option.name,
             attributes: [NSFontAttributeName: UIFont.fontAwesome(ofSize: 14),
                          NSForegroundColorAttributeName: PaperColor.Gray800])
     }
     
-    private func setupModifierTextNode() {
-        guard let modifierName = productOption.price.modifierName else { return }
+    private func setupPriceTextNodes() {
+        priceNodes.removeAll()// todo: use monitor?
         
-        modifierTextNode = ASTextNode()
-        modifierTextNode?.attributedText =  NSAttributedString(
-            string: modifierName,
-            attributes: [NSFontAttributeName: UIFont.fontAwesome(ofSize: 10),
-                         NSForegroundColorAttributeName: PaperColor.Gray])
-    }
-    
-    private func setupPriceTextNode() {
-        priceTextNode.attributedText = NSAttributedString(
-            string: productOption.price.formattedValue,
-            attributes: [NSFontAttributeName: UIFont.fontAwesome(ofSize: 14),
-                         NSForegroundColorAttributeName: PaperColor.Gray800])
-    }
-    
-    private func setupAddButtonNode() {
-        addButtonNode.setAttributedTitle(NSAttributedString(
-            string: isChecked ? String.fontAwesomeIcon(name: .check) : String.fontAwesomeIcon(name: .plusCircle),
-            attributes: [NSFontAttributeName: UIFont.fontAwesome(ofSize: 16),
-                         NSForegroundColorAttributeName: isChecked ? PaperColor.Gray800: PaperColor.Gray]), for: .normal)
+        for price in option.pricing {
+            let priceNode = ProductOptionPriceNode(option: self.option, price: price)
+            priceNode.isChecked = self.selectedPrices?.contains(price) ?? false
+            priceNode.delegate = self.delegate
+            self.priceNodes.append(priceNode)
+        }
     }
     
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let spacer = ASLayoutSpec()
         spacer.style.flexGrow = 1
-        
-        addButtonNode.style.preferredSize = CGSize(width: 44, height: 44)
         
         nameTextNode.style.flexShrink = 1
         
@@ -530,15 +497,117 @@ class ProductOptionCellNode: ASCellNode {
         children.append(nameTextNode)
         children.append(spacer)
         
-        if let modifierTextNode = modifierTextNode {
-            children.append(modifierTextNode)
-        }
-        
-        children.append(priceTextNode)
-        children.append(addButtonNode)
+        children.append(pricingLayoutSpecThatFits(constrainedSize))
         
         layout.children = children
         
-        return ASInsetLayoutSpec(insets: UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 8), child: layout)
+        return ASInsetLayoutSpec(insets: UIEdgeInsets(top: 2, left: 8, bottom: 2, right: 8), child: layout)
+    }
+    
+    private func pricingLayoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
+        let layout = ASStackLayoutSpec.vertical()
+        var children = [ASLayoutElement]()
+        
+        for priceNode in priceNodes {
+            children.append(priceNode)
+        }
+        
+        layout.children = children
+        
+        return layout
     }
 }
+
+class ProductOptionPriceNode: ASDisplayNode {
+    fileprivate var option: ProductOptionEntity
+    fileprivate var price: ProductOptionPriceEntity
+    
+    fileprivate let priceTextNode = ASTextNode()
+    fileprivate var modifierTextNode: ASTextNode?
+    fileprivate let buttonNode = ASButtonNode()
+    
+    var isChecked = false {
+        didSet {
+            guard isChecked != oldValue else { return }
+            
+            if isChecked {
+                delegate?.productOptionsNodeDidCheck(option: option, withPrice: price)
+                
+            } else {
+                delegate?.productOptionsNodeDidUncheck(option: option, withPrice: price)
+            }
+            
+            setupButtonNode()
+        }
+    }
+    
+    weak var delegate: ProductOptionCellNodeDelegate?
+    
+    init(option: ProductOptionEntity, price: ProductOptionPriceEntity) {
+        self.option = option
+        self.price = price
+
+        super.init()
+
+        self.automaticallyManagesSubnodes = true
+
+        buttonNode.setTargetClosure { [unowned self] _ in
+            self.isChecked = !self.isChecked
+        }
+
+        setupNodes()
+    }
+    
+    private func setupNodes() {
+        setupModifierTextNode()
+        setupPriceTextNode()
+        setupButtonNode()
+    }
+    
+    private func setupModifierTextNode() {
+        guard let modifierName = price.modifierName else { return }
+        
+        modifierTextNode = ASTextNode()
+        modifierTextNode?.attributedText =  NSAttributedString(
+            string: modifierName,
+            attributes: [NSFontAttributeName: UIFont.fontAwesome(ofSize: 10),
+                         NSForegroundColorAttributeName: PaperColor.Gray])
+    }
+    
+    private func setupPriceTextNode() {
+        priceTextNode.attributedText = NSAttributedString(
+            string: price.formattedValue,
+            attributes: [NSFontAttributeName: UIFont.fontAwesome(ofSize: 14),
+                         NSForegroundColorAttributeName: PaperColor.Gray800])
+    }
+    
+    private func setupButtonNode() {
+        buttonNode.setAttributedTitle(NSAttributedString(
+            string: isChecked ? String.fontAwesomeIcon(name: .check) : String.fontAwesomeIcon(name: .plusCircle),
+            attributes: [NSFontAttributeName: UIFont.fontAwesome(ofSize: 16),
+                         NSForegroundColorAttributeName: isChecked ? PaperColor.Gray800: PaperColor.Gray]), for: .normal)
+    }
+    
+    
+    override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
+        buttonNode.style.preferredSize = CGSize(width: 44, height: 44)
+        
+        let layout = ASStackLayoutSpec.horizontal()
+        layout.spacing = 8
+        layout.alignItems = .center
+        layout.justifyContent = .spaceBetween
+        
+        var children = [ASLayoutElement]()
+        if let modifierTextNode = modifierTextNode {
+            children.append(modifierTextNode)
+        }
+
+        children.append(priceTextNode)
+        children.append(buttonNode)
+        
+        layout.children = children
+        
+        return layout
+    }
+}
+
